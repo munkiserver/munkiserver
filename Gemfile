@@ -32,6 +32,7 @@ group :development do
   gem 'textmate_backtracer'
   gem 'pry-rails'
   gem 'meta_request'
+  gem 'bullet'
 end
 
 group :test do
