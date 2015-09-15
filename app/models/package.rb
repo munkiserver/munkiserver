@@ -42,6 +42,7 @@ class Package < ActiveRecord::Base
   after_destroy :destroy_package_branch
 
   validates :version, :presence => true
+  validates_format_of :version, :with => /^[a-zA-Z0-9\.]+$/, :message => 'Version numbers may only contain numbers, letters, and periods'
   validates :installer_item_location, :presence => true
   validates :package_branch_id, :presence => true
   validates :receipts_plist, :plist => true
