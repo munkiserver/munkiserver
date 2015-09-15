@@ -10,7 +10,8 @@
     </tr>
   </thead>
   <% package_branches.each do |package_branch| %>
-    <% packages = package_branch.packages.group_by {|p| p.environment_id }[current_environment.id] %>
+    <% packages_by_version = package_branch.packages.select { |p| p.environment_id == current_environment.id }.group_by { |p| p.version } %>
+    <% packages = VersionSorter.rsort(packages_by_version.keys).map { |v| packages_by_version[v] }.flatten %>
     <% if packages.present? %>
       <%= render :partial => 'packages/package_table_row', :locals => {:package_branch => package_branch, :packages => packages} %>
     <% end %>
