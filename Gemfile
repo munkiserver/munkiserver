@@ -1,6 +1,8 @@
 # Edit this Gemfile to bundle your application's dependencies.
 source 'http://gemcutter.org'
 
+gem 'version_sorter'
+
 gem 'rails', '3.2.12'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
