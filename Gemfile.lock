@@ -225,6 +225,7 @@ GEM
       multi_json (~> 1.0, >= 1.0.2)
     uniform_notifier (1.9.0)
     vcr (2.4.0)
+    version_sorter (2.0.0)
     webmock (1.8.11)
       addressable (>= 2.2.7)
       crack (>= 0.1.7)
@@ -274,6 +275,7 @@ DEPENDENCIES
   therubyracer
   uglifier
   vcr (~> 2.4.0)
+  version_sorter
   webmock (~> 1.8.7)
   whenever
   will_paginate (~> 3.0)
