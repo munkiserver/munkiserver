@@ -18,7 +18,7 @@ class ComputersController < ApplicationController
     @computers = @computers.order("#{sort_column} #{sort_direction}")
 
     # Add pagination using will_paginate gem
-    per_page = params[:per_page]
+    per_page = params[:per_page] if params[:per_page].present?
     per_page ||= Computer.per_page
     @computers = @computers.paginate(
       :page => params[:page],
