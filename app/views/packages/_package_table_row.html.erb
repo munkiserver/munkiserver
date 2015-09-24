@@ -1,4 +1,4 @@
-<% cache(packages + package_branch) do %>
+<% cache([packages, package_branch]) do %>
   <tr>
     <td rowspan="<%= packages.count %>">
       <%= image_tag(packages.first.icon.url(:small), :class => "thumbnail", "data-package-branch-id" => package_branch.id) %>
