@@ -3,7 +3,7 @@ source 'http://gemcutter.org'
 
 gem 'version_sorter'
 
-gem 'rails', '3.2.12'
+gem 'rails', '4.2.4'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
 gem 'therubyracer'
