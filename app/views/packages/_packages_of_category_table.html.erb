@@ -1,4 +1,4 @@
-<% cache(category) do %>
+<% cache([current_unit, current_environment, category]) do %>
   <h4><%= category.name.capitalize %></h4>
   <table class="zebra packages">
     <thead>
