@@ -2,12 +2,9 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require *Rails.groups(:assets => %w(development test))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
 
 module Munki
   class Application < Rails::Application
@@ -15,31 +12,30 @@ module Munki
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # Enable the asset pipeline
-    config.assets.enabled = true
+    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
+    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
+    # config.time_zone = 'Central Time (US & Canada)'
 
-    # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
-
-    # Load server configuration YAML file
+    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     settings = nil
     begin
       settings = YAML.load(File.read("#{Rails.root}/config/settings.yaml"))
     rescue Errno::ENOENT
       # config/settings.yaml doesn't exist
-    end
+    end   # config.i18n.default_locale = :de
 
-    # Add additional load paths for your own custom dirs
-    # config.load_paths += %W( #{config.root}/extras )
+    # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.active_record.raise_in_transactional_callbacks = true
     config.autoload_paths += %W(
-        #{Rails.root}/app/models/widgets
-        #{Rails.root}/app/models/join_models
-        #{Rails.root}/app/models/behaviours
-        #{Rails.root}/app/models/manifest
-        #{Rails.root}/app/models/service
-        #{Rails.root}/app/models/privilege_granters
-        #{Rails.root}/app/models/null
-        #{Rails.root}/lib
+      #{Rails.root}/app/models/widgets
+      #{Rails.root}/app/models/join_models
+      #{Rails.root}/app/models/behaviours
+      #{Rails.root}/app/models/manifest
+      #{Rails.root}/app/models/service
+      #{Rails.root}/app/models/privilege_granters
+      #{Rails.root}/app/models/null
+      #{Rails.root}/lib
     )
 
     # Add custom mime types
@@ -61,22 +57,5 @@ module Munki
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters << :password
     config.filter_parameters << :pass # Create session uses params[:pass]
-
-    # puts "X-Sendfile header is: " + config.action_dispatch.x_sendfile_header
-    # config.action_dispatch.x_sendfile_header = "X-Sendfile"
-
-    # # Setup action mailer settings
-    # if settings.present? and settings[:action_mailer].present?
-    #   config.action_mailer.default_url_options = { :host => settings[:action_mailer][:host] }
-    #   config.action_mailer.delivery_method = :sendmail
-    #   # config.action_mailer.delivery_method = settings[:action_mailer][:delivery_method]
-    #   # config.action_mailer.sendmail_settings = settings[:action_mailer][:sendmail_settings] if settings[:action_mailer][:delivery_method] == :sendmail
-    #   # config.action_mailer.smtp_settings = settings[:action_mailer][:smtp_settings] if settings[:action_mailer][:delivery_method] == :smtp
-    #   # config.action_mailer.raise_delivery_errors = true
-    # else
-    #   config.action_mailer.delivery_method = :sendmail
-    # end
-
-    config.action_mailer.raise_delivery_errors = false
   end
 end

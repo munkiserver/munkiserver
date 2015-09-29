@@ -2,8 +2,8 @@ class MissingManifest < ActiveRecord::Base
   # Include helpers
   include ActionView::Helpers
 
-  scope :recent, lambda {|options| 
-    scope = MissingManifest.scoped
+  scope :recent, lambda {|options|
+    scope = MissingManifest.where(nil)
     if options[:since_time].present?
       scope = scope.where("created_at > ?", options[:since_time])
     else
@@ -13,20 +13,20 @@ class MissingManifest < ActiveRecord::Base
     scope = scope.limit(options[:limit]) if options[:limit].present?
     scope.order("created_at DESC")
   }
-  scope :not_dismissed, where(:dismissed => false)
-  
+  scope :not_dismissed, -> { where(:dismissed => false) }
+
   def request_ip=(value)
     self.hostname = get_hostname(value)
     super(value)
   end
-  
+
   def get_hostname(ip)
     Socket.gethostbyaddr(ip.split(".").map(&:to_i).pack("CCCC")).first
   rescue SocketError => e
     Rails.logger.error "An error occurred while retrieving the hostname given #{ip}: #{e.message}"
     ""
   end
-  
+
   def request_time
     s = nil
     if created_at > 5.days.ago
@@ -36,7 +36,7 @@ class MissingManifest < ActiveRecord::Base
 		end
 		s
   end
-  
+
   def to_s
     if hostname.present?
       hostname

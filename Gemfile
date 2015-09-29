@@ -10,16 +10,16 @@ gem 'therubyracer'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
 gem 'nokogiri'
 gem 'paperclip'
-gem 'client_side_validations'
+gem 'client_side_validations', github: 'DavyJonesLocker/client_side_validations'
 gem 'whenever'
 gem 'plist'
-gem 'cancan'
+gem 'cancancan'
 gem 'highline'
 
-gem 'mysql2', '> 0.3'
+gem 'mysql2', '~> 0.3.18'
 gem 'taps'
 
-gem 'highcharts-rails', '~> 2.1.9'
+gem 'highcharts-rails'
 gem 'dynamic_form' # enabling this should allow the removal of vendor/dynamic_form
 
 gem 'active_record_or'

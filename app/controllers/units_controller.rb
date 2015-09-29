@@ -1,6 +1,6 @@
 class UnitsController < ApplicationController
-  cache_sweeper :unit_sweeper, :only => [:edit, :destroy]
-  
+  # cache_sweeper :unit_sweeper, :only => [:edit, :destroy]
+
   def index
     @units = Unit.all
   end
@@ -46,7 +46,7 @@ class UnitsController < ApplicationController
       end
     end
   end
-  
+
   private
   def load_singular_resource
     action = params[:action].to_sym
@@ -56,7 +56,7 @@ class UnitsController < ApplicationController
       # Don't load resource
     elsif [:new, :create].include?(action)
       @unit = Unit.new
-    else      
+    else
       raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
     end
   end

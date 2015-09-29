@@ -1,11 +1,11 @@
 class PackagesController < ApplicationController
-  cache_sweeper :package_sweeper, :only => [:create, :edit, :destroy]
+  # TODO: Redo caching
+  # cache_sweeper :package_sweeper, :only => [:create, :edit, :destroy]
 
   def index
     @package_branches = PackageBranch
                           .find_for_index(current_unit, current_environment)
                           .includes(:package_category, :unit, :packages => [:unit], :version_tracker => [:download_links])
-                          .uniq_by {|branch| branch.id }
     @environments = Environment.all
 
     respond_to do |format|

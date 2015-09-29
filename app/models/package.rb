@@ -33,7 +33,7 @@ class Package < ActiveRecord::Base
   after_initialize :init
 
   scope :recent, lambda {|u| where("created_at > ?", 7.days.ago).where(:unit_id => u).order("created_at DESC") }
-  scope :shared, where(:shared => true)
+  scope :shared, lambda { where(:shared => true) }
   scope :from_other_unit, lambda {|p| where("unit_id != ?", p.unit_id)}
   scope :has_greater_version, lambda {|p| where("version > ?", p.version)}
   scope :other, lambda{|p| where("id <> ?", p.id)}
@@ -242,14 +242,14 @@ class Package < ActiveRecord::Base
     a.each do |name|
       if split = name.match(/(.+)(-)(.+)/)
         # For packages
-        pb = PackageBranch.scoped
+        pb = PackageBranch.all
         pb = pb.unit(unit).environment(environment) if (unit.present? and environment.present?)
         pb = pb.where(:name => split[1]).limit(1).first
         p = Package.where(:package_branch_id => pb.id, :version => split[3]).first
         items << p unless p.nil?
       else
         # For package branches
-        pb = PackageBranch.scoped
+        pb = PackageBranch.all
         pb = pb.unit(unit).environment(environment) if (unit.present? and environment.present?)
         pb = pb.where(:name => name).limit(1).first
         items << pb unless pb.nil?

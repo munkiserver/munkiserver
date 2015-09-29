@@ -1,10 +1,9 @@
 /*
 *= require jquery
 *= require jquery_ujs
-*= require jquery.ui.all
+*= require jquery-ui
 *= require rails.validations
 *= require jquery.asmselect
-*= require jquery.autocomplete.min
 *= require jquery.lightbox_me
 *= require jquery-ui-timepicker-addon
 *= require codemirror/codemirror
@@ -135,7 +134,7 @@ $(document).ready(function() {
 	// affected pages including Computer, ComputerGroup, Bundles, Packages (only for environment ID)
 	// affect Computer only if change Unit ID
 	// animate during the ajax call
-	$("select.environment, select.unit").live('change', function(){
+	$("select.environment, select.unit").on('change', function(){
 	  $form = $(this).parents("form");
 	    if ($(this).attr("class") === "unit"){
 	        $modifiedElements = $form.find(".change_with_unit");
@@ -319,13 +318,13 @@ $(document).ready(function() {
 	})
 	
 	// trigger help message appear
-	$(".helpful_info").live('click', (function(e){
+	$(".helpful_info").on('click', (function(e){
 		$helpful_info_message = $(this).find(".helpful_info_message");
 		$helpful_info_message.css({"display":"inline","position":"absolute","top":e.pageYOffset,"left":e.pageXOffset,"max-width":"250px","margin":"0 0 0 50px"});
 		$helpful_info_message.hide();
 		$helpful_info_message.fadeIn("fast");
 	}))
-	$(".helpful_info").live('mouseout', (function() {
+	$(".helpful_info").on('mouseout', (function() {
 		$(this).find(".helpful_info_message").fadeOut("fast");
 	}));
 	
@@ -373,7 +372,7 @@ $(document).ready(function() {
     });
     
     // Remove membership links
-    $(".remove-membership").live("click",function() {
+    $(".remove-membership").on("click",function() {
       $(this).parents(".membership-container").first().remove();
       toggleMembershipPlaceholder();
       return false;
@@ -552,7 +551,7 @@ function toggleMembershipPlaceholder() {
 }
 
 function activateMoreInfoLinks() {
-  $(".more_info").live('click', (function(){
+  $(".more_info").on('click', (function(){
       $(this).parent().parent().find(".alert-message-body").slideToggle("fast");
       return false;
   }));
@@ -618,7 +617,7 @@ function initializeDatePicker(){
 
 // AJAX name search/filter, sorting, and pagination
 $(function() {
-  $("#computer_listing th a, #computer_listing .pagination a").live("click", function() {
+  $("#computer_listing th a, #computer_listing .pagination a").on("click", function() {
     $.getScript(this.href);
     return false;
   });

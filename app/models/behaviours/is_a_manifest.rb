@@ -9,7 +9,7 @@ module IsAManifest
 
     base.class_eval do
       validates :name, :presence => true, :unique_as_shortname => true
-      validates :shortname, :presence => true, :format => {:with => /^[a-z0-9-]+$/}
+      validates :shortname, :presence => true, :format => {:with => /\A[a-z0-9-]+\z/}
 
       # Bundles
       has_many :bundle_items, :as => :manifest, :dependent => :destroy
@@ -25,7 +25,7 @@ module IsAManifest
       # Optional Install items
       has_many :optional_install_items, :as => :manifest, :dependent => :destroy
 
-      scope :eager_items, includes(item_includes)
+      scope :eager_items, -> { includes(item_includes) }
     end
   end
 

@@ -5,7 +5,7 @@ class ComputersController < ApplicationController
 
   def index
     # Default to scoped (i.e. sorted)
-    @computers = Computer.scoped
+    @computers = Computer.all
     @computers = Computer.unscoped if params[:sort] # But don't scope if sorting
 
     # Search for value on name OR hostname OR mac_address attributes

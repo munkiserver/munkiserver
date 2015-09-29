@@ -83,7 +83,7 @@
 
 				if(options.sortable) makeSortable();
 
-				if(jQuery.browser.msie && jQuery.browser.version < 8) jQueryol.css('display', 'inline-block'); // Thanks Matthew Hutton
+				// if(jQuery.browser.msie && jQuery.browser.version < 8) jQueryol.css('display', 'inline-block'); // Thanks Matthew Hutton
 			}
 
 			function makeSortable() {
@@ -122,7 +122,7 @@
 				// an item has been selected on the regular select we created
 				// check to make sure it's not an IE screwup, and add it to the list
 
-				if(jQuery.browser.msie && jQuery.browser.version < 7 && !ieClick) return;
+				// if(jQuery.browser.msie && jQuery.browser.version < 7 && !ieClick) return;
 				var id = jQuery(this).children("option:selected").slice(0,1).attr('rel'); 
 				addListItem(id); 	
 				ieClick = false; 
@@ -154,7 +154,7 @@
 
 				// opera has an issue where it needs a force redraw, otherwise
 				// the items won't appear until something else forces a redraw
-				if(jQuery.browser.opera) jQueryol.hide().fadeIn("fast");
+				// if(jQuery.browser.opera) jQueryol.hide().fadeIn("fast");
 			}
 
 			function buildSelect() {
@@ -223,7 +223,7 @@
 					.attr("disabled", true);
 
 				if(options.hideWhenAdded) jQueryoption.hide();
-				if(jQuery.browser.msie) jQueryselect.hide().show(); // this forces IE to update display
+				// if(jQuery.browser.msie) jQueryselect.hide().show(); // this forces IE to update display
 			}
 
 			function enableSelectOption(jQueryoption) {
@@ -234,7 +234,7 @@
 					.attr("disabled", false);
 
 				if(options.hideWhenAdded) jQueryoption.show();
-				if(jQuery.browser.msie) jQueryselect.hide().show(); // this forces IE to update display
+				// if(jQuery.browser.msie) jQueryselect.hide().show(); // this forces IE to update display
 			}
 
 			function addListItem(optionId) {

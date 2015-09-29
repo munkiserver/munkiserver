@@ -21,7 +21,7 @@ class Warranty < ActiveRecord::Base
   belongs_to :computer
   has_many :notifications, :as => :notified
 
-  validates_format_of :serial_number, :with => /^[a-zA-Z0-9]+$/
+  validates_format_of :serial_number, :with => /\A[a-zA-Z0-9]+\z/
 
   scope :expire_after, lambda {|time| where("hw_coverage_end_date > ?", time)}
   scope :expire_before, lambda {|time| where("hw_coverage_end_date < ?", time)}
@@ -55,7 +55,7 @@ class Warranty < ActiveRecord::Base
       # POST data and get the response
       response      = http.request(request)
       response_data = response.body
-      
+
     rescue URI::Error
       computer = Computer.where(:serial_number => serial)
       Rails.logger.error "Invalid serial number #{serial} for computer #{computer}"

@@ -2,11 +2,11 @@ class ComputerGroup < ActiveRecord::Base
   include IsAManifest
   include HasAUnit
   include HasAnEnvironment
-  
+
   has_many :computers
-  
-  default_scope order(:name, :environment_id)
-  
+
+  default_scope { order(:name, :environment_id) }
+
   # Tabled ASM select hash for adding computers to the group
   def computers_tas(environment_id = nil)
     # Get all the package branches associated with this unit and environment
@@ -24,7 +24,7 @@ class ComputerGroup < ActiveRecord::Base
       :options => computer_options,
       :selected_options => self.computer_ids }]
   end
-  
+
   # Reture a list of computer groups that are blong to the unit and environment
   def self.unit_and_environment(unit,environment_id)
     environment = Environment.find(environment_id)

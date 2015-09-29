@@ -8,10 +8,7 @@ class User < ActiveRecord::Base
   validates_presence_of :password, :password_confirmation, :if => :password_changed?
   validates_uniqueness_of :username, :email
   validates_confirmation_of :password, :if => :password_changed?
-  validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "address doesn't look valid"
-  
-  attr_protected :id, :salt
-  attr_accessor :password
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :message => "address doesn't look valid"
 
   has_many :user_group_memberships, :as => :principal
   has_many :groups, :through => :user_group_memberships, :source => :user_group
@@ -21,11 +18,11 @@ class User < ActiveRecord::Base
   has_one :settings, :dependent => :destroy, :class_name => "UserSetting", :autosave => true
 
   before_save :check_settings
-  
+
   include Principal
-  
-  default_scope order(:username)
-  
+
+  default_scope { order(:username) }
+
   # Generate a random string consisting of strings and digits
   # with a length of up to len characters
   def self.random_string(len)
@@ -34,83 +31,83 @@ class User < ActiveRecord::Base
     1.upto(len) { |i| s << c[rand(c.size-1)] }
     return s
   end
-  
+
   # Combine the pass and salt and return an encrypted string
   def self.encrypt(pass, salt)
     Digest::SHA1.hexdigest(pass + salt)
   end
-  
+
   # Did the password change since our last save?
   def password_changed?
     hashed_password_changed?
   end
-  
+
   def password=(pass)
     @password = pass
-    unless @password.blank?  
+    unless @password.blank?
       self.salt = User.random_string(10) unless self.salt?
       self.hashed_password = User.encrypt(@password, self.salt)
     end
   end
-  
+
   def self.authenticate(username, pass)
     u = find_by_username(username)
     return u if (u != nil) and (User.encrypt(pass, u.salt) == u.hashed_password)
   end
-  
+
   # A to string method
   def to_s(style = nil)
     username
   end
-  
+
   # Checks if a unit has a settings association
   # and creates on if it doesn't
   def check_settings
     init_settings if settings.nil?
   end
-  
+
   # Initialize default settings
   def init_settings
     us = UserSetting.new
     self.settings = us
   end
-  
+
   # over write default to_param use name in the routing instead of id
   def to_param
     username
   end
-  
+
   def all_permissions
     groups.map(&:permissions).flatten(1) + permissions
   end
-  
+
   # Returns units through permission association.  Couldn't get finder_sql
   # to work, so I added a custom method instead.
   def units
     if is_root?
       Unit.all
     else
-      scope = Unit.scoped
+      scope = Unit.all
       scope = scope.joins("INNER JOIN permissions ON permissions.unit_id = units.id")
       scope = scope.where("(permissions.principal_id = ? AND permissions.principal_type = 'User')
-        OR (permissions.principal_id IN (?) AND permissions.principal_type = 'UserGroup')", 
-        id, group_ids).uniq   
+        OR (permissions.principal_id IN (?) AND permissions.principal_type = 'UserGroup')",
+        id, group_ids).uniq
     end
   end
-  
+
   # Could be refactored to be more efficient
   def unit_ids
     units.map(&:id)
   end
-  
+
   def is_root?
     username == "root"
   end
-  
+
   def name
     username
   end
-  
+
   # Virtual attribute to settings
   def email_notifications
     if settings.present?
@@ -119,13 +116,13 @@ class User < ActiveRecord::Base
       false
     end
   end
-  
+
   # Virtual attribute to settings
   def email_notifications=(value)
     check_settings
     settings.receive_email_notifications = value
   end
-  
+
   # Returns an array of unit IDs that the user has permission to read.
   # Used to retrieve the unit records for the PermissionsController index.
   def permission_unit_ids
