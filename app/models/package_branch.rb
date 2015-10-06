@@ -16,8 +16,8 @@ class PackageBranch < ActiveRecord::Base
   has_many :require_items, :dependent => :destroy
   has_many :update_for_items, :dependent => :destroy
   has_many :notifications, :as => :notified
-  has_many :packages # TODO, :order => "version DESC", :dependent => :destroy
-  has_many :shared_packages, :class_name => "Package"# TODO, :conditions => {:shared => true}
+  has_many :packages, -> { order(version: :desc) }, :dependent => :destroy
+  has_many :shared_packages, -> { where(:shared => true) }, :class_name => "Package"
   has_one :version_tracker, :dependent => :destroy, :autosave => true
 
   belongs_to :package_category
@@ -26,7 +26,7 @@ class PackageBranch < ActiveRecord::Base
   scope :environment, lambda {|env| joins(:packages).where(:packages => {:environment_id => env.id}).uniq }
   scope :has_versions, lambda { where('(SELECT COUNT(*) FROM `packages` WHERE `packages`.`package_branch_id` = `package_branches`.`id`) > 0') }
   scope :has_no_versions, lambda { where('(SELECT COUNT(*) FROM `packages` WHERE `packages`.`package_branch_id` = `package_branches`.`id`) = 0') }
-  scope :shared, lambda { includes(:packages).where("packages.shared" => true) }
+  scope :shared, lambda { includes(:packages).where(packages: { shared: true}) }
 
   # Conforms a string to the package branch name constraints
   # => Replaces anything that are not alpheranumrical to underscores
@@ -115,13 +115,13 @@ class PackageBranch < ActiveRecord::Base
     p = p.where(:id => id) unless id.nil?
 
     # Limiting scope to that of unit_member or current scope (defined by unit_id and environment_id)
-    if unit_member != nil
-      p = p.where(:environment_id => unit_member.environment_id)
-      p = p.where(:unit_id => unit_member.unit_id)
-    elsif scoped?
-      p = p.where(:environment_id => @environment_id)
-      p = p.where(:unit_id => @unit_id)
-    end
+    # if unit_member != nil
+    #   p = p.where(:environment_id => unit_member.environment_id)
+    #   p = p.where(:unit_id => unit_member.unit_id)
+    # elsif scoped?
+    #   p = p.where(:environment_id => @environment_id)
+    #   p = p.where(:unit_id => @unit_id)
+    # end
     p.first
   end
 

@@ -43,7 +43,8 @@ class ComputersController < ApplicationController
 
   def create
     # Recreating a new computer object instead of using the one we already created in load_singular_resource
-    @computer = Computer.new(params[:computer].merge({:unit_id => current_unit.id}))
+    # @computer = Computer.new(params[:computer].merge({:unit_id => current_unit.id}))
+    @computer = Computer.new(computer_params)
 
     respond_to do |format|
       if @computer.save
@@ -101,7 +102,7 @@ class ComputersController < ApplicationController
 
   def update
     respond_to do |format|
-      if @computer.update_attributes(params[:computer])
+      if @computer.update_attributes(computer_params)
         flash[:notice] = "#{@computer.name} was successfully updated."
         format.html { redirect_to computer_path(@computer.unit, @computer) }
       else
@@ -131,7 +132,7 @@ class ComputersController < ApplicationController
   # the user what went wrong (by print the computer.errors hash)
   def create_import
     begin
-      @computers = ComputerService.import(params[:computer],current_unit)
+      @computers = ComputerService.import(computer_params,current_unit)
     rescue NoMethodError
       e = "Please select a plist file"
     rescue => e
@@ -287,5 +288,27 @@ class ComputersController < ApplicationController
   # Helper method to minimize errors and SQL injection attacks
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+
+  def computer_params
+    params.require(:computer).permit(
+      :commit,
+      :computer_group_id,
+      :computer_model_id,
+      :configuration_id,
+      :description,
+      :environment_id,
+      :hostname,
+      :mac_address,
+      :name,
+      :raw_mode,
+      :raw_tags,
+      :system_profiler_info,
+      :unit_id,
+      :unit_shortname,
+      :installs,
+      :uninstalls,
+      :optional_installs
+    )
   end
 end

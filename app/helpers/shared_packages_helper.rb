@@ -1,5 +1,5 @@
 module SharedPackagesHelper
-	def shared_package_table(branches)
+  def shared_package_table(branches)
     render :partial => 'shared_package_table', :locals => {:branches => branches}
   end
   # count the number of shared packages within a given unit

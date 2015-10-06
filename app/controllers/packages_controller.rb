@@ -155,7 +155,7 @@ class PackagesController < ApplicationController
   end
 
   def index_shared
-    @branches = PackageBranch.not_unit(current_unit).shared.includes(:shared_packages)
+    @branches = PackageBranch.not_unit(current_unit).shared
     @grouped_branches = @branches.group_by {|branch| branch.unit }
   end
 
