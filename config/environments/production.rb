@@ -32,11 +32,11 @@ Munki::Application.configure do
 
   # Enable threaded mode
   # config.threadsafe!
-  
+
   config.assets.compress = true
   config.assets.compile = true
   config.assets.digest = true
-  
+
   # Move me to config file
   webserver = "nginx"
   if webserver == "nginx"
@@ -44,6 +44,5 @@ Munki::Application.configure do
   else
     config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for apache
   end
-  
-  config.cache_store = :dalli_store, 'localhost', {compress: true, value_max_bytes: 5.megabytes }
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
 end
