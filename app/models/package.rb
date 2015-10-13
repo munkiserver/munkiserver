@@ -7,7 +7,7 @@ class Package < ActiveRecord::Base
   include HasAnIcon
 
   # Dependancy relationships
-  belongs_to :package_branch
+  belongs_to :package_branch, :touch => true
   belongs_to :icon
 
   has_many :dependents, :class_name => "RequireItem", :dependent => :destroy
