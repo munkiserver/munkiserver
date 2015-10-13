@@ -177,7 +177,6 @@ GEM
       redis-store (~> 1.1.4)
     redis-store (1.1.6)
       redis (>= 2.2)
-    ref (1.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec-core (2.13.1)
