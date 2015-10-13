@@ -10,12 +10,10 @@
     <%= render :partial => "packages/package_version_column", :locals => {:pkg => packages.first} %>
   </tr>
   <% packages.each_with_index do |package, i| %>
-    <% cache(package) do %>
-      <% unless i == 0 %>
-        <tr>
-          <%= render :partial => 'packages/package_version_column', :locals => {:pkg => package} %>
-        </tr>
-      <% end %>
-    <% end %>
+  <% unless i == 0 %>
+  <tr>
+    <%= render :partial => 'packages/package_version_column', :locals => {:pkg => package} %>
+  </tr>
+  <% end %>
   <% end %>
 <% end %>
