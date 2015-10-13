@@ -97,7 +97,6 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.8.0)
-    libv8 (3.16.14.7)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -162,7 +161,6 @@ GEM
     rake (10.0.4)
     rdoc (3.12.2)
       json (~> 1.4)
-    ref (1.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec-core (2.13.1)
@@ -211,9 +209,6 @@ GEM
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
     textmate_backtracer (1.0.0)
-    therubyracer (0.12.2)
-      libv8 (~> 3.16.14.0)
-      ref
     thor (0.18.1)
     tilt (1.4.1)
     treetop (1.4.14)
@@ -272,7 +267,6 @@ DEPENDENCIES
   sqlite3-ruby
   taps
   textmate_backtracer
-  therubyracer
   uglifier
   vcr (~> 2.4.0)
   version_sorter
