@@ -14,6 +14,7 @@ gem 'whenever'
 gem 'plist'
 gem 'cancan'
 gem 'highline'
+gem 'open_uri_redirections'
 
 gem 'mysql2', '~> 0.4'
 
