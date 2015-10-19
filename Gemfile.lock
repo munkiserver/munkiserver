@@ -271,7 +271,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   meta_request
-  mysql2 (> 0.3)
+  mysql2 (~> 0.4)
   nokogiri
   paperclip
   plist
