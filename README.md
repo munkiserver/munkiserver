@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Munkiserver/munkiserver.svg)](https://travis-ci.org/Munkiserver/munkiserver)
+[![Build Status](https://travis-ci.org/munkiserver/munkiserver.svg)](https://travis-ci.org/munkiserver/munkiserver)
 [![Coverage Status](https://coveralls.io/repos/munkiserver/munkiserver/badge.png)](https://coveralls.io/r/munkiserver/munkiserver)
 
 
