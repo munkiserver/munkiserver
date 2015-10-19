@@ -4,8 +4,10 @@ rvm:
   - 2.2.2
 
 services:
-  - mysql
   - redis-server
+
+env:
+  - DB=mysql
 
 script:
   - bundle exec rake db:migrate --trace
