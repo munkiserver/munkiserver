@@ -51,6 +51,10 @@ group :assets do
   gem 'uglifier'
 end
 
+group :travis do
+  gem 'activerecord-mysql2-adapter'
+end
+
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
