@@ -16,7 +16,6 @@ gem 'cancan'
 gem 'highline'
 
 gem 'mysql2', '~> 0.4'
-gem 'taps'
 
 gem 'highcharts-rails', '~> 2.1.9'
 gem 'dynamic_form' # enabling this should allow the removal of vendor/dynamic_form
@@ -30,7 +29,6 @@ gem 'rack-timeout'
 
 group :development do
   gem 'rails-erd'
-  gem 'textmate_backtracer'
   gem 'pry-rails'
   gem 'meta_request'
   gem 'bullet'
