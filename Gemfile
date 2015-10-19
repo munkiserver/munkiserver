@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'version_sorter'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.22'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
@@ -37,6 +37,7 @@ group :development do
 end
 
 group :test do
+  gem 'test-unit'
   gem 'rspec-rails', '~> 2.13'
   gem 'factory_girl', '~> 3.3.0'
   gem 'capybara', '~> 1.1.2'
