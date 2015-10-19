@@ -1,23 +1,7 @@
-sqlite: &sqlite
-  adapteer: sqlite3
-  database: db/munkiserver_<%= Rails.env %>.sqlite3
-
-mysql: &mysql
+test:
   adapter:  mysql2
-  username: root
+  username: travis
+  encoding: utf8
   database: munkiserver_<%= Rails.env %>
-
-postgresql: &postgresql
-  adapter:  postgresql
-  username: postgres
-  database: munkiserver_<%= Rails.env %>
-  min_messages: ERROR
-
-defaults: &defaults
   pool: 16
   timeout:  5000
-  host: localhost
-  <<: *<%= "#{ENV['DB']}" || "mysql" %>
-
-test:
-  <<: *defaults
