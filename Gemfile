@@ -16,7 +16,7 @@ gem 'cancan'
 gem 'highline'
 gem 'open_uri_redirections'
 
-gem 'mysql2', '~> 0.4'
+gem 'mysql2', '~> 0.3.20'
 
 gem 'highcharts-rails', '~> 2.1.9'
 gem 'dynamic_form' # enabling this should allow the removal of vendor/dynamic_form
@@ -48,10 +48,6 @@ group :assets do
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'uglifier'
-end
-
-group :travis do
-  gem 'activerecord-mysql2-adapter'
 end
 
 gem 'jquery-rails'
