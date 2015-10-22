@@ -438,7 +438,7 @@ class Package < ActiveRecord::Base
     environment_id ||= model_obj.environment_id
     environment = Environment.find(environment_id)
     # Get all the package branches associated with this unit and environment
-    update_for_options = PackageBranch.where("id <> ?", model_obj.package_branch.id).unit_and_environment(model_obj.unit, environment).select { |e| e.name != model_obj.name }.map { |e| [e.to_s,e.to_s] }
+    update_for_options = PackageBranch.where("id <> ?", model_obj.package_branch.id).unit_and_environment(model_obj.unit, environment).reject { |e| e.name == model_obj.name }.map { |e| [e.to_s,e.to_s] }
     update_for_selected = model_obj.update_for.map(&:package_branch).map(&:to_s)
     requires_options = Package.unit(model_obj.unit).environment(environment).where("id != #{model_obj.id}").map { |e| [e.to_s(:version),e.to_s(:version)] }.sort{|a,b| a[0] <=> b[0]}
     requires_selected = model_obj.require_items.map(&:package).map {|e| e.to_s(:version) }
