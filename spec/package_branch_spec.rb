@@ -5,11 +5,11 @@ describe PackageBranch do
     module VersionTracker::Backgrounder
       def call_rake(*args)
       end
-      
+
       extend self
     end
   end
-  
+
   describe "#version_tracker_web_id" do
     it "returns the web ID of the associated version tracker", :vcr do
       branch = FactoryGirl.create(:package_branch)
@@ -17,7 +17,7 @@ describe PackageBranch do
       branch.version_tracker_web_id.should == 10700
     end
   end
-  
+
   describe "#version_tracker_web_id=" do
     it "sets the web ID of the associated version tracker", :vcr do
       branch = FactoryGirl.create(:package_branch)
@@ -26,7 +26,7 @@ describe PackageBranch do
       branch.version_tracker_web_id.should == 100
     end
   end
-  
+
   describe ".shared" do
     it "returns package branch records with associated package records with sharing enabled" do
       branch1 = FactoryGirl.create(:package_branch)
@@ -34,12 +34,12 @@ describe PackageBranch do
       shared_package = FactoryGirl.create(:package, :package_branch_id => branch1.id, :shared => true)
       package = FactoryGirl.create(:package, :package_branch_id => branch2.id)
       shared_branches = PackageBranch.shared
-      
+
       shared_branches.count.should == 1
-      shared_branches.first.id.should == shared_package.id
+      shared_branches.first.id.should == shared_package.package_branch_id
     end
   end
-  
+
   describe ".shared_packages" do
     it "returns associated package records that are shared" do
       branch = FactoryGirl.create(:package_branch)
