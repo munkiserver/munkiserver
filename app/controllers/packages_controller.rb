@@ -155,8 +155,7 @@ class PackagesController < ApplicationController
   end
 
   def index_shared
-    @branches = PackageBranch.not_unit(current_unit).shared.includes(:shared_packages)
-    @grouped_branches = @branches.group_by {|branch| branch.unit }
+    @branches = PackageBranch.not_unit(current_unit).shared.includes(:shared_packages).find(:all, :joins => :packages, :order => 'packages.updated_at DESC')
   end
 
   # Import shared packages from another unit
