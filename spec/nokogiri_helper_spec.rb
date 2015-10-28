@@ -13,27 +13,27 @@ describe NokogiriHelper, :vcr do
         NokogiriHelper.page("https://www.macupdate.com/app/mac/10700").title.should match("Firefox")
       end
     end
-    
+
     context "given an unescaped URL" do
       it "returns a nokogiri document" do
-        NokogiriHelper.page("https://www.macupdate.com/find/mac/A term that has no results").title.should match("Search for")
+        NokogiriHelper.page("https://www.macupdate.com/find/mac/A term that has no results").title.should match("MacUpdate: Find")
       end
     end
-    
+
     context "given problematic URLs" do
       it "returns a NullObject" do
         NokogiriHelper.page("http://www.google.com/does/not/exist/returns/404").should be_nil # 404s
       end
     end
   end
-  
+
   describe "redirect_url" do
     context "given a URL with a redirect" do
       it "returns a URL" do
-        NokogiriHelper.redirect_url("https://www.macupdate.com/app/mac/10700").should == "https://macupdate.com/app/mac/10700/firefox"
+        NokogiriHelper.redirect_url("https://www.macupdate.com/app/mac/10700").should == "http://www.macupdate.com/app/mac/10700/firefox"
       end
     end
-    
+
     context "given a URL with no redirect" do
       it "returns nil" do
         NokogiriHelper.redirect_url("https://www.macupdate.com/app/mac/10700/firefox").should be_nil

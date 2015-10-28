@@ -7,6 +7,9 @@
     <%= branch.display_name %><br />
     <em><%= branch.name %></em>
   </td>
+  <td rowspan="<%= packages.count %>">
+    <%= branch.unit.name %>
+  </td>
   <%= render :partial => 'shared_package_version_column', :locals => {:package => packages.first} %>
   <td rowspan="<%= packages.count %>" class="centerize">
   </td>

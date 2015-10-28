@@ -1,9 +1,9 @@
 # Edit this Gemfile to bundle your application's dependencies.
-source 'http://gemcutter.org'
+source 'https://rubygems.org'
 
 gem 'version_sorter'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.22'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
@@ -14,9 +14,9 @@ gem 'whenever'
 gem 'plist'
 gem 'cancan'
 gem 'highline'
+gem 'open_uri_redirections'
 
-gem 'mysql2', '> 0.3'
-gem 'taps'
+gem 'mysql2', '~> 0.3.20'
 
 gem 'highcharts-rails', '~> 2.1.9'
 gem 'dynamic_form' # enabling this should allow the removal of vendor/dynamic_form
@@ -30,13 +30,13 @@ gem 'rack-timeout'
 
 group :development do
   gem 'rails-erd'
-  gem 'textmate_backtracer'
   gem 'pry-rails'
   gem 'meta_request'
   gem 'bullet'
 end
 
 group :test do
+  gem 'test-unit'
   gem 'rspec-rails', '~> 2.13'
   gem 'factory_girl', '~> 3.3.0'
   gem 'capybara', '~> 1.1.2'

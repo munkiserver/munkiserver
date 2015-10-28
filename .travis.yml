@@ -1,19 +1,22 @@
 language: ruby
 rvm:
   - 1.9.3
-  - 1.9.2
-  - 2.0.0
+  - 2.2.2
 
-# services: mysql
+services:
+  - redis-server
 
-script: 
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
+env:
+  - DB=mysql
+
+script:
+  - bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
   - bundle exec rspec spec/
 
 before_script:
   - cp config/database.travis.yml config/database.yml
-# - mysql -e 'create database munkiserver;'
+  - mysql -e 'create database munkiserver_test;'
 
 notifications:
   email:
