@@ -11,12 +11,12 @@
 		<% sorted_packages = VersionSorter.sort(packages_by_version.keys).map { |v| packages_by_version[v] }.flatten %>
 		<% sorted_packages.each do |p| %>
 			<% if p.version == bold_info %>
-				<strong><%= p.version %></strong>
+				<strong class="package-edit-version"><%= p.version %></strong>
 			<% else %>
 				<% if editable %>
-					<strong><%= link_to "#{p.version}", edit_package_path(p.to_params) %></strong>
+					<strong class="package-edit-version"><%= link_to "#{p.version}", edit_package_path(p.to_params) %></strong>
 				<% else %>
-					<strong><%= link_to "#{p.version}", package_path(p.to_params) %></strong>
+					<strong class="package-edit-version"><%= link_to "#{p.version}", package_path(p.to_params) %></strong>
 				<% end %>
 			<% end %>
 		<% end %>
