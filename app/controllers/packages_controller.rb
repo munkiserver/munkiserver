@@ -157,7 +157,7 @@ class PackagesController < ApplicationController
   def index_shared
     @branches = PackageBranch.not_unit(current_unit).shared.paginate(
       :page => params[:page],
-      :per_page => 20
+      :per_page => params[:per_page] || 20
     ).includes(:shared_packages, :unit, :packages => [:require_items, :update_for_items]).find(:all, :joins => :packages, :order => 'packages.updated_at DESC')
   end
 
