@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VersionTracker, :vcr do
   let(:firefox_page) { NokogiriHelper.page("https://www.macupdate.com/app/mac/10700/firefox") }
   let(:google_page) { NokogiriHelper.page("http://www.google.com") }
-  
+
   describe "#fetch_data" do
     context "given a package branch with a perfect macupdate.com page" do
       it "fetches and assigns all kinds of stuff" do
@@ -11,7 +11,7 @@ describe VersionTracker, :vcr do
         tracker = VersionTracker.new do |vt|
           vt.package_branch = branch
         end
-        
+
         tracker.fetch_data
         [:icon, :description, :version, :download_links].each do |method_name|
           tracker.send(method_name).should be_present, "expected #{method_name} to be present"
@@ -19,7 +19,7 @@ describe VersionTracker, :vcr do
       end
     end
   end
-  
+
   describe "#retrieve_web_id" do
     context "given a package branch name with results on macupdate.com" do
       it "returns a web ID" do
@@ -30,10 +30,10 @@ describe VersionTracker, :vcr do
         version_tracker.retrieve_web_id.should == 10700
       end
     end
-    
+
     context "given a package branch name with no results on macupdate.com" do
       it "returns nil" do
-        branch = FactoryGirl.create(:package_branch, :display_name => "abcd")
+        branch = FactoryGirl.create(:package_branch, :display_name => "some-really-long-name-that-i-hope-no-one-uses")
         version_tracker = VersionTracker.new do |vt|
           vt.package_branch = branch
         end
@@ -41,7 +41,7 @@ describe VersionTracker, :vcr do
       end
     end
   end
-  
+
   describe "#scrape_data" do
     context "given a page with version and description" do
       it "scrapes data from macupdate.com and returns hash" do
@@ -50,7 +50,7 @@ describe VersionTracker, :vcr do
         data[:description].should be_present
       end
     end
-    
+
     context "given a page without version or description" do
       it "scrapes data from macupdate.com and returns hash" do
         data = VersionTracker.new.scrape_data(google_page)
@@ -59,7 +59,7 @@ describe VersionTracker, :vcr do
       end
     end
   end
-  
+
   describe "#scrape_download_links" do
     context "given a page with download links" do
       it "scrapes download link elements and returns an array of unsaved DownloadLink objects" do
@@ -68,7 +68,7 @@ describe VersionTracker, :vcr do
         download_links.first.should be_new_record
       end
     end
-    
+
     context "given a page without download links" do
       it "returns an empty array" do
         version_tracker = VersionTracker.new
@@ -77,7 +77,7 @@ describe VersionTracker, :vcr do
       end
     end
   end
-  
+
   describe "#scrape_icon" do
     context "given a page with an icon" do
       it "returns a saved icon" do
@@ -86,7 +86,7 @@ describe VersionTracker, :vcr do
         icon.should_not be_new_record
       end
     end
-    
+
     context "given a page with no icon" do
       it "returns nil" do
         VersionTracker.new.scrape_icon(google_page).should be_nil
