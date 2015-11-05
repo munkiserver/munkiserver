@@ -44,6 +44,23 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
+    celluloid (0.17.2)
+      celluloid-essentials
+      celluloid-extras
+      celluloid-fsm
+      celluloid-pool
+      celluloid-supervision
+      timers (>= 4.1.1)
+    celluloid-essentials (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-extras (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-fsm (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-pool (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-supervision (0.20.5)
+      timers (>= 4.1.1)
     childprocess (0.3.9)
       ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
@@ -61,6 +78,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    connection_pool (2.2.0)
     coveralls (0.8.3)
       json (~> 1.8)
       rest-client (>= 1.6.8, < 2)
@@ -85,6 +103,7 @@ GEM
       railties (~> 3.1)
     highline (1.6.19)
     hike (1.2.3)
+    hitimes (1.2.3)
     i18n (0.7.0)
     journey (1.0.4)
     jquery-rails (2.0.3)
@@ -166,6 +185,8 @@ GEM
     redis-activesupport (3.2.5)
       activesupport (~> 3.2.0)
       redis-store (~> 1.1.0)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     redis-rack (1.4.4)
       rack (~> 1.4.0)
       redis-store (~> 1.1.4)
@@ -201,6 +222,12 @@ GEM
       multi_json (~> 1.0)
       rubyzip
       websocket (~> 1.0.4)
+    sidekiq (3.5.3)
+      celluloid (~> 0.17.2)
+      connection_pool (~> 2.2, >= 2.2.0)
+      json (~> 1.0)
+      redis (~> 3.2, >= 3.2.1)
+      redis-namespace (~> 1.5, >= 1.5.2)
     simplecov (0.10.0)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -221,6 +248,8 @@ GEM
       power_assert
     thor (0.19.1)
     tilt (1.4.1)
+    timers (4.1.1)
+      hitimes
     tins (1.6.0)
     treetop (1.4.15)
       polyglot
@@ -276,6 +305,7 @@ DEPENDENCIES
   redis-rails
   rspec-rails (~> 2.13)
   sass-rails
+  sidekiq
   sqlite3-ruby
   test-unit
   uglifier

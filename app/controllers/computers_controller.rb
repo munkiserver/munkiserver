@@ -194,17 +194,19 @@ class ComputersController < ApplicationController
   end
 
   def update_multiple
-    @computers = Computer.where(id: params[:selected_records])
     p = params[:computer]
     results = []
     exceptionMessage = nil
 
     if params[:commit] == 'Delete'
-      destroyed_computers = @computers.destroy_all
-      redirect_to computers_path, :flash => { :notice => "All #{destroyed_computers.length} selected computer records were successfully deleted." }
+      params[:selected_records].each do |id|
+        DeleteComputerWorker.perform_async id
+      end
+      redirect_to computers_path, :flash => { :notice => "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
       return
     end
 
+    @computers = Computer.where(id: params[:selected_records])
     begin
       results = Computer.bulk_update_attributes(@computers, p)
     rescue ComputerError => e

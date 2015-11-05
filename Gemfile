@@ -28,6 +28,8 @@ gem 'coveralls', require: false
 gem 'dotenv-rails'
 gem 'rack-timeout'
 
+gem 'sidekiq'
+
 group :development do
   gem 'rails-erd'
 
