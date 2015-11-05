@@ -30,7 +30,7 @@ gem 'rack-timeout'
 
 group :development do
   gem 'rails-erd'
-  gem 'pry-rails'
+
   gem 'meta_request'
   gem 'bullet'
 end
@@ -49,6 +49,8 @@ group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
 end
+
+gem 'pry-rails', :group => [:development, :test]
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
