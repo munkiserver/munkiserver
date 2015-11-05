@@ -194,21 +194,14 @@ class ComputersController < ApplicationController
   end
 
   def update_multiple
-    @computers = Computer.find(params[:selected_records])
+    @computers = Computer.where(id: params[:selected_records])
     p = params[:computer]
     results = []
     exceptionMessage = nil
 
     if params[:commit] == 'Delete'
-      computercount = params[:selected_records].length
-      params[:selected_records].each do |computer|
-        @computers = Computer.where(:id => params[:selected_records])
-        @computers.each do |this|
-          # results = this.destroy
-          this.destroy
-        end
-      end
-      redirect_to computers_path, :flash => { :notice => "All #{computercount} selected computer records were successfully deleted." }
+      destroyed_computers = @computers.destroy_all
+      redirect_to computers_path, :flash => { :notice => "All #{destroyed_computers.length} selected computer records were successfully deleted." }
       return
     end
 
