@@ -29,6 +29,7 @@ gem 'dotenv-rails'
 gem 'rack-timeout'
 
 gem 'sidekiq'
+gem 'database_cleaner'
 
 group :development do
   gem 'rails-erd'

@@ -1,6 +1,6 @@
 FactoryGirl.define do
-  factory :computer do
-    name "Munki client test"
+  factory :computer do |n|
+    sequence(:name) { |n| "Munki clinet test #{n}" }
     shortname { name.downcase.lstrip.rstrip.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/,'') }
     mac_address
     environment
