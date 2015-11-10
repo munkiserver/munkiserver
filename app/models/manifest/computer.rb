@@ -3,6 +3,7 @@ class Computer < ActiveRecord::Base
   include HasAUnit
   include HasAnEnvironment
   include HasAnIcon
+  include IsAsyncDestroyable
   
   belongs_to :computer_model
   belongs_to :computer_group
