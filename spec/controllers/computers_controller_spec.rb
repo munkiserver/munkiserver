@@ -2,10 +2,18 @@ require 'spec_helper'
 require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
-describe ComputersController do
-  describe "update_multiple" do
-    computers = FactoryGirl.create_list(:computer, 10)
-    put :update_multiple, :selected_records => computers.map(&:id)
-    expect_any_instance_of(Computer).to receive(:async_destroy)
+describe ComputersController, :type => :controller do
+  before do
+    allow(controller).to receive_messages(:current_user => double(:user, :id => 1))
+  end
+
+  it "should work when you update_multiple" do
+    
+    unit = FactoryGirl.create(:unit)
+    computers = FactoryGirl.create_list(:computer, 10, :unit => unit)
+    computer_ids = computers.map(&:id)
+    put :update_multiple, :unit_shortname => unit.shortname, :selected_records => computer_ids, :commit => 'Delete'
+    expect(response).to redirect_to computers_path
+    expect(Computer.count).to eq(0)
   end
 end

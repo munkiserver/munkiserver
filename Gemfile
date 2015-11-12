@@ -45,6 +45,7 @@ group :test do
   gem 'capybara', '~> 1.1.2'
   gem 'vcr', '~> 2.4.0'
   gem 'webmock', '~> 1.8.7'
+  gem 'faker'
 end
 
 group :assets do

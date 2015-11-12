@@ -1,8 +1,7 @@
 FactoryGirl.define do
-  factory :computer do |n|
-    sequence(:name) { |n| "Munki clinet test #{n}" }
-    shortname { name.downcase.lstrip.rstrip.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/,'') }
-    mac_address
+  factory :computer do
+    sequence(:name) { |n| "#{Faker::Book.title} #{n}" }
+    mac_address  { Faker::Internet.mac_address }
     environment
     unit
   end
@@ -13,8 +12,7 @@ FactoryGirl.define do
   end
   
   factory :unit do
-    sequence(:name) {|n| "Unit #{n}" }
-    shortname { name.downcase.lstrip.rstrip.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/,'') }
+    sequence(:name) { |n| "#{Faker::Book.title} #{n}" }
     description "Factory-made unit"
   end
   

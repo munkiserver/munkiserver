@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150910143246) do
+ActiveRecord::Schema.define(:version => 20151112150839) do
 
   create_table "bundle_items", :force => true do |t|
     t.integer  "manifest_id"
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20150910143246) do
     t.string   "shortname"
     t.datetime "last_report_at"
     t.string   "last_ip",              :default => ""
+    t.datetime "deleted_at"
   end
 
   create_table "configurations", :force => true do |t|

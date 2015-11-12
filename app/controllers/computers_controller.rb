@@ -197,8 +197,12 @@ class ComputersController < ApplicationController
     p = params[:computer]
     results = []
     exceptionMessage = nil
+    puts '-'*100
+    puts 'update_multiple'
 
     if params[:commit] == 'Delete'
+      puts '-'*100
+      puts 'update_multiple: Delete'
       @computers.each(&:async_destroy)
       redirect_to computers_path, :flash => { :notice => "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
       return

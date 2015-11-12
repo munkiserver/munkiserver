@@ -99,6 +99,8 @@ GEM
       multi_json (~> 1.0)
     factory_girl (3.3.0)
       activesupport (>= 3.0.0)
+    faker (1.5.0)
+      i18n (~> 0.5)
     ffi (1.9.0)
     highcharts-rails (2.1.9)
       railties (~> 3.1)
@@ -289,6 +291,7 @@ DEPENDENCIES
   dynamic_form
   execjs
   factory_girl (~> 3.3.0)
+  faker
   highcharts-rails (~> 2.1.9)
   highline
   jquery-rails
