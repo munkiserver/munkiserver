@@ -12,4 +12,4 @@ Munkiserver is a Ruby on Rails web application for managing your munki clients. 
 * Viewing warranty information
 * The list goes on…
 
-For installation instructions and documentation, see the wiki: https://github.com/jnraine/munkiserver/wiki
+For installation instructions and documentation, see the [wiki](https://github.com/munkiserver/munkiserver/wiki)
