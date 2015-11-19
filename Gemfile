@@ -57,3 +57,6 @@ gem 'jquery-ui-rails'
 
 gem 'redis-rails'
 gem 'puma'
+gem 'ace-rails-ap'
+
+
