@@ -169,7 +169,7 @@ $(document).ready(function() {
     var mode = textarea.data('format');
     var editDiv = $('<div>', {
       position: 'absolute',
-      width: textarea.width(),
+      width: '700px',
       height: textarea.height(),
       'class': textarea.attr('class')
     }).insertBefore(textarea);
