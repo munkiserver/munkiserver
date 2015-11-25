@@ -1,4 +1,4 @@
-<div id="tabs">  
+<div >  
   <ul>
     <li><a href="#basics"><span>Basics</span></a></li>
     <li><a href="#advanced"><span>Advanced</span></a></li>
@@ -8,6 +8,7 @@
   
   <!-- First tab starts here -->
   <div id="basics">
+    <h3>Basics</h3>
     <table class="form">
       <tr>
         <td>
@@ -90,6 +91,7 @@
 
   <!-- Second tab starts here -->
   <div id="advanced">
+    <h3>Advanced</h3>
     <table class="form">
       <tr> 
         <td>
@@ -158,7 +160,7 @@
             Uninstall Install Script
             <%= helpful_info("Enter the content of the Uninstall script here") %>
           </h4>
-          <div id="postinstall_script_container" class="toggle_container">
+          <div id="postinstall_script_container">
             <%= f.text_area :uninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
           </div>
           <!-- <hr /> -->
@@ -209,98 +211,75 @@
   
   <!-- Third tab starts here -->
   <div id="plists">
-      <table class="form">
-        
-          <tr>
-            <td colspan="2">
-              <h4>
-                Receipts
-                <%= helpful_info("Must be a valid plist with an array as the root object") %>
-              </h4>
-              <div id="receipts_plist_container" class="toggle_container">
-                <%= f.text_area :receipts_plist, :size => "80x20", "data-format" => 'xml' %>
-              </div>
-            </td>
-          </tr>
-        <tr>
-          <td colspan="2">
-            <h4>
-              Installs
-              <%= helpful_info("Must be a valid plist with an array as the root object") %>
-            </h4>
-            <div id="installs_plist_container" class="toggle_container">
-              <%= f.text_area :installs_plist, :size => "80x20", "data-format" => 'xml' %>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <h4>
-              Raw tags 
-              <%= f.select :raw_mode_id, options_for_select([[Package.raw_mode(0),0],[Package.raw_mode(1),1],[Package.raw_mode(2),2]],@package.raw_mode_id) %>
-              <%= helpful_info("Raw tags allow the ability to add extra Plist tags to the manifest.  Must be formatted as a valid plist with a dictionary at the root. If you define a tag that is already defined above, the raw tag overwrites it.  In append mode, the tags are added to the info plist.  In exclusive mode, only the tags shown here are used.") %>
-            </h4>
-            <div id="raw_tags_container" class="toggle_container">
-              <%= text_area_tag "package[raw_tags_plist]", (@package.raw_tags_plist unless @package.raw_tags.nil?), :size => "80x15", "data-format" => 'xml' %>
-            </div>
-          </td>
-        </tr>
-      </table>
+    <h3>Plists</h3>
+    <div>
+      <h4>
+        Receipts
+        <%= helpful_info("Must be a valid plist with an array as the root object") %>
+      </h4>
+      <div id="receipts_plist_container">
+        <%= f.text_area :receipts_plist, :size => "80x20", "data-format" => 'xml' %>
+      </div>
+    </div>
+    <div>
+      <h4>
+        Installs
+        <%= helpful_info("Must be a valid plist with an array as the root object") %>
+      </h4>
+      <%= f.text_area :installs_plist, :size => "80x20", "data-format" => 'xml' %>
+      <div id="installs_plist_container_asdf" data-format="xml" class="editor">
+      </div>
+    </div>
+    <div>
+      <h4>
+        Raw tags 
+        <%= f.select :raw_mode_id, options_for_select([[Package.raw_mode(0),0],[Package.raw_mode(1),1],[Package.raw_mode(2),2]],@package.raw_mode_id) %>
+        <%= helpful_info("Raw tags allow the ability to add extra Plist tags to the manifest.  Must be formatted as a valid plist with a dictionary at the root. If you define a tag that is already defined above, the raw tag overwrites it.  In append mode, the tags are added to the info plist.  In exclusive mode, only the tags shown here are used.") %>
+      </h4>
+      <div id="raw_tags_container">
+        <%= text_area_tag "package[raw_tags_plist]", (@package.raw_tags_plist unless @package.raw_tags.nil?), :size => "80x15", "data-format" => 'xml' %>
+      </div>
+    </div>
   </div>
   
   <!-- Fourth tab starts here -->
   <div id="scripts">
-      <table class="form">
-
-        <tr>
-          <td colspan="2">
-
-            <h4>
-              Pre Install Script
-              <%= helpful_info("Enter the content of the script here to run before the installation") %>
-            </h4>
-            <div id="preinstall_script_container" class="toggle_container">
-              <%= f.text_area :preinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="2">
-            <h4>
-              Post Install Script
-              <%= helpful_info("Enter the content of the script here to run after the installation") %>
-            </h4>
-            <div id="postinstall_script_container" class="toggle_container">
-              <%= f.text_area :postinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="2">
-            <h4>
-              Pre Uninstall Script
-              <%= helpful_info("Enter the content of the script here to run after the installation") %>
-            </h4>
-            <div id="preuninstall_script_container" class="toggle_container">
-              <%= f.text_area :preuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="2">
-            <h4>
-              Post Uninstall Script
-              <%= helpful_info("Enter the content of the script here to run after the installation") %>
-            </h4>
-            <div id="postuninstall_script_container" class="toggle_container">
-              <%= f.text_area :postuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
-            </div>
-          </td>
-        </tr>
-
-      </table>
+    <h3>Scripts</h3>
+    <div>
+      <h4>
+        Pre Install Script
+        <%= helpful_info("Enter the content of the script here to run before the installation") %>
+      </h4>
+      <div id="preinstall_script_container">
+        <%= f.text_area :preinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+      </div>
+    </div>
+    <div>
+      <h4>
+        Post Install Script
+        <%= helpful_info("Enter the content of the script here to run after the installation") %>
+      </h4>
+      <div id="postinstall_script_container">
+        <%= f.text_area :postinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+      </div>
+    </div>
+    <div>
+      <h4>
+        Pre Uninstall Script
+        <%= helpful_info("Enter the content of the script here to run after the installation") %>
+      </h4>
+      <div id="preuninstall_script_container">
+        <%= f.text_area :preuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+      </div>
+    </div>
+    <div>
+      <h4>
+        Post Uninstall Script
+        <%= helpful_info("Enter the content of the script here to run after the installation") %>
+      </h4>
+      <div id="postuninstall_script_container">
+        <%= f.text_area :postuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+      </div>
+    </div>
   </div>
 </div>
