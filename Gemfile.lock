@@ -94,6 +94,7 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.8.3)
+    libv8 (3.16.14.13)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -175,6 +176,7 @@ GEM
       redis-store (~> 1.1.4)
     redis-store (1.1.6)
       redis (>= 2.2)
+    ref (2.0.0)
     rest-client (1.6.9)
       mime-types (~> 1.16)
     rspec-core (2.13.1)
@@ -219,6 +221,9 @@ GEM
       tins (~> 1.0)
     test-unit (3.1.5)
       power_assert
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     tilt (1.4.1)
     tins (1.6.0)
@@ -256,7 +261,6 @@ DEPENDENCIES
   coveralls
   dotenv-rails
   dynamic_form
-  execjs
   factory_girl (~> 3.3.0)
   highcharts-rails (~> 2.1.9)
   highline
@@ -278,6 +282,7 @@ DEPENDENCIES
   sass-rails
   sqlite3-ruby
   test-unit
+  therubyracer
   uglifier
   vcr (~> 2.4.0)
   version_sorter

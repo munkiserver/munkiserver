@@ -44,5 +44,5 @@ Munki::Application.configure do
   else
     config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for apache
   end
-  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
+  config.cache_store = :redis_store, ENV.fetch('REDIS_PORT_6379_TCP', 'redis://localhost:6379/0/cache'), { expires_in: 90.minutes }
 end

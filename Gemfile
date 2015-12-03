@@ -5,7 +5,6 @@ gem 'version_sorter'
 
 gem 'rails', '3.2.22'
 gem 'sqlite3-ruby', :require => 'sqlite3'
-gem 'execjs'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
 gem 'nokogiri'
 gem 'paperclip'
@@ -24,6 +23,8 @@ gem 'dynamic_form' # enabling this should allow the removal of vendor/dynamic_fo
 gem 'active_record_or'
 
 gem 'coveralls', require: false
+
+gem 'therubyracer'
 
 gem 'dotenv-rails'
 gem 'rack-timeout'
