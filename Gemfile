@@ -28,6 +28,9 @@ gem 'coveralls', require: false
 gem 'dotenv-rails'
 gem 'rack-timeout'
 
+gem 'sidekiq'
+gem 'database_cleaner'
+
 group :development do
   gem 'rails-erd'
 
@@ -37,11 +40,12 @@ end
 
 group :test do
   gem 'test-unit'
-  gem 'rspec-rails', '~> 2.13'
+  gem 'rspec-rails', '~> 2.14'
   gem 'factory_girl', '~> 3.3.0'
   gem 'capybara', '~> 1.1.2'
   gem 'vcr', '~> 2.4.0'
   gem 'webmock', '~> 1.8.7'
+  gem 'faker'
 end
 
 group :assets do
@@ -57,3 +61,6 @@ gem 'jquery-ui-rails'
 
 gem 'redis-rails'
 gem 'puma'
+gem 'ace-rails-ap'
+
+

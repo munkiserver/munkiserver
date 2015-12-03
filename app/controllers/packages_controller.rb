@@ -81,15 +81,21 @@ class PackagesController < ApplicationController
   end
 
   def update_multiple
+    @packages = Package.where(id: params[:selected_records])
     results = {}
     exceptionMessage = nil
+
+    if params[:commit] == 'Delete'
+      destroyed_packages = @packages.destroy_all
+      redirect_to packages_path, :flash => { :notice => "All #{destroyed_packages.length} selected packages were successfully deleted." }
+      return
+    end
+
     begin
-      @packages = Package.where(:id => params[:selected_records])
       results = Package.bulk_update_attributes(@packages, params[:package])
     rescue PackageError => e
       exceptionMessage = e.to_s
     end
-
     respond_to do |format|
       if exceptionMessage
         flash[:error] = "A problem occurred: " + exceptionMessage
