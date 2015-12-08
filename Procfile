@@ -1,4 +1,4 @@
-web: bundle exec rails s Puma -p $PORT
+web: bin/rails server -p $PORT
 redis: redis-server /usr/local/etc/redis.conf
 mysql: mysqld --gdb
-sidekiq: bundle exec sidekiq -c 3
+sidekiq: bin/sidekiq -c 3
