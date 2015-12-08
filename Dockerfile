@@ -23,6 +23,7 @@ COPY ./vendor/ $APP_HOME/vendor
 
 RUN mkdir packages
 
+# Set production env vars
 ENV RAILS_ENV production
 ENV RACK_ENV production
 ENV PORT 3000
