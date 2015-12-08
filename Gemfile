@@ -5,6 +5,7 @@ gem 'version_sorter'
 
 
 gem 'rails', '4.2.4'
+gem 'rails-observers'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'

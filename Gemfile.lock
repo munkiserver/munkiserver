@@ -177,6 +177,8 @@ GEM
       ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
+    rails-observers (0.1.2)
+      activemodel (~> 4.0)
     railties (4.2.4)
       actionpack (= 4.2.4)
       activesupport (= 4.2.4)
@@ -316,6 +318,7 @@ DEPENDENCIES
   rack-timeout
   rails (= 4.2.4)
   rails-erd
+  rails-observers
   redis-rails
   rspec-rails (~> 3.0)
   sass-rails
