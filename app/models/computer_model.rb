@@ -1,4 +1,6 @@
 class ComputerModel < ActiveRecord::Base
+  include IsAsyncDestroyable
+
   has_many :computers
   belongs_to :icon
   

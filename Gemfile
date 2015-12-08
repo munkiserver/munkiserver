@@ -1,12 +1,13 @@
 # Edit this Gemfile to bundle your application's dependencies.
-source 'http://gemcutter.org'
+source 'https://rubygems.org'
 
 gem 'version_sorter'
 
+
 gem 'rails', '4.2.4'
+
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
-gem 'therubyracer'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
 gem 'nokogiri'
 gem 'paperclip'
@@ -15,8 +16,10 @@ gem 'whenever'
 gem 'plist'
 gem 'cancancan'
 gem 'highline'
+gem 'open_uri_redirections'
 
-gem 'mysql2', '~> 0.3.18'
+
+gem 'mysql2', '~> 0.3.20'
 gem 'taps'
 
 gem 'highcharts-rails'
@@ -29,20 +32,24 @@ gem 'coveralls', require: false
 gem 'dotenv-rails'
 gem 'rack-timeout'
 
+gem 'sidekiq'
+gem 'database_cleaner'
+
 group :development do
   gem 'rails-erd'
-  gem 'textmate_backtracer'
-  gem 'pry-rails'
+
   gem 'meta_request'
   gem 'bullet'
 end
 
 group :test do
-  gem 'rspec-rails', '~> 2.13'
+  gem 'test-unit'
+  gem 'rspec-rails', '~> 2.14'
   gem 'factory_girl', '~> 3.3.0'
   gem 'capybara', '~> 1.1.2'
   gem 'vcr', '~> 2.4.0'
   gem 'webmock', '~> 1.8.7'
+  gem 'faker'
 end
 
 group :assets do
@@ -51,8 +58,17 @@ group :assets do
   gem 'uglifier'
 end
 
+group :production do
+  gem 'newrelic_rpm'
+end
+
+gem 'pry-rails', :group => [:development, :test]
+
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
+gem 'redis-rails'
 gem 'puma'
-gem 'dalli'
+gem 'ace-rails-ap'
+
+

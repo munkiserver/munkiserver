@@ -10,8 +10,10 @@
         <th>Actions</th>
       </tr>
     </thead>
+<% end %>
+
     <% package_branches.each do |package_branch| %>
-      <% cache(package_branch) do %>
+      <% cache([current_unit, current_environment, package_branch]) do %>
         <% packages_by_version = package_branch.packages.select { |p| p.environment_id == current_environment.id }.group_by { |p| p.version } %>
         <% packages = VersionSorter.rsort(packages_by_version.keys).map { |v| packages_by_version[v] }.flatten %>
         <% if packages.present? %>
@@ -20,4 +22,3 @@
       <% end %>
     <% end %>
   </table>
-<% end %>

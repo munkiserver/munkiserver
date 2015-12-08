@@ -12,6 +12,8 @@ class Icon < ActiveRecord::Base
                     :styles => { :tiny => ["32x32#", :png], :small => ["64x64#", :png], :medium => ["128x128#", :png], :large => ["256x256#", :png] },
                     :path => ":rails_root/public/system/:attachment/:id/:style/:filename",
                     :url => "/system/:attachment/:id/:style/:filename"
+                    
+  validates_attachment_content_type :photo, :content_type => ["image/png"]
   
   # A shortcut to get the url for self.photo
   def url(type = nil)

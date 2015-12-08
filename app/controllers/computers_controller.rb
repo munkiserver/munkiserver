@@ -113,9 +113,8 @@ class ComputersController < ApplicationController
   end
 
   def destroy
-    if @computer.destroy
-      flash[:notice] = "Computer was destroyed successfully"
-    end
+    @computer.async_destroy
+    flash[:notice] = "Computer was queued for deletion. This could take some time."
 
     respond_to do |format|
       format.html { redirect_to computers_path(current_unit) }
@@ -195,10 +194,17 @@ class ComputersController < ApplicationController
   end
 
   def update_multiple
-    @computers = Computer.find(params[:selected_records])
+    @computers = Computer.where(id: params[:selected_records])
     p = params[:computer]
     results = []
     exceptionMessage = nil
+
+    if params[:commit] == 'Delete'
+      @computers.each(&:async_destroy)
+      redirect_to computers_path, :flash => { :notice => "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
+      return
+    end
+
     begin
       results = Computer.bulk_update_attributes(@computers, p)
     rescue ComputerError => e

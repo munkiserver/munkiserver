@@ -81,15 +81,21 @@ class PackagesController < ApplicationController
   end
 
   def update_multiple
+    @packages = Package.where(id: params[:selected_records])
     results = {}
     exceptionMessage = nil
+
+    if params[:commit] == 'Delete'
+      destroyed_packages = @packages.destroy_all
+      redirect_to packages_path, :flash => { :notice => "All #{destroyed_packages.length} selected packages were successfully deleted." }
+      return
+    end
+
     begin
-      @packages = Package.where(:id => params[:selected_records])
       results = Package.bulk_update_attributes(@packages, params[:package])
     rescue PackageError => e
       exceptionMessage = e.to_s
     end
-
     respond_to do |format|
       if exceptionMessage
         flash[:error] = "A problem occurred: " + exceptionMessage
@@ -155,8 +161,10 @@ class PackagesController < ApplicationController
   end
 
   def index_shared
-    @branches = PackageBranch.not_unit(current_unit).shared
-    @grouped_branches = @branches.group_by {|branch| branch.unit }
+    @branches = PackageBranch.not_unit(current_unit).shared.paginate(
+      :page => params[:page],
+      :per_page => params[:per_page] || 20
+    ).includes(:shared_packages, :unit, :packages => [:require_items, :update_for_items]).find(:all, :joins => :packages, :order => 'packages.updated_at DESC')
   end
 
   # Import shared packages from another unit

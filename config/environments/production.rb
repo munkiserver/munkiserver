@@ -76,4 +76,20 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Enable threaded mode
+  # config.threadsafe!
+
+  config.assets.compress = true
+  config.assets.compile = true
+  config.assets.digest = true
+
+  # Move me to config file
+  webserver = "nginx"
+  if webserver == "nginx"
+    config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
+  else
+    config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for apache
+  end
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
 end

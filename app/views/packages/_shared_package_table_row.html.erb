@@ -7,11 +7,16 @@
     <%= branch.display_name %><br />
     <em><%= branch.name %></em>
   </td>
-  <%= render :partial => 'shared_package_version_column', :locals => {:package => packages.first} %>
+  <td rowspan="<%= packages.count %>">
+    <%= branch.unit.name %>
+  </td>
+<% packages_by_version = packages.group_by(&:version) %>
+<% sorted_packages = VersionSorter.rsort(packages_by_version.keys).map { |v| packages_by_version[v] }.flatten %>
+  <%= render :partial => 'shared_package_version_column', :locals => {:package => sorted_packages.first} %>
   <td rowspan="<%= packages.count %>" class="centerize">
   </td>
 </tr>
-<% packages.each_with_index do |package,i| %>
+<% sorted_packages.each_with_index do |package,i| %>
   <% unless i == 0 %>
     <tr>
       <%= render :partial => 'shared_package_version_column', :locals => {:package => package} %>

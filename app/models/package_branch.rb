@@ -5,9 +5,9 @@ class PackageBranch < ActiveRecord::Base
 
   validates_presence_of :name, :display_name, :package_category_id
   validates_uniqueness_of :name, :scope => [:unit_id]
+
   validates_format_of :name, :with => /\A[^ -.]+\z/, :message => "must not contain spaces or hyphens or dots"
 
-  attr_accessor :environment_id
   # Relationships
   has_many :install_items, :dependent => :destroy
   has_many :uninstall_items, :dependent => :destroy
@@ -20,7 +20,7 @@ class PackageBranch < ActiveRecord::Base
   has_many :shared_packages, -> { where(:shared => true) }, :class_name => "Package"
   has_one :version_tracker, :dependent => :destroy, :autosave => true
 
-  belongs_to :package_category
+  belongs_to :package_category, :touch => true
 
   scope :find_for_index, lambda {|unit, env| has_versions.unit(unit).environment(env).order("name ASC").includes({:packages => [:environment, :package_branch]}, :package_category) }
   scope :environment, lambda {|env| joins(:packages).where(:packages => {:environment_id => env.id}).uniq }

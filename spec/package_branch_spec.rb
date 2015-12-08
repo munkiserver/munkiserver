@@ -36,7 +36,7 @@ describe PackageBranch do
       shared_branches = PackageBranch.shared
 
       shared_branches.count.should == 1
-      shared_branches.first.id.should == shared_package.id
+      shared_branches.first.id.should == shared_package.package_branch_id
     end
   end
 

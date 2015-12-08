@@ -6,10 +6,9 @@
 *= require jquery.asmselect
 *= require jquery.lightbox_me
 *= require jquery-ui-timepicker-addon
-*= require codemirror/codemirror
-*= require codemirror/clike
-*= require codemirror/xml
-*= require overlay.js
+*= require ace-rails-ap
+*= require ace/mode-xml
+*= require ace/theme-textmate
 *= require highcharts
 *= require_self
 *= */
@@ -165,33 +164,22 @@ $(document).ready(function() {
 	
 	// add Codemirror with $ animation to highlight XML/plist/bash syntax in package list
 	$("textarea[data-format]").each(function () {	
-		var format = $(this).attr("data-format");
-		var toRefresh = function(){
-			editor.refresh();
-		}
-		var editor = CodeMirror.fromTextArea(this, {
-					onFocus: function() {
-					    //$ animation goes here	
-					    $(editor.getWrapperElement()).animate({
-					        height: "300px"
-					    },
-					    400, "swing", toRefresh);
-					},
-					onBlur: function() {
-					    $(editor.getWrapperElement()).animate({
-					        height: "78px"
-					    },
-					    400, "swing", toRefresh);
-					},
-					lineNumbers: true,
-					matchBrackets: true,
-					mode: format,
-					onCursorActivity: function() {
-					    editor.setLineClass(hlLine, null);
-					    hlLine = editor.setLineClass(editor.getWrapperElement().line, "activeline");
-					}
-		      });
-		var hlLine = editor.setLineClass(0, "activeline");	
+    var textarea = $(this);
+    var mode = textarea.data('format');
+    var editDiv = $('<div>', {
+      position: 'absolute',
+      width: '700px',
+      height: textarea.height(),
+      'class': textarea.attr('class')
+    }).insertBefore(textarea);
+    textarea.css('display', 'none');
+    var editor = ace.edit(editDiv[0]);
+    editor.getSession().setValue(textarea.val());
+    editor.getSession().setMode("ace/mode/" + mode);
+    editor.setTheme("ace/theme/textmate");
+    editor.getSession().on('change', function () {
+      textarea.val(editor.getSession().getValue());
+    });
 	});
 	
 	function hideAllUninstallField(){

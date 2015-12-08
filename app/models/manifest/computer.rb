@@ -3,14 +3,16 @@ class Computer < ActiveRecord::Base
   include HasAUnit
   include HasAnEnvironment
   include HasAnIcon
-
+  include IsAsyncDestroyable
+  
   belongs_to :computer_model
   belongs_to :computer_group
 
   has_one :system_profile, :dependent => :destroy, :autosave => true
   has_one :warranty, :dependent => :destroy, :autosave => true
   has_many :client_logs
-  has_many :managed_install_reports# TODO:, order: 'created_at DESC'
+  has_many :client_logs, dependent: :destroy
+  has_many :managed_install_reports, dependent: :destroy
 
   # Validations
   validate :computer_model
@@ -29,8 +31,8 @@ class Computer < ActiveRecord::Base
 
   validates_uniqueness_of :hostname, :allow_blank => true
 
-  default_scope { order(:name) }
-
+  default_scope -> { where(:deleted_at => nil).order(:name) }
+  
   scope :search, lambda {|column, term|where(["#{column.to_s} LIKE ?", "%#{term}%"]) unless term.blank? or column.blank?}
   scope :eager_manifests, -> { includes(bundle_includes + [{:computer_group => item_includes + bundle_includes}]) }
 

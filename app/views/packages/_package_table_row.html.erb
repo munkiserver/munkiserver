@@ -1,4 +1,4 @@
-<% cache([packages, package_branch]) do %>
+<% cache([current_unit, current_environment, packages, package_branch]) do %>
   <tr>
     <td rowspan="<%= packages.count %>">
       <%= image_tag(packages.first.icon.url(:small), :class => "thumbnail", "data-package-branch-id" => package_branch.id) %>
@@ -10,12 +10,10 @@
     <%= render :partial => "packages/package_version_column", :locals => {:pkg => packages.first} %>
   </tr>
   <% packages.each_with_index do |package, i| %>
-    <% cache(package) do %>
-      <% unless i == 0 %>
-        <tr>
-          <%= render :partial => 'packages/package_version_column', :locals => {:pkg => package} %>
-        </tr>
-      <% end %>
-    <% end %>
+  <% unless i == 0 %>
+  <tr>
+    <%= render :partial => 'packages/package_version_column', :locals => {:pkg => package} %>
+  </tr>
+  <% end %>
   <% end %>
 <% end %>
