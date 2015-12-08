@@ -54,6 +54,10 @@ group :assets do
   gem 'uglifier'
 end
 
+group :production do
+  gem 'newrelic_rpm'
+end
+
 gem 'pry-rails', :group => [:development, :test]
 
 gem 'jquery-rails'
