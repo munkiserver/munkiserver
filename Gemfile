@@ -44,10 +44,9 @@ end
 
 group :test do
   gem 'test-unit'
-  gem 'rspec-rails', '~> 2.14'
   gem 'factory_girl', '~> 3.3.0'
-  gem 'capybara', '~> 1.1.2'
-  gem 'vcr', '~> 2.4.0'
+  gem 'capybara'
+  gem 'vcr', '~> 3.0'
   gem 'webmock', '~> 1.8.7'
   gem 'faker'
 end
@@ -62,7 +61,10 @@ group :production do
   gem 'newrelic_rpm'
 end
 
-gem 'pry-rails', :group => [:development, :test]
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0'
+  gem 'pry-rails'
+end
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'

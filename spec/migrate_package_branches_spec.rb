@@ -14,7 +14,7 @@ describe MigratePackageBranches do
         category = FactoryGirl.create(:package_category)
         unit_scoped_branch = MigratePackageBranches.new.retrieve_unit_scoped_branch(nil_unit_branch, unit, category)
         unit_scoped_branch.tap do |b|
-          b.should_not be_new_record
+          expect(b.new_record?).to eq false
           b.unit.id.should == unit.id
           b.attributes == nil_unit_branch.attributes
           b.package_category_id.should == category.id
@@ -119,8 +119,8 @@ describe MigratePackageBranches do
       obsolete_branch
       active_branch
       MigratePackageBranches.new.destroy_obsolete_branches
-      lambda { obsolete_branch.reload }.should raise_error(ActiveRecord::RecordNotFound)
-      lambda { active_branch.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      expect{ obsolete_branch.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect{ active_branch.reload }.to_not raise_error
     end
   end
 end
