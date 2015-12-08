@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   before_save :check_settings
 
   include Principal
+  
+  attr_reader :password
 
   default_scope { order(:username) }
 

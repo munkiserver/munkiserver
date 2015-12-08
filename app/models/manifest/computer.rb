@@ -240,7 +240,7 @@ class Computer < ActiveRecord::Base
   # updates warranty, return true upon success
   def update_warranty
     if serial_number
-      warranty = Warranty.find_or_create_by_serial_number(serial_number)
+      warranty = Warranty.find_or_create_by(serial_number: serial_number)
       warranty_hash = {}
       begin
         warranty_hash = Warranty.get_warranty_hash(serial_number)

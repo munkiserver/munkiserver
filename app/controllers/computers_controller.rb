@@ -85,7 +85,7 @@ class ComputersController < ApplicationController
       if @computer.present?
         format.manifest { render :text => @computer.to_plist}
       else
-        MissingManifest.find_or_create_by_manifest_type_and_identifier_and_request_ip({:manifest_type => Computer.to_s, :identifier => params[:id], :request_ip => request.remote_ip})
+        MissingManifest.find_or_create_by(:manifest_type => Computer.to_s, :identifier => params[:id], :request_ip => request.remote_ip)
         format.manifest { render :file => "public/404.html", :status => 404, :layout => false}
       end
     end
@@ -167,7 +167,7 @@ class ComputersController < ApplicationController
 
     if params[:system_profiler_plist].present?
       system_profile_hash = SystemProfile.format_system_profiler_plist(params[:system_profiler_plist])
-      sp = SystemProfile.find_or_create_by_computer_id(@computer.id)
+      sp = SystemProfile.find_or_create_by(computer_id: @computer.id)
       @computer.system_profile.attributes = system_profile_hash
     end
 

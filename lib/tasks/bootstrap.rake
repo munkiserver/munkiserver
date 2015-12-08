@@ -22,7 +22,7 @@ namespace :bootstrap do
          {:name => "Utility", :icon_path => "#{path}/utility.png"}]
     # Add the records
     a.each do |h|
-      r = PackageCategory.find_or_create_by_name(h[:name])
+      r = PackageCategory.find_or_create_by(name: h[:name])
       # Add an icon if there isn't one already
       if r.icon.nil?
         f = File.new(h[:icon_path])
@@ -200,7 +200,7 @@ namespace :bootstrap do
       password = nil
       password_confirmation = nil
       console = HighLine.new
-      until (password.present? and password == password_confirmation) do
+      until (password.present? && password == password_confirmation) do
         password = console.ask("Enter your password: ") { |q| q.echo = false }
         password_confirmation = console.ask("Confirm your password: ") { |q| q.echo = false }
         puts "Passwords did not match, please try again." unless password == password_confirmation
@@ -237,14 +237,14 @@ namespace :bootstrap do
   desc "Create base environments"
   task :environments do |t, args|
     # Build the staging environment
-    e = Environment.find_or_create_by_name("Staging")
+    e = Environment.find_or_create_by(name: "Staging")
     e.description = "Created by bootstrap"
     unless e.save
       puts "Staging environment failed to save: " + e.errors.inspect
     end
     
     # Build the production environment
-    e = Environment.find_or_create_by_name("Production")
+    e = Environment.find_or_create_by(name: "Production")
     e.description = "Created by bootstrap"
     unless e.save
       puts "Production environment failed to save: " + e.errors.inspect
@@ -268,7 +268,7 @@ namespace :bootstrap do
   task :privileges => :environment do
     # Create privilege records using name
     PrivilegeGranter.instance_methods.each do |privilege_name|
-      Privilege.find_or_create_by_name(:name => privilege_name)
+      Privilege.find_or_create_by(name: privilege_name)
     end
     # Flag unit-specific privileges
     Privilege.all.each do |privilege|
