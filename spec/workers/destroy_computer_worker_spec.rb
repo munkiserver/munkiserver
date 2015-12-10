@@ -6,10 +6,11 @@ describe DestroyComputerWorker do
   context "when an existing computer is queued for deletion" do
     it "should delete the computer" do
       computer = FactoryGirl.create(:computer)
+      computer.deleted_at = Time.now
       computer_id = computer.id
       DestroyComputerWorker.perform_async(computer.id)
       DestroyComputerWorker.drain
-      Computer.find_by_id(computer_id).should == nil
+      Computer.unscoped.find_by_id(computer_id).should == nil
     end
   end
 
