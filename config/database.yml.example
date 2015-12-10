@@ -1,4 +1,5 @@
 <%
+# Taken from https://gist.github.com/jakeonrails/2767211 
 require 'cgi'
 require 'uri'
 
