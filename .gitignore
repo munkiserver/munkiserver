@@ -1,5 +1,6 @@
 .bundle
 config/settings.yaml
+config/database.ya?ml
 *.DS_Store
 packages
 packages/
