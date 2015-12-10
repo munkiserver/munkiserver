@@ -1,25 +1,42 @@
-# SQLite version 3.x
-#   gem install sqlite3-ruby (not necessary on OS X Leopard)
-development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
+<%
+# Taken from https://gist.github.com/jakeonrails/2767211 
+require 'cgi'
+require 'uri'
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
+begin
+  uri = URI.parse(ENV['DATABASE_URL'])
+rescue URI::InvalidURIError
+  raise "Invalid DATABASE_URL"
+end
 
-production:
-  adapter: mysql2
-  database: <%= ENV["DATABASE_NAME"] %>
-  host: <%= ENV["DATABASE_HOST"] %>
-  username: <%= ENV["DATABASE_USERNAME"] %>
-  password: <%= ENV["DATABASE_PASSWORD"] %>
-  pool: 5
-  timeout: 5000
+env = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
+
+def attribute(name, value)
+  value ? "#{name}: #{value}" : ""
+end
+
+adapter = uri.scheme
+adapter = "postgresql" if adapter == "postgres"
+
+database = (uri.path || "").split("/")[1]
+
+username = uri.user
+password = uri.password
+
+host = uri.host
+port = uri.port
+
+params = CGI.parse(uri.query || "")
+
+%>
+<%= env %>:
+  <%= attribute "adapter",  adapter %>
+  <%= attribute "database", database %>
+  <%= attribute "username", username %>
+  <%= attribute "password", password %>
+  <%= attribute "host",     host %>
+  <%= attribute "port",     port %>
+
+<% params.each do |key, value| %>
+  <%= key %>: <%= value.first %>
+<% end %>

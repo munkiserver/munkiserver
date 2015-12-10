@@ -1,6 +1,6 @@
 .bundle
 config/settings.yaml
-config/database.yml
+config/database.ya?ml
 *.DS_Store
 packages
 packages/
@@ -29,3 +29,4 @@ script/munki_scripts/build/*
 dump.rdb
 
 .ruby-version
+*.env
