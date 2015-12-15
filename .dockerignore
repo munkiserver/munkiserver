@@ -1,0 +1,16 @@
+.DS_Store
+.coveralls.yml
+.dockerignore
+.foreman
+.git
+.gitignore
+.travis.yml
+Dockerfile
+Guardfile
+Procfile
+README.md
+development.env
+docker
+docker-compose.yml
+notes
+packages

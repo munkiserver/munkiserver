@@ -11,15 +11,8 @@ COPY ./Gemfile* $APP_HOME/
 RUN bundle install --without=development,test
 
 # Put the app on the server (only the good parts)
-COPY ./Rakefile $APP_HOME/
-COPY ./app/ $APP_HOME/app
-COPY ./config.ru $APP_HOME/
-COPY ./config/ $APP_HOME/config
-COPY ./db/ $APP_HOME/db
-COPY ./lib/ $APP_HOME/lib
-COPY ./public/ $APP_HOME/public
-COPY ./script/ $APP_HOME/script
-COPY ./vendor/ $APP_HOME/vendor
+COPY . $APP_HOME
+COPY ./config/database.yml.example $APP_HOME/config/database.yml
 
 RUN mkdir packages
 
@@ -29,4 +22,5 @@ ENV RACK_ENV production
 ENV PORT 3000
 
 # CMD ["./script/rails", "server"]
+EXPOSE 3000
 CMD ["rails", "server"]

@@ -1,7 +1,9 @@
 web:
   build: .
+  environment:
+    - DATABASE_URL=mysql2://munkiserver:munkiserver@mysql:3306/munkiserver
   ports:
-    - "3000:3000"
+    - "3000"
   links:
     - redis
     - mysql
@@ -14,3 +16,9 @@ mysql:
     - MYSQL_ROOT_PASSWORD=password
     - MYSQL_USER=munkiserver
     - MYSQL_PASSWORD=munkiserver
+nginx:
+  image: munkiserver/nginx:latest
+  ports:
+    - "8080:80"
+  links:
+    - web
