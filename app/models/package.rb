@@ -58,7 +58,7 @@ class Package < ActiveRecord::Base
     items.each do |item| 
       unless record.environment == item.package.environment
         pretty_name = attr.to_s.gsub(/_/, ' ').titleize
-        record.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for.")
+        record.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{record.name})")
       end
     end
   end
@@ -729,11 +729,13 @@ class Package < ActiveRecord::Base
       raise PackageError.new("Nothing to update")
     else
       results = packages.map do |p|
-        p.update_attributes(package_attributes)
+        { success: p.update_attributes(package_attributes), messages: p.errors.messages }
       end
-      successes = results.select {|b| b }
-      failures = results.select {|b| not b }
-      {:total => packages.count, :successes => successes.count, :failures => failures.count}
+      validations = results.map { |r| r[:success] }
+      messages = results.map { |r| r[:messages].values }.flatten
+      successes = validations.select {|b| b }
+      failures = validations.select {|b| not b }
+      {total: packages.count, successes: successes.count, failures: failures.count, messages: messages}
     end
   end
 
