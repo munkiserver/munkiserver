@@ -58,7 +58,7 @@ class Package < ActiveRecord::Base
     items.each do |item| 
       unless record.environment == item.package.environment
         pretty_name = attr.to_s.gsub(/_/, ' ').titleize
-        record.errors.add(attr, "#{pretty_name} must be in the same environment as the package it is for.")
+        record.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for.")
       end
     end
   end
