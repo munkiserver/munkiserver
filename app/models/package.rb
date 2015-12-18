@@ -54,11 +54,11 @@ class Package < ActiveRecord::Base
   validates :force_install_after_date_string, :date_time => true, :allow_blank => true
 
   # Update For and Requires must be in the same environment as the record
-  validates_each :update_for_items, :require_items do |record, attr, items|
+  validates_each :update_for_items, :require_items do |package, attr, items|
     items.each do |item| 
-      unless record.environment == item.package.environment
+      unless package.environment == item.package.environment
         pretty_name = attr.to_s.gsub(/_/, ' ').titleize
-        record.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{record.name})")
+        package.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{package.name})")
       end
     end
   end
