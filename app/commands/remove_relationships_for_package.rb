@@ -32,7 +32,6 @@ class RemoveRelationshipsForPackage
       @package.send(
         [relationship, '='].join.to_sym,
         @package.send(relationship).select { |val|
-          binding.pry
           val.manifest.environment == @new_environment
       })
     end

@@ -228,6 +228,12 @@ class Computer < ActiveRecord::Base
       raise ComputerError.new("Nothing to update")
     else
       computers.each do |c|
+        if computer_attributes['environment_id']
+          RemoveRelationshipsForComputer.new(
+            c,
+            Environment.find(computer_attributes['environment_id'])
+          ).perform
+        end
         c.update_attributes(computer_attributes)
       end
     end
