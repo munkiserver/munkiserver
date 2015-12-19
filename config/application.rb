@@ -39,6 +39,7 @@ module Munki
         #{Rails.root}/app/models/service
         #{Rails.root}/app/models/privilege_granters
         #{Rails.root}/app/models/null
+        #{Rails.root}/app/commands
         #{Rails.root}/lib
     )
 
