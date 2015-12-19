@@ -719,6 +719,7 @@ class Package < ActiveRecord::Base
       raise PackageError.new("Nothing to update")
     else
       results = packages.map do |p|
+        RemoveRelationshipsForPackage.new(p, Environment.find(package_attributes['environment_id'])).perform if package_attributes['environment_id']
         p.update_attributes(package_attributes)
       end
       successes = results.map {|b| b == false }
