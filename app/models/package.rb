@@ -53,6 +53,16 @@ class Package < ActiveRecord::Base
   validates_uniqueness_of :version, :scope => [:unit_id, :package_branch_id]
   validates :force_install_after_date_string, :date_time => true, :allow_blank => true
 
+  # Update For and Requires must be in the same environment as the record
+  validates_each :update_for_items, :require_items do |package, attr, items|
+    items.each do |item| 
+      unless package.environment == item.package.environment
+        pretty_name = attr.to_s.gsub(/_/, ' ').titleize
+        package.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{package.name})")
+      end
+    end
+  end
+
   FORM_OPTIONS = {:restart_actions         => [['None','None'],['Logout','RequireLogout'],['Restart','RequireRestart'],['Recommend Restart','RecommendRestart']],
                   :os_versions             => [[['Any','']], os_range(10,11,0..1), os_range(10,10,0..5), os_range(10,9,0..5), os_range(10,8,0..5), os_range(10,7,0..5), os_range(10,6,0..8), os_range(10,5,0..11)].flatten(1),
                   :installer_types         => [['Package',''],
@@ -719,11 +729,13 @@ class Package < ActiveRecord::Base
       raise PackageError.new("Nothing to update")
     else
       results = packages.map do |p|
-        p.update_attributes(package_attributes)
+        { success: p.update_attributes(package_attributes), messages: p.errors.messages }
       end
-      successes = results.map {|b| b == false }
-      failures = results.map {|b| b == true }
-      {:total => packages.count, :successes => successes.count, :failures => failures.count}
+      validations = results.map { |r| r[:success] }
+      messages = results.map { |r| r[:messages].values }.flatten
+      successes = validations.select {|b| b }
+      failures = validations.select {|b| not b }
+      {total: packages.count, successes: successes.count, failures: failures.count, messages: messages}
     end
   end
 

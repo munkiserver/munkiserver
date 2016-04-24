@@ -97,16 +97,12 @@ class PackagesController < ApplicationController
       exceptionMessage = e.to_s
     end
     respond_to do |format|
-      if exceptionMessage
-        flash[:error] = "A problem occurred: " + exceptionMessage
-      elsif results[:total] == results[:successes] and results[:failures] == 0
-        flash[:notice] = "All #{results[:total]} packages were successfully updated."
-      elsif results[:total] == results[:failures] and results[:successes] == 0
-        flash[:error] = "None of the #{results[:total]} packages were updated!"
-      elsif results[:successes] > 0 and results[:failures] > 0
-        flash[:warning] = "#{results[:successes]} of #{results[:total]} packages updated."
+      flash[:error] = results[:messages].join('</br>').html_safe if results[:messages]
+      flash[:error] += exceptionMessage if exceptionMessage
+      if results[:successes] == results[:total]
+        flash[:notice] = "All #{results[:total]} #{'package'.pluralize if results[:total] > 1} were updated successfully"
       else
-        flash[:error] = "Something weird happened. Here are the results: #{results.inspect}"
+        flash[:warning] = "#{results[:successes]} #{'package'.pluralize if results[:successes] > 1} of #{results[:total]} #{'package'.pluralize if results[:total] > 1} were updated."
       end
       format.html { redirect_to packages_path }
     end
