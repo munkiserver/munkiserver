@@ -80,7 +80,8 @@ class Package < ActiveRecord::Base
                                                ['AdobeCS5PatchInstaller'],
                                                ['AdobeCS5Installer'],
                                                ['AdobeCS5AAMEEPackage'],
-                                               ['AdobeSetup']],
+                                               ['AdobeSetup'],
+                                               ['AdobeCCPInstaller']],
                   :supported_architectures => ['i386','x86_64','ppc','Power Macintosh'],
                   :uninstall_method        => [['Remove Copied Items','remove_copied_items'],
                                                ['Remove Packages','removepackages'],
@@ -90,7 +91,8 @@ class Package < ActiveRecord::Base
                                                ['Uninstall Item Location', 'uninstaller_item_location'],
                                                ['AdobeUberUninstaller','AdobeUberUninstaller'],
                                                ['AdobeSetup','AdobeSetup'],
-                                               ['AdobeCS5AAMEEPackage','AdobeCS5AAMEEPackage']]}
+                                               ['AdobeCS5AAMEEPackage','AdobeCS5AAMEEPackage'],
+                                               ['AdobeCCPUninstaller']]}
 
   def self.find_where_params(params)
     unit = Unit.where(:shortname => params["unit_shortname"]).select("id").first
