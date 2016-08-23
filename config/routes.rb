@@ -1,4 +1,7 @@
 Munki::Application.routes.draw do  
+  match '/ping', to: Proc.new { ['200', {'Content-Type' => 'text/text'}, ['Pong']] }
+  root :to => redirect("/login")
+  
   resources :units, :except => [:show] do
     member do
       get 'settings/edit' => 'unit_settings#edit'
@@ -99,6 +102,4 @@ Munki::Application.routes.draw do
   
   # Redirect unit hostname to computer index
   match "/:unit_shortname" => redirect("/%{unit_shortname}/computers")
-
-  root :to => redirect("/login")
 end
