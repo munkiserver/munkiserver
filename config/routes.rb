@@ -15,6 +15,10 @@ Munki::Application.routes.draw do
   match '/login' => "sessions#new"
   match 'create_session' => 'sessions#create'
   match '/logout' => 'sessions#destroy'
+
+  # TODO: Hide this from non-admins
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
   
   # Computer checkin URL
   match 'checkin/:id' => 'computers#checkin', :via => :post
