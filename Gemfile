@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'version_sorter'
 
-gem 'rails', '3.2.22'
+gem 'rails', '3.2.22.1'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'execjs'
 gem 'will_paginate', '~> 3.0' # version added for rails 3 compatibility
@@ -25,11 +25,17 @@ gem 'active_record_or'
 
 gem 'coveralls', require: false
 
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+
+gem 'redis-rails'
+gem 'puma'
+gem 'ace-rails-ap'
+
 gem 'dotenv-rails'
 gem 'rack-timeout'
 
 gem 'sidekiq'
-gem 'database_cleaner'
 
 group :development do
   gem 'rails-erd'
@@ -46,6 +52,7 @@ group :test do
   gem 'vcr', '~> 2.4.0'
   gem 'webmock', '~> 1.8.7'
   gem 'faker'
+  gem 'database_cleaner'
 end
 
 group :assets do
@@ -56,13 +63,6 @@ end
 
 gem 'newrelic_rpm'
 
-gem 'pry-rails', :group => [:development, :test]
-
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-
-gem 'redis-rails'
-gem 'puma'
-gem 'ace-rails-ap'
-
-
+group :development, :test do
+  gem 'pry-rails'
+end
