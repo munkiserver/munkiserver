@@ -7,14 +7,15 @@ class ComputersController < ApplicationController
     # Default to scoped (i.e. sorted)
     @computers = Computer.scoped
 
-    # Search for value on name OR hostname OR mac_address attributes
+    # Search for value on name OR hostname OR mac_address OR last_ip attributes
     @computers = @computers.search(:name, params[:search])
     @computers = @computers.or.search(:hostname, params[:search])
     @computers = @computers.or.search(:mac_address, params[:search])
+    @computers = @computers.or.search(:last_ip, params[:search])
 
     # Scope computers to unit/environment and then order by relevent column and direction
     @computers = @computers.unit(current_unit).environment(current_environment)
-    @computers = @computers.order("#{sort_column} #{sort_direction}")
+    @computers = @computers.reorder("#{sort_column} #{sort_direction}")
 
     # Add pagination using will_paginate gem
     per_page = params[:per_page] if params[:per_page].present?
