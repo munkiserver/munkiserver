@@ -176,12 +176,8 @@ class ComputersController < ApplicationController
       @computer.system_profile.attributes = system_profile_hash
     end
 
-    @computer.last_ip = request.remote_ip
-    @computer.save
-
-    if @computer.warranty.present? and @computer.serial_number != @computer.warranty.serial_number
-      @computer.warranty.destroy
-    end
+    update_ip(@computer, request)
+    conform_warranty(@computer)
 
     AdminMailer.computer_report(@computer).deliver if @computer.report_due?
     render text: ''
@@ -299,5 +295,15 @@ class ComputersController < ApplicationController
   # Helper method to minimize errors and SQL injection attacks
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+
+  def update_ip(computer, request)
+    computer.update_attributes last_ip: request.remote_ip
+  end
+
+  def conform_warranty(computer)
+    if computer.warranty.present? and computer.serial_number != computer.warranty.serial_number
+      computer.warranty.destroy
+    end
   end
 end
