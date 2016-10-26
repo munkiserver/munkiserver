@@ -1,4 +1,4 @@
-web: bin/rails server -p $PORT
+web: bin/rails server puma -p $PORT
 redis: redis-server /usr/local/etc/redis.conf
 mysql: mysqld --gdb
-sidekiq: bin/sidekiq -c 3
+sidekiq: bin/sidekiq -c 1
