@@ -3,14 +3,15 @@ class Computer < ActiveRecord::Base
   include HasAUnit
   include HasAnEnvironment
   include HasAnIcon
+  include IsAsyncDestroyable
   
   belongs_to :computer_model
   belongs_to :computer_group
   
   has_one :system_profile, :dependent => :destroy, :autosave => true
   has_one :warranty, :dependent => :destroy, :autosave => true
-  has_many :client_logs
-  has_many :managed_install_reports
+  has_many :client_logs, dependent: :destroy
+  has_many :managed_install_reports, order: 'created_at DESC', dependent: :destroy
   
   # Validations
   validate :computer_model
@@ -29,8 +30,11 @@ class Computer < ActiveRecord::Base
 
   validates_uniqueness_of :hostname, :allow_blank => true
   
+  default_scope where(deleted_at: nil).order(:name)
+  
   scope :search, lambda {|column, term|where(["#{column.to_s} LIKE ?", "%#{term}%"]) unless term.blank? or column.blank?}
   scope :eager_manifests, includes(bundle_includes + [{:computer_group => item_includes + bundle_includes}])
+  scope :deleted, where('deleted_at IS NOT NULL').order(:name)
   
   # before_save :require_computer_group
   
@@ -138,7 +142,7 @@ class Computer < ActiveRecord::Base
   
   # Return the latest instance of ClientLog
   def last_report
-    managed_install_reports.last
+    managed_install_reports.first
   end
   
   # Returns, in words, the time since last run

@@ -2,20 +2,32 @@ require 'cgi'
 
 class ComputersController < ApplicationController
   helper_method :sort_column, :sort_direction
-  
+
   def index
+    # Default to scoped (i.e. sorted)
+    @computers = Computer.scoped
+
+    # Search for value on name OR hostname OR mac_address OR last_ip attributes
+    @computers = @computers.search(:name, params[:search])
+    @computers = @computers.or.search(:hostname, params[:search])
+    @computers = @computers.or.search(:mac_address, params[:search])
+    @computers = @computers.or.search(:last_ip, params[:search])
+
     # Scope computers to unit/environment and then order by relevent column and direction
-    @computers = Computer.unit(current_unit).environment(current_environment)
-    @computers = @computers.order(sort_column + ' ' + sort_direction)
-    
-    # Search for value on name attribute
-    @computers = @computers.search(:name, params[:name])
-    
+    @computers = @computers.unit(current_unit).environment(current_environment)
+    @computers = @computers.reorder("#{sort_column} #{sort_direction}")
+
     # Add pagination using will_paginate gem
-    per_page = params[:per_page]
+    per_page = params[:per_page] if params[:per_page].present?
     per_page ||= Computer.per_page
-    @computers = @computers.paginate(:page => params[:page], :per_page => per_page)
-    
+    @computers = @computers.paginate(
+      :page => params[:page],
+      :per_page => per_page
+    ).includes(
+      :system_profile,
+      :unit
+    )
+
     respond_to do |format|
       format.html # index.html
       format.js # index.js
@@ -32,7 +44,7 @@ class ComputersController < ApplicationController
   def create
     # Recreating a new computer object instead of using the one we already created in load_singular_resource
     @computer = Computer.new(params[:computer].merge({:unit_id => current_unit.id}))
-    
+
     respond_to do |format|
       if @computer.save
         flash[:notice] = "#{@computer} was successfully created."
@@ -43,7 +55,7 @@ class ComputersController < ApplicationController
       end
     end
   end
-  
+
   def show
     respond_to do |format|
       if @computer.present?
@@ -77,7 +89,7 @@ class ComputersController < ApplicationController
       end
     end
   end
-  
+
   def show_resource
     respond_to do |format|
       format.zip { render :text => "", :status => 404 }
@@ -96,14 +108,13 @@ class ComputersController < ApplicationController
         flash[:error] = 'Could not update computer!'
         format.html { render :action => "edit" }
       end
-    end 
+    end
   end
 
   def destroy
-    if @computer.destroy
-      flash[:notice] = "Computer was destroyed successfully"
-    end
-    
+    @computer.async_destroy
+    flash[:notice] = "Computer was queued for deletion. This could take some time."
+
     respond_to do |format|
       format.html { redirect_to computers_path(current_unit) }
     end
@@ -113,7 +124,7 @@ class ComputersController < ApplicationController
   # Import an ARD plist form
   def import
   end
-  
+
   # Take ARD plist and create new computer objects
   # TO-DO when a computer object import fails, tell
   # the user what went wrong (by print the computer.errors hash)
@@ -124,13 +135,13 @@ class ComputersController < ApplicationController
       e = "Please select a plist file"
     rescue => e
     end
-      
+
     unless @computers.nil?
       @total = @computers.count
       # Save each computer.  If it doesn't save, leave it out of the array
       @computers = @computers.collect {|e| e if e.save}.compact
     end
-    
+
     respond_to do |format|
       if @computers.nil?
         flash[:error] = "There was a problem while parsing the plist: #{e}"
@@ -144,32 +155,35 @@ class ComputersController < ApplicationController
       end
     end
   end
-  
+
   # Allows a computer to checkin with the server, notifying it
   # of the last successful munki run.  May be extended in the future.
   def checkin
+    # Return nothing if computer doesn't exist
+    unless @computer
+      render text: ''
+      return
+    end
+
     if params[:managed_install_report_plist].present?
       report_hash = ManagedInstallReport.format_report_plist(params[:managed_install_report_plist]).merge({:ip => request.remote_ip})
       @computer.managed_install_reports.build(report_hash)
     end
-    
+
     if params[:system_profiler_plist].present?
       system_profile_hash = SystemProfile.format_system_profiler_plist(params[:system_profiler_plist])
       sp = SystemProfile.find_or_create_by_computer_id(@computer.id)
       @computer.system_profile.attributes = system_profile_hash
     end
-    
-    @computer.save
-    
-    if @computer.warranty.present? and @computer.serial_number != @computer.warranty.serial_number
-      @computer.warranty.destroy
-    end
-    
+
+    update_ip(@computer, request)
+    conform_warranty(@computer)
+
     AdminMailer.computer_report(@computer).deliver if @computer.report_due?
-    render :text => ''
+    render text: ''
   end
-  
-  
+
+
   # Allows multiple edits
   def edit_multiple
     @computers = Computer.find(params[:selected_records])
@@ -179,12 +193,19 @@ class ComputersController < ApplicationController
       format.js
     end
   end
-  
+
   def update_multiple
-    @computers = Computer.find(params[:selected_records])
+    @computers = Computer.where(id: params[:selected_records])
     p = params[:computer]
     results = []
     exceptionMessage = nil
+
+    if params[:commit] == 'Delete'
+      @computers.each(&:async_destroy)
+      redirect_to computers_path, :flash => { :notice => "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
+      return
+    end
+
     begin
       results = Computer.bulk_update_attributes(@computers, p)
     rescue ComputerError => e
@@ -207,25 +228,25 @@ class ComputersController < ApplicationController
         end
     end
   end
-  
+
   def environment_change
     @environment_id = params[:environment_id] if params[:environment_id].present?
-    
+
     respond_to do |format|
       format.js
     end
   end
-  
+
   def unit_change
     @computer.unit_id = params[:unit_id]
     @unit = Unit.find(params[:unit_id])
     @environment_id = current_environment.id
-    
+
     respond_to do |format|
       format.js
     end
   end
-  
+
   def update_warranty
     @computer = Computer.find_for_show(params[:unit_shortname], params[:computer_id])
     if @computer.update_warranty
@@ -235,23 +256,23 @@ class ComputersController < ApplicationController
     end
     redirect_to computer_path(@computer.unit, @computer, :anchor => 'warranty_tab')
   end
-  
+
   private
   # Load a singular resource into @computer for all actions
   # This is really dense...refactor?
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :client_prefs].include?(action)      
+    if [:show, :client_prefs].include?(action)
       @computer = Computer.find_for_show_fast(params[:id], current_unit)
-    elsif [:show_plist, :show_resource].include?(action)      
+    elsif [:show_plist, :show_resource].include?(action)
       @computer = Computer.find_for_show(nil, params[:id])
     elsif [:edit, :update, :destroy].include?(action)
       @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
-    elsif [:update_warranty].include?(action)      
+    elsif [:update_warranty].include?(action)
       @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:computer_id]))
-    elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)      
+    elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
       @computer = Computer.new({:unit_id => current_unit.id})
-    elsif [:unit_change].include?(action)      
+    elsif [:unit_change].include?(action)
       @computer = Computer.find(params[:computer_id])
     elsif [:environment_change].include?(action)
       if params[:computer_id] == "new"
@@ -265,14 +286,24 @@ class ComputersController < ApplicationController
       raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
     end
   end
-  
+
   # Helper method to minimize errors and SQL injection attacks
   def sort_column
     %w[name hostname mac_address last_report_at].include?(params[:sort]) ? params[:sort] : "name"
   end
-  
-  # Helper method to minimize errors and SQL injection attacks  
+
+  # Helper method to minimize errors and SQL injection attacks
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
-  end  
+  end
+
+  def update_ip(computer, request)
+    computer.update_attributes last_ip: request.remote_ip
+  end
+
+  def conform_warranty(computer)
+    if computer.warranty.present? and computer.serial_number != computer.warranty.serial_number
+      computer.warranty.destroy
+    end
+  end
 end

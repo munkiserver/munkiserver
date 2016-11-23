@@ -1,9 +1,9 @@
-require 'iconv' unless RUBY_VERSION =~ /^1\.9|2\.0/
+require 'iconv' if RUBY_VERSION =~ /^1\.8/
 class String
   def each(&block)
     self.each_line(&block)
   end
-  
+
   def from_plist
     begin
       Plist.parse_xml(self)
@@ -15,7 +15,7 @@ class String
       return self #only happen if you have a string "test", not sure why
     end
   end
-  
+
   # Convert string from whatever encoding to UTF-8, covering corner cases
   def to_utf8
     if defined?(String::Encoding)
@@ -45,7 +45,7 @@ class String
     # Convert to array of ints (if possible), snipping off any guff
     f_split = self.gsub(/(\.0)+$/,'').split(".").map { |e| e.match(/^\d+$/) ? e.to_i : e }
     s_split = string.gsub(/(\.0)+$/,'').split(".").map { |e| e.match(/^\d+$/) ? e.to_i : e }
-    
+
     # Compare the array elements
     i = 0
     comparison_results = []
@@ -63,7 +63,7 @@ class String
       end
       i += 1
     end
-    
+
     # Return comparison result, if strings not equal
     comparison_results.each do |comparison_result|
       return comparison_result unless comparison_result == 0

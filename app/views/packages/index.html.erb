@@ -25,7 +25,9 @@
     <% end %>
   <% else %>
   <%= form_tag edit_multiple_packages_path, :method => :get, :id => "bulk_edit_form", :remote => true do %>
-    <p><%= record_count(@package_branches.map(&:packages).flatten) %><%= submit_tag "Edit Selection", :id => "bulk_edit" %></p>
-    <%= package_table(@package_branches) %>
+    <p><%# record_count(@package_branches.map(&:packages).flatten) %><%= submit_tag "Edit Selection", :id => "bulk_edit" %></p>
+    <% cache(@package_branches) do %>
+      <%= package_table(@package_branches) %>
+    <% end %>
   <% end %>
 <% end %>

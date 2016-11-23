@@ -1,4 +1,7 @@
 Munki::Application.routes.draw do  
+  match '/ping', to: Proc.new { ['200', {'Content-Type' => 'text/text'}, ['Pong']] }
+  root :to => redirect("/login")
+  
   resources :units, :except => [:show] do
     member do
       get 'settings/edit' => 'unit_settings#edit'
@@ -12,6 +15,10 @@ Munki::Application.routes.draw do
   match '/login' => "sessions#new"
   match 'create_session' => 'sessions#create'
   match '/logout' => 'sessions#destroy'
+
+  # TODO: Hide this from non-admins
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
   
   # Computer checkin URL
   match 'checkin/:id' => 'computers#checkin', :via => :post
@@ -27,6 +34,7 @@ Munki::Application.routes.draw do
   match 'icons/:package_branch.png' => 'packages#icon', :format => :png, :package_branch => /[A-Za-z0-9_\-\.%]+/
   match 'catalogs/:unit_environment' => 'catalogs#show', :format => 'plist', :via => :get
   match 'pkgs/:id' => 'packages#download', :as => 'download_package', :id => /[A-Za-z0-9_\-\.%]+/
+  match 'icons/:id.png' => 'package_branches#download_icon', :as => 'download_icon', :format => 'png', :id => /[A-Za-z0-9_\-\.%]+/
   match '/configuration/:id.plist', :controller => 'computers', :action => 'show', :format => 'client_prefs', :id => /[A-Za-z0-9_\-\.:]+/
 
   # add units into URLs
@@ -98,6 +106,4 @@ Munki::Application.routes.draw do
   
   # Redirect unit hostname to computer index
   match "/:unit_shortname" => redirect("/%{unit_shortname}/computers")
-
-  root :to => redirect("/login")
 end

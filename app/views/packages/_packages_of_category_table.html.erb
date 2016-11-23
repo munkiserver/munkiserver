@@ -1,18 +1,24 @@
-<h4><%= category.name.capitalize %></h4>
-<table class="zebra packages">
-  <thead>
-    <tr>
-      <th><!-- Icon --></th>
-      <th>Display Name<br/><em>Branch</em></th>
-      <th><%= check_box_tag("selected_#{category.name.downcase}", nil, false, :class => "select_all") %></th> 
-      <th>Version</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <% package_branches.each do |package_branch| %>
-    <% packages = package_branch.packages.group_by {|p| p.environment_id }[current_environment.id] %>
-    <% if packages.present? %>
-      <%= render :partial => 'packages/package_table_row', :locals => {:package_branch => package_branch, :packages => packages} %>
+<% cache(category) do %>
+  <h4><%= category.name.capitalize %></h4>
+  <table class="zebra packages">
+    <thead>
+      <tr>
+        <th><!-- Icon --></th>
+        <th>Display Name<br/><em>Branch</em></th>
+        <th><%= check_box_tag("selected_#{category.name.downcase}", nil, false, :class => "select_all") %></th> 
+        <th>Version</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+<% end %>
+
+    <% package_branches.each do |package_branch| %>
+      <% cache([current_unit, current_environment, package_branch]) do %>
+        <% packages_by_version = package_branch.packages.select { |p| p.environment_id == current_environment.id }.group_by { |p| p.version } %>
+        <% packages = VersionSorter.rsort(packages_by_version.keys).map { |v| packages_by_version[v] }.flatten %>
+        <% if packages.present? %>
+          <%= render :partial => 'packages/package_table_row', :locals => {:package_branch => package_branch, :packages => packages} %>
+        <% end %>
+      <% end %>
     <% end %>
-  <% end %>
-</table>
+  </table>

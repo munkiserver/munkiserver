@@ -9,7 +9,7 @@ Alternatively enter a URL from where to download the .dmg<br />
 <% unless Munki::Application::MUNKI_TOOLS_AVAILABLE %>
 	<p>
 		Choose a pkginfo plist
-		<%= helpful_info("Generate a pkginfo plist using makepkginfo and upload it")%>
+		<%= helpful_info("Generate a pkginfo plist using makepkginfo and upload it. On an admin machine, you will need to type /usr/local/munki/makepkginfo /path/to/dmg > /path/to/dmg.plist")%>
 	</p>
 	<p><%= file_field_tag :pkginfo_file %></p>
 <% end %>

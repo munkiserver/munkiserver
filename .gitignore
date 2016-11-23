@@ -1,7 +1,8 @@
 .bundle
 config/settings.yaml
-config/database.yml
+config/database.ya?ml
 *.DS_Store
+packages
 packages/
 # Don't ignore app/views/packages
 !app/views/packages
@@ -13,6 +14,7 @@ log/*.log
 tmp/**/*
 tmp/
 .sass-cache/
+.env
 
 config/newrelic.yml
 config/setup_load_paths.rb
@@ -24,5 +26,7 @@ coverage/
 munkiscripts*.dmg
 munkiscripts.pkg
 script/munki_scripts/build/*
+dump.rdb
 
 .ruby-version
+*.env

@@ -3,32 +3,32 @@ module IsAManifest
   # let Munki server sort out the list of items to
   # install/uninstall/managed_update/optional install
   USING_PRECEDENT_ITEMS = true
-  
+
   def self.included(base)
     base.extend ClassMethods
-    
+
     base.class_eval do
       validates :name, :presence => true, :unique_as_shortname => true
       validates :shortname, :presence => true, :format => {:with => /^[a-z0-9-]+$/}
-    
+
       # Bundles
       has_many :bundle_items, :as => :manifest, :dependent => :destroy
       has_many :bundles, :through => :bundle_items, :dependent => :destroy
-    
+
       # Install and uninstall items
       has_many :install_items, :as => :manifest, :dependent => :destroy
       has_many :uninstall_items, :as => :manifest,:dependent => :destroy
-    
+
       # Managed Updates items
       has_many :managed_update_items, :as => :manifest, :dependent => :destroy
 
       # Optional Install items
       has_many :optional_install_items, :as => :manifest, :dependent => :destroy
-      
+
       scope :eager_items, includes(item_includes)
     end
   end
-  
+
   module ClassMethods
     # Return the default record
     # Requires a unit to be passed
@@ -37,7 +37,7 @@ module IsAManifest
       r ||= self.unit(unit).find_by_name("default")
       r ||= self.unit(unit).first
     end
-    
+
     # Attempts a couple different queries in order of importance to
     # find the appropriate record for the show action
     def find_for_show(unit, s)
@@ -57,7 +57,7 @@ module IsAManifest
       record
     end
     alias :find_for_show_super :find_for_show
-    
+
     # Default parameters for a tabled_asm_select method
     # Takes an object of the current class and returns params
     def tas_params(model_obj,environment_id = nil)
@@ -110,38 +110,40 @@ module IsAManifest
         :options => pkg_branch_options,
         :selected_options => model_obj.optional_installs_package_branch_ids }]
     end
-    
+
     def item_associations
-      [:package, {:package_branch => [:packages]}, :manifest]
+      [:package, {:package_branch => [{:packages => [:package_branch, :unit]}, :version_tracker, :package_category]}, :manifest]
     end
-    
+
     # Array of associations to load for associates items
     def item_includes
       [
         {:install_items => item_associations},
         {:uninstall_items => item_associations},
         {:managed_update_items => item_associations},
-        {:optional_install_items => item_associations}
+        {:optional_install_items => item_associations},
+        :bundles,
+        :unit
       ]
     end
-    
+
     def bundle_includes
       [{:bundles => item_includes}, {:bundle_items => :bundle}]
     end
   end
-      
+
   # Takes a name attribute and returns a valid shortname attribute
   def conform_name_to_shortname(name = nil)
     name ||= self.name
     name.to_s.downcase.lstrip.rstrip.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/,'')
   end
-  
+
   # Overwrite the default name setter to add shortname attribute when creating a name
   def name=(value)
     self.shortname = conform_name_to_shortname(value)
     write_attribute(:name,value)
   end
-  
+
   # Return all the environments visible to this object
   def environments
     environment.environments
@@ -153,7 +155,7 @@ module IsAManifest
     exclusion_items_hash = create_item_hash(self.uninstall_items)
     precedent_items("install_items",exclusion_items_hash)
   end
-  
+
   def precedent_uninstall_items
     exclusion_items_hash = create_item_hash(self.install_items)
     precedent_items("uninstall_items",exclusion_items_hash)
@@ -163,17 +165,17 @@ module IsAManifest
     exclusion_items_hash = create_item_hash(self.precedent_install_items).merge(create_item_hash(self.precedent_uninstall_items))
     precedent_items("managed_update_items",exclusion_items_hash)
   end
-  
+
   def precedent_optional_install_items
     exclusion_items_hash = create_item_hash(self.precedent_install_items).merge(create_item_hash(self.precedent_uninstall_items))
     precedent_items("optional_install_items",exclusion_items_hash)
   end
-  
+
   def precedent_items(item_name,exclusion_items_hash)
     item_hash = create_item_hash(self.send(item_name))
     second_item_hash = create_item_hash(self.bundles.map {|b| b.send("precedent_#{item_name}") }.flatten)
     third_item_hash = (self.is_a?(Computer) and self.computer_group.present?) ? create_item_hash(self.computer_group.send("precedent_#{item_name}")) : {}
-    
+
     aux_items = third_item_hash.merge(second_item_hash)
     aux_items.delete_if { |k,v| exclusion_items_hash[k].present? }
     aux_items.merge(item_hash).values
@@ -189,8 +191,8 @@ module IsAManifest
     end
     hash
   end
-  
-  # Takes option to whether use the presedent_items or 
+
+  # Takes option to whether use the presedent_items or
   # let Munki to sort out the install/uninstall/optional install conflict
   def create_item_array(item_method, using_precedent_items = true)
     item_array = []
@@ -199,7 +201,7 @@ module IsAManifest
     else
       method = "#{item_method}"
     end
-      
+
     self.send("#{method}").each do |item|
       if item.package_id.blank?
         item_array << item.package.to_s
@@ -209,31 +211,31 @@ module IsAManifest
     end
     item_array
   end
-  
+
   # Returns an array of strings representing managed_installs
   # based on the items specified in install_items
   def managed_installs
     USING_PRECEDENT_ITEMS ? create_item_array("install_items") : create_item_array("install_items", false)
   end
-  
+
   # Concatentates installs (specified by admins) and user installs (specified
   # by users) to create the managed_installs virtual attribute
   def managed_uninstalls
     USING_PRECEDENT_ITEMS ? create_item_array("uninstall_items") : create_item_array("uninstall_items", false)
   end
-  
+
   # Same as managed_installs and managed_uninstalls
   # managed_updates virtual attribute update items only if already installed
   def managed_updates
     USING_PRECEDENT_ITEMS ? create_item_array("managed_update_items") : create_item_array("managed_update_items", false)
   end
-  
+
   # Same as managed_installs and managed_uninstalls
   # optional_installs virtual attribute let user to choose a list of items to install
   def managed_optional_installs
     USING_PRECEDENT_ITEMS ? create_item_array("optional_install_items") : create_item_array("optional_install_items", false)
   end
-  
+
   # Pass a package object or package ID to append the package to this record
   # If the package's package branch, or another version of the package is specified
   # this package replaces the old
@@ -260,10 +262,10 @@ module IsAManifest
   def append_package_installs(packages)
     packages.map {|package| self.append_package_branch_install(package) }
   end
-  
-  # Pass a package branch object or package branch ID to append the 
-  # package branch to this record.  If the package's package branch, 
-  # or another version of the package is specified this package 
+
+  # Pass a package branch object or package branch ID to append the
+  # package branch to this record.  If the package's package branch,
+  # or another version of the package is specified this package
   # replaces the old
   def append_package_branch_install(pb)
     begin
@@ -281,14 +283,14 @@ module IsAManifest
     its << self.install_items.build({:package_branch_id => pb.id})
     self.install_items = its
   end
-  
+
   # Add package branch items using append_package_branch_installs
   # TO-DO Could be improved by rewrite, as it simply calls another,
   # more expensive method
   def append_package_branch_installs(pbs)
     pbs.map {|pb| self.append_package_branch_install(pb) }
   end
-  
+
   # Pass a list of Package records or package IDs and install_item associations will be built
   def package_installs=(packages)
     package_objects = [];
@@ -302,7 +304,7 @@ module IsAManifest
     end
     self.installs = package_objects
   end
-  
+
   # Pass a list of Package records or package IDs and install_item associations will be built
   def package_branch_installs=(package_branches)
     pb_objects = [];
@@ -316,7 +318,7 @@ module IsAManifest
     end
     self.installs = pb_objects
   end
-  
+
   # Assign the list of items to a specific association (assoc)
   def build_package_association_assignment(assoc,list)
     # Blank out the association
@@ -334,21 +336,21 @@ module IsAManifest
       end
     end
   end
-  
+
   # Gets the packages that belong to this manifests installs virtual attribute
   def installs
     install_items.collect(&:package)
   end
-  
+
   # Pass a list of Package or PackageBranch records and install_item associations will be built
   def installs=(list)
     build_package_association_assignment(:install_items,list)
   end
-  
+
   def installs_package_branch_ids
     install_items.collect(&:package_branch).uniq.collect(&:id)
   end
-  
+
   # Gets the packages that belong to this manifests uninstalls virtual attribute
   def uninstalls
     uninstall_items.collect(&:package)
@@ -362,34 +364,34 @@ module IsAManifest
     uninstall_items.collect(&:package_branch).uniq.collect(&:id)
   end
 
-  # Gets the packages that belong to this manifests user_installs virtual attribute      
+  # Gets the packages that belong to this manifests user_installs virtual attribute
   def user_installs
     user_install_items.collect(&:package)
   end
-  
+
   # Pass a list of Package or PackageBranch records and install_item associations will be built
   def user_installs=(list)
     build_package_association_assignment(:user_install_items,list)
   end
-  
+
   def user_installs_package_branch_ids
     user_install_items.collect(&:package_branch).uniq.collect(&:id)
   end
-  
-  # Gets the packages that belong to this manifests user_uninstalls virtual attribute      
+
+  # Gets the packages that belong to this manifests user_uninstalls virtual attribute
   def user_uninstalls
     user_uninstall_items.collect(&:package)
   end
-  
+
   # Pass a list of Package or PackageBranch records and install_item associations will be built
   def user_uninstalls=(list)
     build_package_association_assignment(:user_uninstall_items,list)
-  end  
+  end
 
   def user_uninstalls_package_branch_ids
     user_uninstall_items.collect(&:package_branch).uniq.collect(&:id)
   end
-  
+
   # Gets the packages that belong to this manifests managed_update virtual attribute
   def updates
     managed_update_items.collect(&:package)
@@ -403,7 +405,7 @@ module IsAManifest
   def updates_package_branch_ids
     managed_update_items.collect(&:package_branch).uniq.collect(&:id)
   end
-  
+
  # Gets the packages that belong to this manifests optional_installs virtual attribute
   def optional_installs
     optional_install_items.collect(&:package)
@@ -417,62 +419,62 @@ module IsAManifest
   def optional_installs_package_branch_ids
     optional_install_items.collect(&:package_branch).uniq.collect(&:id)
   end
-  
+
   def bundle_ids
     bundles.map(&:id)
   end
-  
+
   def bundle_ids=(value)
     Bundle.where(:id => value).to_a
   end
-  
+
   def bundle_ids
     bundles.map(&:id)
   end
-  
+
   def bundle_ids=(value)
     self.bundles = Bundle.where(:id => value).to_a
   end
-  
+
   def installs_package_branch_ids
     install_items.map(&:package_branch).map(&:id)
   end
-  
+
   def installs_package_branch_ids=(value)
     self.installs = PackageBranch.where(:id => value).to_a
   end
-  
+
   def uninstalls_package_branch_ids
     uninstall_items.map(&:package_branch).map(&:id)
   end
-  
+
   def uninstalls_package_branch_ids=(value)
     self.uninstalls = PackageBranch.where(:id => value).to_a
   end
-  
+
   def updates_package_branch_ids
     managed_update_items.map(&:package_branch).map(&:id)
   end
-  
+
   def updates_package_branch_ids=(value)
     self.updates = PackageBranch.where(:id => value).to_a
   end
-  
+
   def optional_installs_package_branch_ids
     optional_install_items.map(&:package_branch).map(&:id)
   end
-  
+
   def optional_installs_package_branch_ids=(value)
     self.optional_installs = PackageBranch.where(:id => value).to_a
   end
-  
+
   # Returns all package_branches that belongs to the unit and the environment
   def assignable_package_branches
     # Grab all package branches referenced by packages of this unit and environment
     # TO-DO use include to minimize db queries made for package_branches
     packages = Package.unit(unit).environments(environments)
     package_branches = packages.collect { |p| p.package_branch }
-    
+
     # Remove duplicate package branches from the list of package branches
     uniq_pb_ids = []
     uniq_pbs = []
@@ -482,10 +484,10 @@ module IsAManifest
         uniq_pb_ids << pb.id
       end
     end
-    
+
     uniq_pbs
   end
-  
+
   # add the path to the plist, called by included_manifests
   def to_s(format = nil)
     case format
@@ -508,16 +510,16 @@ module IsAManifest
     h[:optional_installs] = managed_optional_installs
     h
   end
-  
+
   alias :serialize_for_plist_super :serialize_for_plist
-  
+
   # Converts serialized object into plist string
   def to_plist
     plist = serialize_for_plist.to_plist
     # Fix ^M encoding CR issue
     plist.gsub(/\r\n?/, "\n")
   end
-  
+
   def included_manifests
     a = bundles.collect {|e| "#{e.to_s(:path)}.plist"}
     if self.respond_to?(:computer_group)
@@ -525,13 +527,13 @@ module IsAManifest
     end
     a
   end
-  
+
   # Default parameters for the table_asm_select method
   # Returns values for self
   def tas_params(environment_id = nil)
     self.class.tas_params(self, environment_id)
   end
-  
+
   # overwrite default to_param for friendly bundle URLs
   def to_param
     shortname

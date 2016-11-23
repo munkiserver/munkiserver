@@ -7,7 +7,7 @@ class Package < ActiveRecord::Base
   include HasAnIcon
 
   # Dependancy relationships
-  belongs_to :package_branch
+  belongs_to :package_branch, :touch => true
   belongs_to :icon
 
   has_many :dependents, :class_name => "RequireItem", :dependent => :destroy
@@ -53,8 +53,26 @@ class Package < ActiveRecord::Base
   validates_uniqueness_of :version, :scope => [:unit_id, :package_branch_id]
   validates :force_install_after_date_string, :date_time => true, :allow_blank => true
 
-  FORM_OPTIONS = {:restart_actions         => [['None','None'],['Logout','RequiredLogout'],['Restart','RequiredRestart'],['Shutdown','Shutdown']],
-                  :os_versions             => [[['Any','']], os_range(10,10,0..1), os_range(10,9,0..5), os_range(10,8,0..5), os_range(10,7,0..5), os_range(10,6,0..8), os_range(10,5,0..8)].flatten(1),
+  # Update For and Requires must be in the same environment as the record
+  validates_each :update_for_items, :require_items do |package, attr, items|
+    items.each do |item| 
+      unless package.environment == item.package.environment
+        pretty_name = attr.to_s.gsub(/_/, ' ').titleize
+        package.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{package.name})")
+      end
+    end
+  end
+
+  FORM_OPTIONS = {:restart_actions         => [['None','None'],['Logout','RequireLogout'],['Restart','RequireRestart'],['Recommend Restart','RecommendRestart']],
+                  :os_versions             => [[['Any','']], 
+                                                os_range(10,12,0..3),
+                                                os_range(10,11,0..6),
+                                                os_range(10,10,0..5),
+                                                os_range(10,9,0..5),
+                                                os_range(10,8,0..5),
+                                                os_range(10,7,0..5),
+                                                os_range(10,6,0..8),
+                                                os_range(10,5,0..11)].flatten(1),
                   :installer_types         => [['Package',''],
                                                ['Copy From DMG', 'copy_from_dmg'],
                                                ['App DMG','appdmg'],
@@ -63,7 +81,8 @@ class Package < ActiveRecord::Base
                                                ['AdobeCS5PatchInstaller'],
                                                ['AdobeCS5Installer'],
                                                ['AdobeCS5AAMEEPackage'],
-                                               ['AdobeSetup']],
+                                               ['AdobeSetup'],
+                                               ['AdobeCCPInstaller']],
                   :supported_architectures => ['i386','x86_64','ppc','Power Macintosh'],
                   :uninstall_method        => [['Remove Copied Items','remove_copied_items'],
                                                ['Remove Packages','removepackages'],
@@ -73,7 +92,8 @@ class Package < ActiveRecord::Base
                                                ['Uninstall Item Location', 'uninstaller_item_location'],
                                                ['AdobeUberUninstaller','AdobeUberUninstaller'],
                                                ['AdobeSetup','AdobeSetup'],
-                                               ['AdobeCS5AAMEEPackage','AdobeCS5AAMEEPackage']]}
+                                               ['AdobeCS5AAMEEPackage','AdobeCS5AAMEEPackage'],
+                                               ['AdobeCCPUninstaller']]}
 
   def self.find_where_params(params)
     unit = Unit.where(:shortname => params["unit_shortname"]).select("id").first
@@ -224,30 +244,34 @@ class Package < ActiveRecord::Base
   # Virtual attribute that parses the array value of a tabled asm select into package and
   # package branches and assigns that value to the upgrade_for attribute
   def update_for_tas=(value)
-    self.update_for = Package.parse_package_strings(value) if value != nil
+    self.update_for = Package.parse_package_strings(value, self.unit, self.environment) if value != nil
   end
 
   # Virtual attribute that parses the array value of a tabled asm select into package and
   # package branches and assigns that value to the requires attribute
   def requires_tas=(value)
-    self.requires = Package.parse_package_strings(value) if value != nil
+    self.requires = Package.parse_package_strings(value, self.unit, self.environment) if value != nil
   end
 
   # Takes an array of strings and returns either a package or a package branch
   # depending on the format of the string.
   # => Package record returned if matching: "#{package_branch_name}-#{version}"
   # => PackageBranch record returned if matching: "#{package_branch_name}"
-  def self.parse_package_strings(a)
+  def self.parse_package_strings(a, unit=nil, environment=nil)
     items = []
     a.each do |name|
       if split = name.match(/(.+)(-)(.+)/)
         # For packages
-        pb = PackageBranch.where(:name => split[1]).limit(1).first
+        pb = PackageBranch.scoped
+        pb = pb.unit(unit).environment(environment) if (unit.present? and environment.present?)
+        pb = pb.where(:name => split[1]).limit(1).first
         p = Package.where(:package_branch_id => pb.id, :version => split[3]).first
         items << p unless p.nil?
       else
         # For package branches
-        pb = PackageBranch.where(:name => name).limit(1).first
+        pb = PackageBranch.scoped
+        pb = pb.unit(unit).environment(environment) if (unit.present? and environment.present?)
+        pb = pb.where(:name => name).limit(1).first
         items << pb unless pb.nil?
       end
     end
@@ -299,8 +323,6 @@ class Package < ActiveRecord::Base
   def icon
     icon = Icon.where(:id => icon_id).first
     icon ||= package_branch.icon
-    icon ||= package_category.icon
-
     icon
   end
 
@@ -436,9 +458,8 @@ class Package < ActiveRecord::Base
     environment_id ||= model_obj.environment_id
     environment = Environment.find(environment_id)
     # Get all the package branches associated with this unit and environment
-    update_for_options = PackageBranch.where("id <> ?", model_obj.package_branch.id).unit_and_environment(model_obj.unit, environment).map { |e| [e.to_s,e.to_s] }
+    update_for_options = PackageBranch.where("id <> ?", model_obj.package_branch.id).unit_and_environment(model_obj.unit, environment).reject { |e| e.name == model_obj.name }.map { |e| [e.to_s,e.to_s] }
     update_for_selected = model_obj.update_for.map(&:package_branch).map(&:to_s)
-    # update_for_selected = model_obj.update_for_items.map(&:package_branches).map(&:to_s)
     requires_options = Package.unit(model_obj.unit).environment(environment).where("id != #{model_obj.id}").map { |e| [e.to_s(:version),e.to_s(:version)] }.sort{|a,b| a[0] <=> b[0]}
     requires_selected = model_obj.require_items.map(&:package).map {|e| e.to_s(:version) }
 
@@ -564,6 +585,7 @@ class Package < ActiveRecord::Base
       # Requires
       h["requires"] = self.requires.map {|p| p.to_s(:version) } unless self.requires.empty?
       h["installer_item_location"] = download_name
+      h["category"] = self.category.to_s
 
       # Add any raw tags
       h = h.merge(raw_tags) if append_raw?
@@ -660,6 +682,10 @@ class Package < ActiveRecord::Base
     cloneable_attributes
   end
 
+  def category
+    package_category.present? ? package_category : NullCategory.new
+  end
+
   # over write the default get description, check if nil then get the description from version_trackers
   def description
     value = super
@@ -713,11 +739,13 @@ class Package < ActiveRecord::Base
       raise PackageError.new("Nothing to update")
     else
       results = packages.map do |p|
-        p.update_attributes(package_attributes)
+        { success: p.update_attributes(package_attributes), messages: p.errors.messages }
       end
-      successes = results.map {|b| b == false }
-      failures = results.map {|b| b == true }
-      {:total => packages.count, :successes => successes.count, :failures => failures.count}
+      validations = results.map { |r| r[:success] }
+      messages = results.map { |r| r[:messages].values }.flatten
+      successes = validations.select {|b| b }
+      failures = validations.select {|b| not b }
+      {total: packages.count, successes: successes.count, failures: failures.count, messages: messages}
     end
   end
 
