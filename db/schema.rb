@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151112150839) do
+ActiveRecord::Schema.define(:version => 20161123160838) do
 
   create_table "bundle_items", :force => true do |t|
     t.integer  "manifest_id"
     t.string   "manifest_type"
     t.integer  "bundle_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "bundles", :force => true do |t|
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
     t.string   "shortname"
   end
 
@@ -38,8 +38,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.text     "managed_software_update_log"
     t.text     "errors_log"
     t.text     "installs_log"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   create_table "computer_groups", :force => true do |t|
@@ -49,8 +49,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.integer  "configuration_id"
     t.string   "shortname"
   end
@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "name"
     t.string   "identifier"
     t.integer  "icon_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "computers", :force => true do |t|
@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.string   "hostname",             :default => ""
     t.integer  "configuration_id"
     t.string   "shortname"
@@ -87,8 +87,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
   create_table "configurations", :force => true do |t|
     t.string   "configuration"
     t.boolean  "inherit",       :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "download_links", :force => true do |t|
@@ -96,16 +96,16 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "url"
     t.string   "caption"
     t.integer  "version_tracker_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "environments", :force => true do |t|
     t.string   "name"
     t.text     "description"
     t.text     "environment_ids"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "icons", :force => true do |t|
@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "install_items", :force => true do |t|
@@ -122,8 +122,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "managed_install_reports", :force => true do |t|
@@ -150,8 +150,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.text     "managed_installs_list"
     t.text     "managed_uninstalls_list"
     t.text     "managed_updates_list"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   add_index "managed_install_reports", ["computer_id"], :name => "index_managed_install_reports_on_computer_id"
@@ -161,40 +161,16 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "memberships", :force => true do |t|
-    t.integer  "unit_id"
-    t.integer  "user_id"
-    t.boolean  "create_computer",        :default => true
-    t.boolean  "read_computer",          :default => true
-    t.boolean  "edit_computer",          :default => true
-    t.boolean  "destroy_computer",       :default => true
-    t.boolean  "create_bundle",          :default => true
-    t.boolean  "read_bundle",            :default => true
-    t.boolean  "edit_bundle",            :default => true
-    t.boolean  "destroy_bundle",         :default => true
-    t.boolean  "create_computer_group",  :default => true
-    t.boolean  "read_computer_group",    :default => true
-    t.boolean  "edit_computer_group",    :default => true
-    t.boolean  "destroy_computer_group", :default => true
-    t.boolean  "create_package",         :default => true
-    t.boolean  "read_package",           :default => true
-    t.boolean  "edit_package",           :default => true
-    t.boolean  "destroy_package",        :default => true
-    t.boolean  "edit_unit",              :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "missing_manifests", :force => true do |t|
     t.string   "manifest_type"
     t.string   "identifier"
     t.string   "request_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "hostname"
     t.boolean  "dismissed",     :default => false
   end
@@ -202,8 +178,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
   create_table "notifications", :force => true do |t|
     t.integer  "notified_id"
     t.string   "notified_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "optional_install_items", :force => true do |t|
@@ -211,15 +187,15 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "package_branches", :force => true do |t|
     t.string   "name"
     t.string   "display_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
     t.integer  "unit_id"
     t.integer  "package_category_id"
   end
@@ -228,8 +204,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "name"
     t.text     "description"
     t.integer  "icon_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "packages", :force => true do |t|
@@ -264,8 +240,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "installer_item_checksum"
     t.text     "raw_tags"
     t.integer  "raw_mode_id",               :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
     t.text     "preinstall_script"
     t.text     "postinstall_script"
     t.text     "uninstall_script"
@@ -281,16 +257,16 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "principal_type"
     t.integer  "unit_id"
     t.integer  "privilege_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "privileges", :force => true do |t|
     t.string   "name"
     t.text     "description"
     t.boolean  "unit_specific", :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "require_items", :force => true do |t|
@@ -298,8 +274,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "sp_printers", :force => true do |t|
@@ -319,8 +295,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "status"
     t.string   "uri"
     t.integer  "system_profile_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
   end
 
   create_table "system_profiles", :force => true do |t|
@@ -342,8 +318,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "os_version"
     t.string   "uptime"
     t.string   "user_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   create_table "uninstall_items", :force => true do |t|
@@ -351,8 +327,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "unit_settings", :force => true do |t|
@@ -363,8 +339,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.text     "error_events"
     t.integer  "unit_id"
     t.boolean  "version_tracking"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "units", :force => true do |t|
@@ -373,8 +349,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "key"
     t.integer  "unit_member_id"
     t.integer  "unit_member_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.integer  "configuration_id"
     t.string   "shortname"
   end
@@ -384,8 +360,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "user_allowed_items", :force => true do |t|
@@ -393,16 +369,16 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "user_group_memberships", :force => true do |t|
     t.integer  "principal_id",   :null => false
     t.string   "principal_type", :null => false
     t.integer  "user_group_id",  :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "user_groups", :force => true do |t|
@@ -410,8 +386,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "shortname"
     t.text     "description"
     t.integer  "unit_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "user_install_items", :force => true do |t|
@@ -419,15 +395,15 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "user_settings", :force => true do |t|
     t.boolean  "receive_email_notifications"
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   create_table "user_uninstall_items", :force => true do |t|
@@ -435,8 +411,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -445,8 +421,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "email"
     t.string   "salt"
     t.boolean  "super_user",      :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   create_table "version_trackers", :force => true do |t|
@@ -454,8 +430,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.integer  "web_id"
     t.string   "version"
     t.string   "download_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.integer  "icon_id"
     t.text     "description"
   end
@@ -477,8 +453,8 @@ ActiveRecord::Schema.define(:version => 20151112150839) do
     t.string   "forum_url",               :default => ""
     t.string   "phone_support_url",       :default => ""
     t.integer  "computer_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
   end
 
 end
