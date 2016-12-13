@@ -161,7 +161,7 @@
             <%= helpful_info("Enter the content of the Uninstall script here") %>
           </h4>
           <div id="postinstall_script_container">
-            <%= f.text_area :uninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+            <%= f.text_area :uninstall_script, :size => "80x20", "data-format" => 'sh' %>
           </div>
           <!-- <hr /> -->
         </td>
@@ -251,7 +251,7 @@
         <%= helpful_info("Enter the content of the script here to run before the installation") %>
       </h4>
       <div id="preinstall_script_container">
-        <%= f.text_area :preinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+        <%= f.text_area :preinstall_script, :size => "80x20", "data-format" => 'sh' %>
       </div>
     </div>
     <div>
@@ -260,7 +260,7 @@
         <%= helpful_info("Enter the content of the script here to run after the installation") %>
       </h4>
       <div id="postinstall_script_container">
-        <%= f.text_area :postinstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+        <%= f.text_area :postinstall_script, :size => "80x20", "data-format" => 'sh' %>
       </div>
     </div>
     <div>
@@ -269,7 +269,7 @@
         <%= helpful_info("Enter the content of the script here to run after the installation") %>
       </h4>
       <div id="preuninstall_script_container">
-        <%= f.text_area :preuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+        <%= f.text_area :preuninstall_script, :size => "80x20", "data-format" => 'sh' %>
       </div>
     </div>
     <div>
@@ -278,7 +278,7 @@
         <%= helpful_info("Enter the content of the script here to run after the installation") %>
       </h4>
       <div id="postuninstall_script_container">
-        <%= f.text_area :postuninstall_script, :size => "80x20", "data-format" => 'text/x-csrc' %>
+        <%= f.text_area :postuninstall_script, :size => "80x20", "data-format" => 'sh' %>
       </div>
     </div>
   </div>
