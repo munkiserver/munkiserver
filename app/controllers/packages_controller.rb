@@ -4,7 +4,7 @@ class PackagesController < ApplicationController
   def index
     @package_branches = PackageBranch
                           .find_for_index(current_unit, current_environment)
-                          .includes(:package_category, :unit, :packages => [:unit], :version_tracker => [:download_links])
+                          .includes(:package_category, :unit, :packages => [:unit])
                           .uniq_by {|branch| branch.id }
     @environments = Environment.all
 
