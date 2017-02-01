@@ -1,5 +1,5 @@
 class PackagesController < ApplicationController
-  cache_sweeper :package_sweeper, :only => [:create, :edit, :destroy]
+  cache_sweeper :package_sweeper, :only => [:create, :update,  :update_multiple, :destroy]
 
   def index
     @package_branches = PackageBranch
