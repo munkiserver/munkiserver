@@ -1,3 +1,16 @@
 <h2>Editing user</h2>
 
 <%= render :partial => 'form' %>
+
+<table class="api_keys">
+  <tr>
+    <th>API Keys</th>
+  </tr>
+  
+
+  <% @user.api_keys.each do |api_key| %>
+    <tr>
+      <td class="key"><%= api_key.key %></td>
+    <tr>
+  <% end %>
+</table>

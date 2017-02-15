@@ -102,11 +102,19 @@ module ApplicationHelper
   end
   
   def current_unit
-    @current_unit ||= Unit.where(:shortname => params[:unit_shortname]).first
+    @current_unit ||= Unit.find_by_shortname(params[:unit_shortname])
   end
   
+  def current_api_key
+    request.headers["X-Api-Key"].try(:strip)
+  end
+
   def current_user
-    @current_user ||= User.find_by_username(session[:username])
+    @current_user ||= if current_api_key.present?
+      ApiKey.find_user!(current_api_key)
+    else
+      User.find_by_username(session[:username])
+    end
   end
   
   def logged_in?

@@ -120,7 +120,7 @@ describe MigratePackageBranches do
       active_branch
       MigratePackageBranches.new.destroy_obsolete_branches
       lambda { obsolete_branch.reload }.should raise_error(ActiveRecord::RecordNotFound)
-      lambda { active_branch.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      lambda { active_branch.reload }.should_not raise_error
     end
   end
 end

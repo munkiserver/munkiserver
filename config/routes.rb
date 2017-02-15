@@ -96,6 +96,14 @@ Munki::Application.routes.draw do
     match 'install_items/update_multiple' => 'install_items#update_multiple', :as => "update_multiple_install_items", :via => :put
   end
   
+  namespace :api do
+    namespace :v1 do
+      scope '/:unit_shortname' do
+        resource :packages, only: :create
+      end
+    end
+  end
+
   match 'dashboard' => "dashboard#index", :as => "dashboard"
   match 'dashboard/widget/:name' => 'dashboard#widget', :as => "widget"
   match 'dashboard/dismiss_manifest/:id' => 'dashboard#dismiss_manifest', :as => "dismiss_manifest"

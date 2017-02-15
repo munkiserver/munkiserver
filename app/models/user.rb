@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :user_group_memberships, :source => :user_group
   has_many :permissions, :as => :principal
   has_many :privileges, :through => :permissions
+  has_many :api_keys
   # has_many :units, :through => :permissions, :finder_sql => 'SELECT DISTINCT \'units\'.* FROM \'units\' INNER JOIN \'permissions\' ON \'units\'.id = \'permissions\'.unit_id WHERE ((\'permissions\'.principal_id = #{id}) AND (\'permissions\'.principal_type = \'#{self.class.to_s}\'))'
   has_one :settings, :dependent => :destroy, :class_name => "UserSetting", :autosave => true
 
