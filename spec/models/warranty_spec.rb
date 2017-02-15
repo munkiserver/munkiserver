@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Warranty do
+describe Warranty, :type => :model do
   describe "readable dates" do
     it "returns readable dates when they are set" do
       warranty = Warranty.new.tap do |w|

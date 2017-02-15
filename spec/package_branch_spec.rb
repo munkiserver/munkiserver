@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PackageBranch do
+describe PackageBranch, :type => :model do
   before(:all) do
     module VersionTracker::Backgrounder
       def call_rake(*args)

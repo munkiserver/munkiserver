@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProcessPackageUpload do
+describe ProcessPackageUpload, :type => :model do
   describe "#retrieve_package_branch" do
     context "given a suitable package branch doesn't exist yet" do
       it "takes a hash of attributes and returns a package branch" do

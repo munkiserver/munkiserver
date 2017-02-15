@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MigratePackageBranches do
+describe MigratePackageBranches, :type => :model do
   let(:nil_unit_branch) do
     nil_unit_branch = FactoryGirl.build(:package_branch, :unit_id => nil)
     nil_unit_branch.save(:validate => false)
