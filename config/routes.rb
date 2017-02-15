@@ -9,7 +9,12 @@ Munki::Application.routes.draw do
     end
   end
   
-  resources :users, :except => [:show]
+  resources :users, :except => [:show] do
+    member do
+      post :create_api_key
+      delete :destroy_api_key
+    end
+  end
   
   # Session
   match '/login' => "sessions#new"
