@@ -29,10 +29,11 @@ describe Api::V1::PackagesController, :type => :controller do
       expect(parsed_response["type"]).to eq "success"
       expect(parsed_response).to include "message"
       expect(parsed_response).to include "url"
+      expect(parsed_response).to include "edit_url"
       expect(parsed_response["url"]).to include "http://test.host/"
     end
   end
-  
+
   describe "failure" do
     before do
       allow_any_instance_of(ProcessPackageUpload).to receive(:process).and_return(false)

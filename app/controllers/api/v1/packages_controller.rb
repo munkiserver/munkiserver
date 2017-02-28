@@ -20,24 +20,27 @@ module Api
           end
         end
       end
-      
+
       private
-      
+
       def success_message(process_package_upload)
-        { 
-          type:    :success,
-          message: "Package successfully uploaded",
-          url:     package_url(process_package_upload.package.to_params)
+        processed_package_upload_params = process_package_upload.package.to_params
+
+        {
+          type:     :success,
+          message:  "Package successfully uploaded",
+          url:      package_url(processed_package_upload_params),
+          edit_url: edit_package_url(processed_package_upload_params)
         }
       end
-      
+
       def failure_message(process_package_upload)
         {
           type:    :failure,
           message: "A problem occurred while processing package upload: #{process_package_upload.error_message}"
         }
       end
-      
+
       def load_singular_resource
         action = params[:action].to_sym
 
@@ -47,7 +50,7 @@ module Api
           raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
         end
       end
-      
+
     end
   end
 end
