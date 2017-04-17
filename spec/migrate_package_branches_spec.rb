@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe MigratePackageBranches, :type => :model do
   let(:nil_unit_branch) do
@@ -118,8 +118,8 @@ describe MigratePackageBranches, :type => :model do
       obsolete_branch
       active_branch
       MigratePackageBranches.new.destroy_obsolete_branches
-      lambda { obsolete_branch.reload }.should raise_error(ActiveRecord::RecordNotFound)
-      lambda { active_branch.reload }.should_not raise_error
+      -> { obsolete_branch.reload }.should raise_error(ActiveRecord::RecordNotFound)
+      -> { active_branch.reload }.should_not raise_error
     end
   end
 end

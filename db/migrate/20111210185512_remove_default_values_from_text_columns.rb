@@ -4,7 +4,7 @@ class RemoveDefaultValuesFromTextColumns < ActiveRecord::Migration
     package_columns = ["receipts", "supported_architectures", "installs", "raw_tags"]
 
     package_columns.each do |column|
-      unless Package.columns_hash["#{column}"].default.nil?
+      unless Package.columns_hash[column.to_s].default.nil?
         add_column :packages, :"temp_#{column}", :text
 
         Package.reset_column_information

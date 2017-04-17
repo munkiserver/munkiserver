@@ -1,5 +1,5 @@
-require 'spec_helper'
-require 'sidekiq/testing'
+require "spec_helper"
+require "sidekiq/testing"
 Sidekiq::Testing.fake!
 
 describe DestroyComputerWorker, :type => :worker do

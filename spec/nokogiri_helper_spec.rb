@@ -1,9 +1,9 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe NokogiriHelper, :type => :feature, :vcr => true do
   describe ".page" do
     context "given a URL to a page" do
-      it "returns a nokogiri document given a URL string"do
+      it "returns a nokogiri document given a URL string" do
         NokogiriHelper.page("http://www.google.com").should be_a(Nokogiri::HTML::Document)
       end
     end

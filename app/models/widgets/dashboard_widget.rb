@@ -26,8 +26,8 @@ class DashboardWidget
   end
 
   def self.css_class
-    name = self.to_s
-    name = name.sub(/Widget$/,"")
+    name = to_s
+    name = name.sub(/Widget$/, "")
     name.underscore
   end
 
@@ -44,7 +44,7 @@ class DashboardWidget
   end
 
   def render(options = {})
-    default_locals = {:widget => self, :user => self.user}
+    default_locals = { :widget => self, :user => user }
     options[:locals] = if options[:locals].present?
                          default_locals.merge(options[:locals])
                        else

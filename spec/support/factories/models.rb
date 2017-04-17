@@ -7,7 +7,7 @@ FactoryGirl.define do
   end
 
   factory :environment do
-    sequence(:name) {|n| "Environment #{n}" }
+    sequence(:name) { |n| "Environment #{n}" }
     description "Factory-made environment"
   end
 
@@ -27,12 +27,12 @@ FactoryGirl.define do
   factory :package_branch do
     unit
     package_category
-    sequence(:name) {|n| "package_branch_#{n}" }
-    sequence(:display_name) {|n| "Package Branch #{n}" }
+    sequence(:name) { |n| "package_branch_#{n}" }
+    sequence(:display_name) { |n| "Package Branch #{n}" }
   end
 
   factory :package_category do
-    sequence(:name) {|n| "Package Category #{n}" }
+    sequence(:name) { |n| "Package Category #{n}" }
     description "Description"
   end
 
@@ -41,8 +41,8 @@ FactoryGirl.define do
   end
 
   factory :user do
-    sequence(:username) {|n| "user#{n}" }
-    sequence(:email)    {|n| "user#{n}@munkiserver.com" }
+    sequence(:username) { |n| "user#{n}" }
+    sequence(:email)    { |n| "user#{n}@munkiserver.com" }
     password { "abcd1234" }
     password_confirmation { "abcd1234" }
     salt { "salt" }

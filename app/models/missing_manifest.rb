@@ -2,7 +2,7 @@ class MissingManifest < ActiveRecord::Base
   # Include helpers
   include ActionView::Helpers
 
-  scope :recent, lambda {|options|
+  scope :recent, lambda { |options|
     scope = MissingManifest.scoped
     if options[:since_time].present?
       scope = scope.where("created_at > ?", options[:since_time])
@@ -29,12 +29,12 @@ class MissingManifest < ActiveRecord::Base
 
   def request_time
     s = nil
-    if created_at > 5.days.ago
-			s = time_ago_in_words(created_at) + " ago"
-		else
-		  s = created_at.getlocal.to_s(:readable_detail)
-    end
-		s
+    s = if created_at > 5.days.ago
+      time_ago_in_words(created_at) + " ago"
+    else
+      created_at.getlocal.to_s(:readable_detail)
+        end
+    s
   end
 
   def to_s

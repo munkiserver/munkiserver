@@ -3,7 +3,7 @@
 # we are following a similar methodology for cache_keys and not overlapping
 
 module SweeperHelper
-  #Generate a cache key for the Catalog _model_
+  # Generate a cache key for the Catalog _model_
   def catalog_cache_key_generator(options = {})
     # cache_key = { :type => :catalog, :unit => options[:unit_id], :environment_id => options[:environment_id]}
     cache_key = "catalog/#{options[:unit_id]}/#{options[:environment_id]}"

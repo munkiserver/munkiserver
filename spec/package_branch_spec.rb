@@ -1,10 +1,9 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe PackageBranch, :type => :model do
   before(:all) do
     module VersionTracker::Backgrounder
-      def call_rake(*args)
-      end
+      def call_rake(*args); end
 
       extend self
     end
@@ -45,7 +44,7 @@ describe PackageBranch, :type => :model do
       branch = FactoryGirl.create(:package_branch)
       2.times { FactoryGirl.create(:package, :package_branch_id => branch.id) }
       2.times { FactoryGirl.create(:package, :package_branch_id => branch.id, :shared => true) }
-      branch.shared_packages.each {|package| package.should be_shared }
+      branch.shared_packages.each { |package| package.should be_shared }
     end
   end
 end

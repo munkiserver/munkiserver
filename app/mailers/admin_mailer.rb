@@ -16,7 +16,7 @@ class AdminMailer < ActionMailer::Base
 
   def available_updates_digest(unit)
     @packages = PackageBranch.available_updates(unit)
-    mail(:bcc => recipients_for_unit(unit,:package), :subject => "[Munki Server] #{@packages.count} packages have update in #{unit.name}! ")
+    mail(:bcc => recipients_for_unit(unit, :package), :subject => "[Munki Server] #{@packages.count} packages have update in #{unit.name}! ")
   end
 
   def warranty_notification(computer)
@@ -41,16 +41,16 @@ class AdminMailer < ActionMailer::Base
   # the model type in the specific unit are returned.
   def recipients(record)
     if record.present?
-      recipients_for_unit(record.unit,record.class.to_s)
+      recipients_for_unit(record.unit, record.class.to_s)
     else
       []
     end
   end
 
-  def recipients_for_unit(unit,model_name)
+  def recipients_for_unit(unit, model_name)
     if unit.present?
       users = unit.users_who_can_read(model_name.to_s.tableize)
-      users.delete_if {|e| e.settings.present? and e.settings.receive_email_notifications == false }.map(&:email)
+      users.delete_if { |e| e.settings.present? && e.settings.receive_email_notifications == false }.map(&:email)
     else
       []
     end

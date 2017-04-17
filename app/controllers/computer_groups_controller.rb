@@ -53,8 +53,7 @@ class ComputerGroupsController < ApplicationController
     end
   end
 
-  def new
-  end
+  def new; end
 
   def show
     respond_to do |format|
@@ -63,7 +62,7 @@ class ComputerGroupsController < ApplicationController
         format.manifest { render :text => @computer_group.to_plist }
         format.plist { render :text => @computer_group.to_plist }
       else
-        format.html{ render :file => "#{Rails.root}/public/404.html", :layout => false }
+        format.html { render :file => "#{Rails.root}/public/404.html", :layout => false }
       end
     end
   end
@@ -84,10 +83,10 @@ class ComputerGroupsController < ApplicationController
       if [:show, :edit, :update, :destroy].include?(action)
         ComputerGroup.unit(current_unit).find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
       elsif [:index, :new, :create].include?(action)
-        ComputerGroup.new({:unit_id => current_unit.id})
+        ComputerGroup.new({ :unit_id => current_unit.id })
       elsif [:environment_change].include?(action)
         if params[:computer_group_id] == "new"
-          ComputerGroup.new({:unit_id => current_unit.id})
+          ComputerGroup.new({ :unit_id => current_unit.id })
         else
           ComputerGroup.find(params[:computer_group_id])
         end
@@ -96,11 +95,11 @@ class ComputerGroupsController < ApplicationController
 
   # Helper method to minimize errors and SQL injection attacks
   def sort_column
-    %w[name hostname mac_address last_report_at].include?(params[:sort]) ? params[:sort] : "name"
+    ["name", "hostname", "mac_address", "last_report_at"].include?(params[:sort]) ? params[:sort] : "name"
   end
 
   # Helper method to minimize errors and SQL injection attacks
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    ["asc", "desc"].include?(params[:direction]) ? params[:direction] : "asc"
   end
 end

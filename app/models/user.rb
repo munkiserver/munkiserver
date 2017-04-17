@@ -1,4 +1,4 @@
-require 'digest/sha1'
+require "digest/sha1"
 
 class User < ActiveRecord::Base
   validates_length_of :username, :within => 3..40
@@ -49,14 +49,14 @@ class User < ActiveRecord::Base
   def password=(pass)
     @password = pass
     unless @password.blank?
-      self.salt = User.random_string(10) unless self.salt?
-      self.hashed_password = User.encrypt(@password, self.salt)
+      self.salt = User.random_string(10) unless salt?
+      self.hashed_password = User.encrypt(@password, salt)
     end
   end
 
   def self.authenticate(username, pass)
     u = find_by_username(username)
-    return u if (u != nil) and (User.encrypt(pass, u.salt) == u.hashed_password)
+    return u if (u != nil) && (User.encrypt(pass, u.salt) == u.hashed_password)
   end
 
   # A to string method
@@ -95,7 +95,7 @@ class User < ActiveRecord::Base
       scope = scope.joins("INNER JOIN permissions ON permissions.unit_id = units.id")
       scope = scope.where("(permissions.principal_id = ? AND permissions.principal_type = 'User')
         OR (permissions.principal_id IN (?) AND permissions.principal_type = 'UserGroup')",
-        id, group_ids).uniq
+                          id, group_ids).uniq
     end
   end
 
@@ -136,7 +136,7 @@ class User < ActiveRecord::Base
     if is_root?
       unit_ids = Unit.all.map(&:id)
     else
-      self.all_permissions.each do |permission|
+      all_permissions.each do |permission|
         unit_ids << permission.unit_id if permission.privilege_id == priv_id
       end
     end

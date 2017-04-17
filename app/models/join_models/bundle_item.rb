@@ -3,7 +3,7 @@ class BundleItem < ActiveRecord::Base
   belongs_to :manifest, :polymorphic => true
 
   def self.destroy_stale_records
-    Rails.logger.info "Destroying #{self.to_s} records with nil package reference..."
+    Rails.logger.info "Destroying #{to_s} records with nil package reference..."
     records_with_nil_packages.map do |item|
       Rails.logger.info "Destroying item.inspect"
       item.destroy
@@ -11,6 +11,6 @@ class BundleItem < ActiveRecord::Base
   end
 
   def self.records_with_nil_packages
-    self.all.delete_if {|item| item.present? }
+    all.delete_if(&:present?)
   end
 end

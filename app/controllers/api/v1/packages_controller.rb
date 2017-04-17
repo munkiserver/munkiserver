@@ -11,11 +11,11 @@ module Api
         respond_to do |format|
           if process_package_upload.processed?
             format.json do
-              render( { json: success_message(process_package_upload), status: :ok } )
+              render({ json: success_message(process_package_upload), status: :ok })
             end
           else
             format.json do
-              render( { json: failure_message(process_package_upload), status: :unprocessable_entity } )
+              render({ json: failure_message(process_package_upload), status: :unprocessable_entity })
             end
           end
         end
@@ -47,7 +47,7 @@ module Api
         if action == :create
           @package = Package.new(:unit_id => current_unit.id)
         else
-          raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+          raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
         end
       end
     end

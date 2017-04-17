@@ -10,7 +10,7 @@ rescue Errno::ENOENT
   version = ""
 end
 # Append git commit sha
-common_git_paths = %w[/usr/local/bin/git /usr/local/git/bin/git /opt/local/bin/git]
+common_git_paths = ["/usr/local/bin/git", "/usr/local/git/bin/git", "/opt/local/bin/git"]
 git = ""
 common_git_paths.each do |p|
   if File.exist?(p)
@@ -20,4 +20,4 @@ common_git_paths.each do |p|
 end
 git_sha = " (" + `cd #{Rails.root} && #{git} rev-parse --short HEAD`.chomp + ")" if git.present?
 
-Munki::Application::VERSION = (git_sha.present?) ? version + git_sha : version
+Munki::Application::VERSION = git_sha.present? ? version + git_sha : version

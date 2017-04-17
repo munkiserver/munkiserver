@@ -1,4 +1,4 @@
-require 'highline'
+require "highline"
 
 namespace :bootstrap do
   desc "Executing Munkiserver bootstrap tasks"
@@ -15,11 +15,11 @@ namespace :bootstrap do
   desc "Intialize PackageCategory with default categories"
   task :package_categories => :environment do
     path = "#{Rails.root}/lib/default_icons/package_categories"
-    a = [{:name => "Misc", :icon_path => "#{path}/package.png"},
-         {:name => "Application", :icon_path => "#{path}/application.png"},
-         {:name => "Admin", :icon_path => "#{path}/admin.png"},
-         {:name => "System", :icon_path => "#{path}/system.png"},
-         {:name => "Utility", :icon_path => "#{path}/utility.png"}]
+    a = [{ :name => "Misc", :icon_path => "#{path}/package.png" },
+         { :name => "Application", :icon_path => "#{path}/application.png" },
+         { :name => "Admin", :icon_path => "#{path}/admin.png" },
+         { :name => "System", :icon_path => "#{path}/system.png" },
+         { :name => "Utility", :icon_path => "#{path}/utility.png" }]
     # Add the records
     a.each do |h|
       r = PackageCategory.find_or_create_by_name(h[:name])
@@ -43,118 +43,118 @@ namespace :bootstrap do
   desc "Initialize ComputerModel with Apple products"
   task :computer_models => :environment do
     path = "#{Rails.root}/lib/default_icons/computer_models"
-    a = [{:name => "eMac",:icon_path => "#{path}/com.apple.emac.png"},
-         {:name => "iBook G4 (12-inch)",:icon_path => "#{path}/com.apple.ibook-g4-12.png"},
-         {:name => "iBook G4 (14-inch)",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-         {:name => "iMac Aluminum (20-inch)",:icon_path => "#{path}/com.apple.imac-aluminum-20.png"},
-         {:name => "iMac Aluminum (24-inch)",:icon_path => "#{path}/com.apple.imac-aluminum-24.png"},
-         {:name => "iMac G4 (15-inch)",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-         {:name => "iMac G4 (17-inch)",:icon_path => "#{path}/com.apple.imac-g4-17.png"},
-         {:name => "iMac G4 (20-inch)",:icon_path => "#{path}/com.apple.imac-g4-20.png"},
-         {:name => "iMac G5 (17-inch)",:icon_path => "#{path}/com.apple.imac-g5-17.png"},
-         {:name => "iMac G5 (20-inch)",:icon_path => "#{path}/com.apple.imac-g5-20.png"},
-         {:name => "iMac iSight (17-inch)",:icon_path => "#{path}/com.apple.imac-iSight-17.png"},
-         {:name => "iMac iSight (20-inch)",:icon_path => "#{path}/com.apple.imac-iSight-20.png"},
-         {:name => "iMac iSight (24-inch)",:icon_path => "#{path}/com.apple.imac-iSight-24.png"},
-         {:name => "iMac Unibody (21-inch)",:icon_path => "#{path}/com.apple.imac-unibody-21.png"},
-         {:name => "iMac Unibody (27-inch)",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-         {:name => "Default",:icon_path => "#{path}/com.apple.mac.png"},
-         {:name => "MacBook Black",:icon_path => "#{path}/com.apple.macbook-black.png"},
-         {:name => "MacBook White",:icon_path => "#{path}/com.apple.macbook-white.png"},
-         {:name => "MacBook Unibody Plastic",:icon_path => "#{path}/com.apple.macbook-unibody-plastic.png"},
-         {:name => "MacBook Unibody",:icon_path => "#{path}/com.apple.macbook-unibody.png"},
-         {:name => "MacBook Air",:icon_path => "#{path}/com.apple.macbookair.png"},
-         {:name => "MacBook Pro Unibody (13-inch)",:icon_path => "#{path}/com.apple.macbookpro-13-unibody.png"},
-         {:name => "MacBook Pro Unibody (15-inch)",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-         {:name => "MacBook Pro Unibody (17-inch)",:icon_path => "#{path}/com.apple.macbookpro-17-unibody.png"},
-         {:name => "MacBook Pro (15-inch)",:icon_path => "#{path}/com.apple.macbookpro-15.png"},
-         {:name => "MacBook Pro (17-inch)",:icon_path => "#{path}/com.apple.macbookpro-17.png"},
-         {:name => "Mac mini server",:icon_path => "#{path}/com.apple.macmini-server.png"},
-         {:name => "Mac mini",:icon_path => "#{path}/com.apple.macmini.png"},
-         {:name => "Mac Pro",:icon_path => "#{path}/com.apple.macpro.png"},
-         {:name => "PowerBook G4 (12-inch)",:icon_path => "#{path}/com.apple.powerbook-g4-12.png"},
-         {:name => "PowerBook G4 (15-inch)",:icon_path => "#{path}/com.apple.powerbook-g4-15.png"},
-         {:name => "PowerBook G4 (17-inch)",:icon_path => "#{path}/com.apple.powerbook-g4-17.png"},
-         {:name => "PowerBook G4 Titanium",:icon_path => "#{path}/com.apple.powerbook-g4-titanium.png"},
-         {:name => "PowerMac G4 Graphite",:icon_path => "#{path}/com.apple.powermac-g4-graphite.png"},
-         {:name => "PowerMac G4 Quicksilver",:icon_path => "#{path}/com.apple.powermac-g4-quicksilver.png"},
-         {:name => "PowerMac G5",:icon_path => "#{path}/com.apple.powermac-g5.png"},
-         {:name => "VMWare Fusion",:icon_path => "#{path}/vmware_fusion.png"}]
+    a = [{ :name => "eMac", :icon_path => "#{path}/com.apple.emac.png" },
+         { :name => "iBook G4 (12-inch)", :icon_path => "#{path}/com.apple.ibook-g4-12.png" },
+         { :name => "iBook G4 (14-inch)", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+         { :name => "iMac Aluminum (20-inch)", :icon_path => "#{path}/com.apple.imac-aluminum-20.png" },
+         { :name => "iMac Aluminum (24-inch)", :icon_path => "#{path}/com.apple.imac-aluminum-24.png" },
+         { :name => "iMac G4 (15-inch)", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+         { :name => "iMac G4 (17-inch)", :icon_path => "#{path}/com.apple.imac-g4-17.png" },
+         { :name => "iMac G4 (20-inch)", :icon_path => "#{path}/com.apple.imac-g4-20.png" },
+         { :name => "iMac G5 (17-inch)", :icon_path => "#{path}/com.apple.imac-g5-17.png" },
+         { :name => "iMac G5 (20-inch)", :icon_path => "#{path}/com.apple.imac-g5-20.png" },
+         { :name => "iMac iSight (17-inch)", :icon_path => "#{path}/com.apple.imac-iSight-17.png" },
+         { :name => "iMac iSight (20-inch)", :icon_path => "#{path}/com.apple.imac-iSight-20.png" },
+         { :name => "iMac iSight (24-inch)", :icon_path => "#{path}/com.apple.imac-iSight-24.png" },
+         { :name => "iMac Unibody (21-inch)", :icon_path => "#{path}/com.apple.imac-unibody-21.png" },
+         { :name => "iMac Unibody (27-inch)", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+         { :name => "Default", :icon_path => "#{path}/com.apple.mac.png" },
+         { :name => "MacBook Black", :icon_path => "#{path}/com.apple.macbook-black.png" },
+         { :name => "MacBook White", :icon_path => "#{path}/com.apple.macbook-white.png" },
+         { :name => "MacBook Unibody Plastic", :icon_path => "#{path}/com.apple.macbook-unibody-plastic.png" },
+         { :name => "MacBook Unibody", :icon_path => "#{path}/com.apple.macbook-unibody.png" },
+         { :name => "MacBook Air", :icon_path => "#{path}/com.apple.macbookair.png" },
+         { :name => "MacBook Pro Unibody (13-inch)", :icon_path => "#{path}/com.apple.macbookpro-13-unibody.png" },
+         { :name => "MacBook Pro Unibody (15-inch)", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+         { :name => "MacBook Pro Unibody (17-inch)", :icon_path => "#{path}/com.apple.macbookpro-17-unibody.png" },
+         { :name => "MacBook Pro (15-inch)", :icon_path => "#{path}/com.apple.macbookpro-15.png" },
+         { :name => "MacBook Pro (17-inch)", :icon_path => "#{path}/com.apple.macbookpro-17.png" },
+         { :name => "Mac mini server", :icon_path => "#{path}/com.apple.macmini-server.png" },
+         { :name => "Mac mini", :icon_path => "#{path}/com.apple.macmini.png" },
+         { :name => "Mac Pro", :icon_path => "#{path}/com.apple.macpro.png" },
+         { :name => "PowerBook G4 (12-inch)", :icon_path => "#{path}/com.apple.powerbook-g4-12.png" },
+         { :name => "PowerBook G4 (15-inch)", :icon_path => "#{path}/com.apple.powerbook-g4-15.png" },
+         { :name => "PowerBook G4 (17-inch)", :icon_path => "#{path}/com.apple.powerbook-g4-17.png" },
+         { :name => "PowerBook G4 Titanium", :icon_path => "#{path}/com.apple.powerbook-g4-titanium.png" },
+         { :name => "PowerMac G4 Graphite", :icon_path => "#{path}/com.apple.powermac-g4-graphite.png" },
+         { :name => "PowerMac G4 Quicksilver", :icon_path => "#{path}/com.apple.powermac-g4-quicksilver.png" },
+         { :name => "PowerMac G5", :icon_path => "#{path}/com.apple.powermac-g5.png" },
+         { :name => "VMWare Fusion", :icon_path => "#{path}/vmware_fusion.png" }]
     # Add machine model icons
-    a = a + [{:name => "PowerMac4,4",:icon_path => "#{path}/com.apple.emac.png"},
-             {:name => "PowerMac6,4",:icon_path => "#{path}/com.apple.emac.png"},
-             {:name => "PowerBook2,1",:icon_path => "#{path}/com.apple.ibook-g4-12.png"},
-             {:name => "PowerBook2,2",:icon_path => "#{path}/com.apple.ibook-g4-12.png"},
-             {:name => "PowerBook4,1",:icon_path => "#{path}/com.apple.ibook-g4-12.png"},
-             {:name => "PowerBook4,2",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-             {:name => "PowerBook4,3",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-             {:name => "PowerBook6,3",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-             {:name => "PowerBook6,5",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-             {:name => "PowerBook6,7",:icon_path => "#{path}/com.apple.ibook-g4-14.png"},
-             {:name => "iMac7,1",:icon_path => "#{path}/com.apple.imac-aluminum-24.png"},
-             {:name => "iMac8,1",:icon_path => "#{path}/com.apple.imac-aluminum-24.png"},
-             {:name => "iMac9,1",:icon_path => "#{path}/com.apple.imac-aluminum-24.png"},
-             {:name => "iMac,1",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-             {:name => "PowerMac2,1",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-             {:name => "PowerMac2,2",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-             {:name => "PowerMac4,1",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-             {:name => "PowerMac4,2",:icon_path => "#{path}/com.apple.imac-g4-15.png"},
-             {:name => "PowerMac4,5",:icon_path => "#{path}/com.apple.imac-g4-17.png"},
-             {:name => "PowerMac6,1",:icon_path => "#{path}/com.apple.imac-g4-17.png"},
-             {:name => "PowerMac6,3",:icon_path => "#{path}/com.apple.imac-g4-20.png"},
-             {:name => "PowerMac8,1",:icon_path => "#{path}/com.apple.imac-g5-17.png"},
-             {:name => "PowerMac8,2",:icon_path => "#{path}/com.apple.imac-g5-20.png"},
-             {:name => "PowerMac12,1",:icon_path => "#{path}/com.apple.imac-iSight-17.png"},
-             {:name => "iMac5,2",:icon_path => "#{path}/com.apple.imac-iSight-17.png"},
-             {:name => "iMac4,1",:icon_path => "#{path}/com.apple.imac-iSight-20.png"},
-             {:name => "iMac5,1",:icon_path => "#{path}/com.apple.imac-iSight-20.png"},
-             {:name => "iMac6,1",:icon_path => "#{path}/com.apple.imac-iSight-24.png"},
-             {:name => "iMac10,1",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-             {:name => "iMac11,1",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-             {:name => "iMac11,2",:icon_path => "#{path}/com.apple.imac-unibody-21.png"},
-             {:name => "iMac11,3",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-             {:name => "iMac12,1",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-             {:name => "iMac12,2",:icon_path => "#{path}/com.apple.imac-unibody-27.png"},
-             {:name => "MacBook1,1",:icon_path => "#{path}/com.apple.macbook-white.png"},
-             {:name => "MacBook2,1",:icon_path => "#{path}/com.apple.macbook-white.png"},
-             {:name => "MacBook3,1",:icon_path => "#{path}/com.apple.macbook-white.png"},
-             {:name => "MacBook4,1",:icon_path => "#{path}/com.apple.macbook-white.png"},
-             {:name => "MacBook5,2",:icon_path => "#{path}/com.apple.macbook-white.png"},
-             {:name => "MacBook6,1",:icon_path => "#{path}/com.apple.macbook-unibody-plastic.png"},
-             {:name => "MacBook7,1",:icon_path => "#{path}/com.apple.macbook-unibody-plastic.png"},
-             {:name => "MacBook5,1",:icon_path => "#{path}/com.apple.macbook-unibody.png"},
-             {:name => "MacBookAir1,1",:icon_path => "#{path}/com.apple.macbookair.png"},
-             {:name => "MacBookAir2,1",:icon_path => "#{path}/com.apple.macbookair.png"},
-             {:name => "MacBookAir3,1",:icon_path => "#{path}/com.apple.macbookair.png"},
-             {:name => "MacBookAir3,2",:icon_path => "#{path}/com.apple.macbookair.png"},
-             {:name => "MacBookPro5,5",:icon_path => "#{path}/com.apple.macbookpro-13-unibody.png"},
-             {:name => "MacBookPro7,1",:icon_path => "#{path}/com.apple.macbookpro-13-unibody.png"},
-             {:name => "MacBookPro8,1",:icon_path => "#{path}/com.apple.macbookpro-13-unibody.png"},
-             {:name => "MacBookPro5,1",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-             {:name => "MacBookPro5,3",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-             {:name => "MacBookPro5,4",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-             {:name => "MacBookPro6,2",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-             {:name => "MacBookPro8,2",:icon_path => "#{path}/com.apple.macbookpro-15-unibody.png"},
-             {:name => "MacBookPro5,2",:icon_path => "#{path}/com.apple.macbookpro-17-unibody.png"},
-             {:name => "MacBookPro6,1",:icon_path => "#{path}/com.apple.macbookpro-17-unibody.png"},
-             {:name => "MacBookPro8,3",:icon_path => "#{path}/com.apple.macbookpro-17-unibody.png"},
-             {:name => "MacBookPro1,1",:icon_path => "#{path}/com.apple.macbookpro-15.png"},
-             {:name => "MacBookPro2,2",:icon_path => "#{path}/com.apple.macbookpro-15.png"},
-             {:name => "MacBookPro3,1",:icon_path => "#{path}/com.apple.macbookpro-15.png"},
-             {:name => "MacBookPro4,1",:icon_path => "#{path}/com.apple.macbookpro-15.png"},
-             {:name => "MacBookPro1,2",:icon_path => "#{path}/com.apple.macbookpro-17.png"},
-             {:name => "MacBookPro2,1",:icon_path => "#{path}/com.apple.macbookpro-17.png"},
-             {:name => "Macmini4,1",:icon_path => "#{path}/com.apple.macmini-server.png"},
-             {:name => "PowerMac10,1",:icon_path => "#{path}/com.apple.macmini.png"},
-             {:name => "PowerMac10,2",:icon_path => "#{path}/com.apple.macmini.png"},
-             {:name => "Macmini1,1",:icon_path => "#{path}/com.apple.macmini.png"},
-             {:name => "Macmini2,2",:icon_path => "#{path}/com.apple.macmini.png"},
-             {:name => "Macmini3,1",:icon_path => "#{path}/com.apple.macmini.png"},
-             {:name => "MacPro1,1",:icon_path => "#{path}/com.apple.macpro.png"},
-             {:name => "MacPro2,1",:icon_path => "#{path}/com.apple.macpro.png"},
-             {:name => "MacPro3,1",:icon_path => "#{path}/com.apple.macpro.png"},
-             {:name => "MacPro4,1",:icon_path => "#{path}/com.apple.macpro.png"},
-             {:name => "MacPro5,1",:icon_path => "#{path}/com.apple.macpro.png"}]
+    a = a + [{ :name => "PowerMac4,4", :icon_path => "#{path}/com.apple.emac.png" },
+             { :name => "PowerMac6,4", :icon_path => "#{path}/com.apple.emac.png" },
+             { :name => "PowerBook2,1", :icon_path => "#{path}/com.apple.ibook-g4-12.png" },
+             { :name => "PowerBook2,2", :icon_path => "#{path}/com.apple.ibook-g4-12.png" },
+             { :name => "PowerBook4,1", :icon_path => "#{path}/com.apple.ibook-g4-12.png" },
+             { :name => "PowerBook4,2", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+             { :name => "PowerBook4,3", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+             { :name => "PowerBook6,3", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+             { :name => "PowerBook6,5", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+             { :name => "PowerBook6,7", :icon_path => "#{path}/com.apple.ibook-g4-14.png" },
+             { :name => "iMac7,1", :icon_path => "#{path}/com.apple.imac-aluminum-24.png" },
+             { :name => "iMac8,1", :icon_path => "#{path}/com.apple.imac-aluminum-24.png" },
+             { :name => "iMac9,1", :icon_path => "#{path}/com.apple.imac-aluminum-24.png" },
+             { :name => "iMac,1", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+             { :name => "PowerMac2,1", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+             { :name => "PowerMac2,2", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+             { :name => "PowerMac4,1", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+             { :name => "PowerMac4,2", :icon_path => "#{path}/com.apple.imac-g4-15.png" },
+             { :name => "PowerMac4,5", :icon_path => "#{path}/com.apple.imac-g4-17.png" },
+             { :name => "PowerMac6,1", :icon_path => "#{path}/com.apple.imac-g4-17.png" },
+             { :name => "PowerMac6,3", :icon_path => "#{path}/com.apple.imac-g4-20.png" },
+             { :name => "PowerMac8,1", :icon_path => "#{path}/com.apple.imac-g5-17.png" },
+             { :name => "PowerMac8,2", :icon_path => "#{path}/com.apple.imac-g5-20.png" },
+             { :name => "PowerMac12,1", :icon_path => "#{path}/com.apple.imac-iSight-17.png" },
+             { :name => "iMac5,2", :icon_path => "#{path}/com.apple.imac-iSight-17.png" },
+             { :name => "iMac4,1", :icon_path => "#{path}/com.apple.imac-iSight-20.png" },
+             { :name => "iMac5,1", :icon_path => "#{path}/com.apple.imac-iSight-20.png" },
+             { :name => "iMac6,1", :icon_path => "#{path}/com.apple.imac-iSight-24.png" },
+             { :name => "iMac10,1", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+             { :name => "iMac11,1", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+             { :name => "iMac11,2", :icon_path => "#{path}/com.apple.imac-unibody-21.png" },
+             { :name => "iMac11,3", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+             { :name => "iMac12,1", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+             { :name => "iMac12,2", :icon_path => "#{path}/com.apple.imac-unibody-27.png" },
+             { :name => "MacBook1,1", :icon_path => "#{path}/com.apple.macbook-white.png" },
+             { :name => "MacBook2,1", :icon_path => "#{path}/com.apple.macbook-white.png" },
+             { :name => "MacBook3,1", :icon_path => "#{path}/com.apple.macbook-white.png" },
+             { :name => "MacBook4,1", :icon_path => "#{path}/com.apple.macbook-white.png" },
+             { :name => "MacBook5,2", :icon_path => "#{path}/com.apple.macbook-white.png" },
+             { :name => "MacBook6,1", :icon_path => "#{path}/com.apple.macbook-unibody-plastic.png" },
+             { :name => "MacBook7,1", :icon_path => "#{path}/com.apple.macbook-unibody-plastic.png" },
+             { :name => "MacBook5,1", :icon_path => "#{path}/com.apple.macbook-unibody.png" },
+             { :name => "MacBookAir1,1", :icon_path => "#{path}/com.apple.macbookair.png" },
+             { :name => "MacBookAir2,1", :icon_path => "#{path}/com.apple.macbookair.png" },
+             { :name => "MacBookAir3,1", :icon_path => "#{path}/com.apple.macbookair.png" },
+             { :name => "MacBookAir3,2", :icon_path => "#{path}/com.apple.macbookair.png" },
+             { :name => "MacBookPro5,5", :icon_path => "#{path}/com.apple.macbookpro-13-unibody.png" },
+             { :name => "MacBookPro7,1", :icon_path => "#{path}/com.apple.macbookpro-13-unibody.png" },
+             { :name => "MacBookPro8,1", :icon_path => "#{path}/com.apple.macbookpro-13-unibody.png" },
+             { :name => "MacBookPro5,1", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+             { :name => "MacBookPro5,3", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+             { :name => "MacBookPro5,4", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+             { :name => "MacBookPro6,2", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+             { :name => "MacBookPro8,2", :icon_path => "#{path}/com.apple.macbookpro-15-unibody.png" },
+             { :name => "MacBookPro5,2", :icon_path => "#{path}/com.apple.macbookpro-17-unibody.png" },
+             { :name => "MacBookPro6,1", :icon_path => "#{path}/com.apple.macbookpro-17-unibody.png" },
+             { :name => "MacBookPro8,3", :icon_path => "#{path}/com.apple.macbookpro-17-unibody.png" },
+             { :name => "MacBookPro1,1", :icon_path => "#{path}/com.apple.macbookpro-15.png" },
+             { :name => "MacBookPro2,2", :icon_path => "#{path}/com.apple.macbookpro-15.png" },
+             { :name => "MacBookPro3,1", :icon_path => "#{path}/com.apple.macbookpro-15.png" },
+             { :name => "MacBookPro4,1", :icon_path => "#{path}/com.apple.macbookpro-15.png" },
+             { :name => "MacBookPro1,2", :icon_path => "#{path}/com.apple.macbookpro-17.png" },
+             { :name => "MacBookPro2,1", :icon_path => "#{path}/com.apple.macbookpro-17.png" },
+             { :name => "Macmini4,1", :icon_path => "#{path}/com.apple.macmini-server.png" },
+             { :name => "PowerMac10,1", :icon_path => "#{path}/com.apple.macmini.png" },
+             { :name => "PowerMac10,2", :icon_path => "#{path}/com.apple.macmini.png" },
+             { :name => "Macmini1,1", :icon_path => "#{path}/com.apple.macmini.png" },
+             { :name => "Macmini2,2", :icon_path => "#{path}/com.apple.macmini.png" },
+             { :name => "Macmini3,1", :icon_path => "#{path}/com.apple.macmini.png" },
+             { :name => "MacPro1,1", :icon_path => "#{path}/com.apple.macpro.png" },
+             { :name => "MacPro2,1", :icon_path => "#{path}/com.apple.macpro.png" },
+             { :name => "MacPro3,1", :icon_path => "#{path}/com.apple.macpro.png" },
+             { :name => "MacPro4,1", :icon_path => "#{path}/com.apple.macpro.png" },
+             { :name => "MacPro5,1", :icon_path => "#{path}/com.apple.macpro.png" }]
     # Add the records
     count = 0
     a.each do |h|
@@ -200,7 +200,7 @@ namespace :bootstrap do
       password = nil
       password_confirmation = nil
       console = HighLine.new
-      until (password.present? and password == password_confirmation) do
+      until password.present? && password == password_confirmation
         password = console.ask("Enter your password: ") { |q| q.echo = false }
         password_confirmation = console.ask("Confirm your password: ") { |q| q.echo = false }
         puts "Passwords did not match, please try again." unless password == password_confirmation
@@ -226,11 +226,11 @@ namespace :bootstrap do
       if hostname.empty?
         hostname = "localhost:3000"
       end
-       h = {}
-        File.open( "config/settings.yaml", "w" ) do |file|
-          h[:action_mailer] = {:host => "#{hostname}" }
-          file.write(h.to_yaml)
-        end
+      h = {}
+      File.open("config/settings.yaml", "w") do |file|
+        h[:action_mailer] = { :host => hostname.to_s }
+        file.write(h.to_yaml)
+      end
     end
   end
 
@@ -273,7 +273,7 @@ namespace :bootstrap do
     # Flag unit-specific privileges
     Privilege.all.each do |privilege|
       PrivilegeGranter.unit_specific_privilege_groups.each do |privilege_group_name|
-        if privilege.name.match(/^[a-zA-Z]+_#{privilege_group_name}$/)
+        if privilege.name =~ /^[a-zA-Z]+_#{privilege_group_name}$/
           privilege.unit_specific = true
           privilege.save
         end
@@ -305,8 +305,8 @@ end
 private
 
 def tasks_in_namespace(ns)
-  #grab all tasks in the supplied namespace
+  # grab all tasks in the supplied namespace
   tasks = Rake.application.tasks.select { |t| t.name =~ /^#{ns}:/ }
-  #make sure we don't include the :all task
+  # make sure we don't include the :all task
   tasks.reject! { |t| t.name =~ /:all/ }
 end

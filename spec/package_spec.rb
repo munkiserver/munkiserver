@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Package, :type => :model do
   describe ".clone_package" do

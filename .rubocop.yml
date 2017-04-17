@@ -3,3 +3,13 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - lib/null_object.rb
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/WordArray:
+  EnforcedStyle: brackets
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes

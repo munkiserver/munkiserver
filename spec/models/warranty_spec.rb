@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Warranty, :type => :model do
   describe "readable dates" do

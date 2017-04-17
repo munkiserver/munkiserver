@@ -16,12 +16,12 @@ class Icon < ActiveRecord::Base
   # A shortcut to get the url for self.photo
   def url(type = nil)
     begin
-      self.photo.url(type)
+      photo.url(type)
     rescue NoMethodError
       nil
     end
-    if self.photo.url(type)
-      self.photo.url(type)
+    if photo.url(type)
+      photo.url(type)
     else
       ""
     end
@@ -29,18 +29,18 @@ class Icon < ActiveRecord::Base
 
   def path(type = nil)
     begin
-      self.photo.path(type)
+      photo.path(type)
     rescue NoMethodError
       nil
     end
-    if self.photo.path(type)
-      self.photo.path(type)
+    if photo.path(type)
+      photo.path(type)
     else
       ""
     end
   end
 
   def to_s(type = nil)
-    self.url(type)
+    url(type)
   end
 end

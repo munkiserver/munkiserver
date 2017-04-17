@@ -5,7 +5,7 @@ class PackagesController < ApplicationController
     @package_branches = PackageBranch
                           .find_for_index(current_unit, current_environment)
                           .includes(:package_category, :unit, :packages => [:unit])
-                          .uniq_by {|branch| branch.id }
+                          .uniq_by(&:id)
     @environments = Environment.all
 
     respond_to do |format|
@@ -43,15 +43,14 @@ class PackagesController < ApplicationController
     end
   end
 
-  def new
-  end
+  def new; end
 
   def create
     process_package_upload = ProcessPackageUpload.new(:package_file => params[:package_file],
                                                       :file_url => params[:file_url],
                                                       :pkginfo_file => params[:pkginfo_file],
                                                       :makepkginfo_options => params[:makepkginfo_options],
-                                                      :special_attributes => {:unit_id => current_unit.id})
+                                                      :special_attributes => { :unit_id => current_unit.id })
     process_package_upload.process
 
     respond_to do |format|
@@ -85,7 +84,7 @@ class PackagesController < ApplicationController
     results = {}
     exceptionMessage = nil
 
-    if params[:commit] == 'Delete'
+    if params[:commit] == "Delete"
       destroyed_packages = @packages.destroy_all
       redirect_to packages_path, :flash => { :notice => "All #{destroyed_packages.length} selected packages were successfully deleted." }
       return
@@ -97,7 +96,7 @@ class PackagesController < ApplicationController
       exceptionMessage = e.to_s
     end
     respond_to do |format|
-      flash[:error] = results[:messages].join('</br>').html_safe if results[:messages]
+      flash[:error] = results[:messages].join("</br>").html_safe if results[:messages]
       flash[:error] += exceptionMessage if exceptionMessage
       if results[:successes] == results[:total]
         flash[:notice] = "All #{results[:total]} #{'package'.pluralize if results[:total] > 1} were updated successfully"
@@ -156,7 +155,7 @@ class PackagesController < ApplicationController
     @branches = PackageBranch.not_unit(current_unit).shared.paginate(
       :page => params[:page],
       :per_page => params[:per_page] || 20
-    ).includes(:shared_packages, :unit, :packages => [:require_items, :update_for_items]).find(:all, :joins => :packages, :order => 'packages.updated_at DESC')
+    ).includes(:shared_packages, :unit, :packages => [:require_items, :update_for_items]).find(:all, :joins => :packages, :order => "packages.updated_at DESC")
   end
 
   # Import shared packages from another unit
@@ -165,10 +164,10 @@ class PackagesController < ApplicationController
     save_results = cloned_packages.map(&:save)
 
     respond_to do |format|
-      unless save_results.include?(false)
-        flash[:notice] = "Successfully imported packages"
-      else
+      if save_results.include?(false)
         flash[:error] = "Failed to import all or some packages"
+      else
+        flash[:notice] = "Successfully imported packages"
       end
 
       format.html { redirect_to shared_packages_path(current_unit) }
@@ -190,7 +189,7 @@ class PackagesController < ApplicationController
     elsif [:environment_change].include?(action)
       @package = Package.find(params[:package_id])
     else
-      raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+      raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end
   end
 end

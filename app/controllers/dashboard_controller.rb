@@ -1,8 +1,7 @@
 class DashboardController < ApplicationController
   skip_before_filter :load_singular_resource
 
-  def index
-  end
+  def index; end
 
   # Loads widget to page using JS
   def widget

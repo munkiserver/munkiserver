@@ -5,11 +5,11 @@ module HasClientPrefs
   end
 
   def client_prefs
-    #Unless you already have a configuration attached to you,
-    #temporarily create a blank config
-    (self.configuration = Configuration.new) unless self.configuration
+    # Unless you already have a configuration attached to you,
+    # temporarily create a blank config
+    (self.configuration = Configuration.new) unless configuration
 
-    #Pass resultant_config
-    self.configuration.resultant_config
+    # Pass resultant_config
+    configuration.resultant_config
   end
 end

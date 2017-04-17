@@ -45,7 +45,7 @@ class ManifestService
     # Check for some bad parameters
     # => plist wasn't a valid plist
     # => plist items element wasn't an array
-    if h.nil? or h["items"].class != Array
+    if h.nil? || h["items"].class != Array
       error_occurred = true
     end
 
@@ -55,7 +55,7 @@ class ManifestService
     cg = nil
     if manifest_group_id == 0
       cg = manifestGroup.unit(unit).find_by_name(h["listName"])
-      cg ||= manifestGroup.new({:name => h["listName"], :unit_id => unit.id})
+      cg ||= manifestGroup.new({ :name => h["listName"], :unit_id => unit.id })
       cg.save if cg.new_record?
     elsif manifest_group_id > 0
       cg = manifestGroup.find_by_id(manifest_group_id)
@@ -75,10 +75,10 @@ class ManifestService
         # This method should behave the exact same way as new except that if
         # something isn't set (like manifest model) that is set in the template
         # then the template setting is applied
-        c = manifest.new({:mac_address => manifest_info["hardwareAddress"],
-                          :name => manifest_info["hostname"],
-                          :unit_id => unit.id,
-                          :environment_id => environment_id})
+        c = manifest.new({ :mac_address => manifest_info["hardwareAddress"],
+                           :name => manifest_info["hostname"],
+                           :unit_id => unit.id,
+                           :environment_id => environment_id })
         c.manifest_group = cg
         c.manifest_model = manifestModel.first
         manifests << c
@@ -90,7 +90,7 @@ class ManifestService
 
   # Returns a collection based on the params passed as well as a unit.
   # Intended to encapsulate the typical query done for the index action.
-  def self.collect(params,unit)
+  def self.collect(params, unit)
     # Grab the manifests belonging to a specific unit
     manifests = manifest.unit(unit)
 
@@ -99,16 +99,16 @@ class ManifestService
       col = nil
       # Add valid columns as needed (this protects
       # against injection attacks or errors)
-      case params[:col]
-        when "mac_address" then col = "mac_address"
-        else col = "hostname"
-      end
+      col = case params[:col]
+        when "mac_address" then "mac_address"
+        else "hostname"
+            end
       manifests = manifests.order(col + " " + params[:order])
     end
 
     # Modify for a specific hostname
     unless params[:name].blank?
-      manifests = manifests.where(["name LIKE ?","%#{params[:name]}%"])
+      manifests = manifests.where(["name LIKE ?", "%#{params[:name]}%"])
     end
 
     # Add pagination using will_paginate gem

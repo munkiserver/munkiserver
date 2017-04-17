@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe VersionTracker, :type => :model, :vcr => true do
   let(:firefox_page) { NokogiriHelper.page("https://www.macupdate.com/app/mac/10700/firefox") }
@@ -64,7 +64,7 @@ describe VersionTracker, :type => :model, :vcr => true do
     context "given a page with download links" do
       it "scrapes download link elements and returns an array of unsaved DownloadLink objects" do
         download_links = VersionTracker.new.scrape_download_links(firefox_page)
-        download_links.each {|download_link| download_link.should be_a DownloadLink }
+        download_links.each { |download_link| download_link.should be_a DownloadLink }
         download_links.first.should be_new_record
       end
     end

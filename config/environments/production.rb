@@ -40,9 +40,9 @@ Munki::Application.configure do
   # Move me to config file
   webserver = "nginx"
   config.action_dispatch.x_sendfile_header = if webserver == "nginx"
-                                               'X-Accel-Redirect' # for nginx
+                                               "X-Accel-Redirect" # for nginx
                                              else
-                                               'X-Sendfile' # for apache
+                                               "X-Sendfile" # for apache
                                              end
-  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
+  config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.minutes }
 end

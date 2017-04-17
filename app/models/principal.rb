@@ -5,7 +5,7 @@ module Principal
   end
 
   def css_class
-    self.class.to_s.underscore.gsub("_","-") + "-principal"
+    self.class.to_s.underscore.tr("_", "-") + "-principal"
   end
 
   # Returns a unique principal ID for this principal

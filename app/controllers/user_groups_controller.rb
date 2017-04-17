@@ -31,8 +31,7 @@ class UserGroupsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -57,9 +56,9 @@ class UserGroupsController < ApplicationController
     if [:show, :edit, :update, :destroy].include?(action)
       @user_group = UserGroup.where_unit(current_unit).find_for_show(current_unit, CGI::unescape(params[:id]))
     elsif [:index, :new, :create].include?(action)
-      @user_group = UserGroup.new({:unit_id => current_unit.id})
+      @user_group = UserGroup.new({ :unit_id => current_unit.id })
     else
-      raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+      raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end
   end
 end

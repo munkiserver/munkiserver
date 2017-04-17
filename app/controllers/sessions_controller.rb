@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_filter :require_login, :only => ['new','create','destroy']
+  skip_before_filter :require_login, :only => ["new", "create", "destroy"]
   skip_before_filter :load_singular_resource
   skip_before_filter :require_valid_unit
 
@@ -9,11 +9,11 @@ class SessionsController < ApplicationController
 
   # Creates a new user session
   def create
-    u = User.authenticate(params[:username],params[:pass])
+    u = User.authenticate(params[:username], params[:pass])
     if u.nil?
       flash[:error] = "Incorrect username or password"
       redirect_to login_path
-    elsif current_user.present? and current_user.units.empty?
+    elsif current_user.present? && current_user.units.empty?
       flash[:error] = "You are not permitted to any units!  See the system administrator to gain permissions."
       redirect_to error_page
     else

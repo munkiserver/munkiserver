@@ -11,7 +11,7 @@ class UnitSettingsController < ApplicationController
         format.html { redirect_to unit_path(Unit.where(:shortname => params[:id]).first) }
         format.xml  { head :ok }
       else
-        flash[:error] = 'Could not update settings!'
+        flash[:error] = "Could not update settings!"
         format.html { render :action => "edit" }
         format.xml  { render :xml => @unit_setting.errors, :status => :unprocessable_entity }
       end

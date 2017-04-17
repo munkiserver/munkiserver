@@ -5,8 +5,7 @@ class UnitsController < ApplicationController
     @units = Unit.all
   end
 
-  def new
-  end
+  def new; end
 
   def create
     respond_to do |format|
@@ -20,8 +19,7 @@ class UnitsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -29,7 +27,7 @@ class UnitsController < ApplicationController
         flash[:notice] = "#{@unit} was successfully updated."
         format.html { redirect_to units_path }
       else
-        flash[:error] = 'Could not update unit!'
+        flash[:error] = "Could not update unit!"
         format.html { render edit_unit_path(@unit) }
       end
     end
@@ -58,7 +56,7 @@ class UnitsController < ApplicationController
     elsif [:new, :create].include?(action)
       @unit = Unit.new
     else
-      raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+      raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end
   end
 end

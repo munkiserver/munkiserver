@@ -21,8 +21,8 @@ namespace :chore do
 
   desc "Validates all models stored in the database"
   task :validate_models, [:validate_models] => :environment do |t, args|
-    #Force load all models
-    Dir[Rails.root + 'app/models/**/*.rb'].each do |path|
+    # Force load all models
+    Dir[Rails.root + "app/models/**/*.rb"].each do |path|
       require path
     end
 
@@ -36,7 +36,7 @@ namespace :chore do
       end
     end
 
-    #Print results
+    # Print results
     puts "\n-------------------------------------------------------------------\n\n"
     if invalid.empty?
       puts "All Records are valid"
@@ -44,7 +44,7 @@ namespace :chore do
       puts "Invalid Records"
       invalid.each do |inv|
         puts
-        puts  "#{inv.inspect}"
+        puts  inv.inspect.to_s
         puts  "Errors: #{inv.errors}"
       end
     end
@@ -84,7 +84,7 @@ namespace :chore do
 
   desc "Fetch data for a version tracker record"
   task :fetch_version_tracker_data => :environment do
-    puts VersionTracker.fetch_data(ENV['ID']).inspect
+    puts VersionTracker.fetch_data(ENV["ID"]).inspect
   end
 
   desc "Destroy package branches that have no packages"
@@ -107,7 +107,7 @@ namespace :chore do
 
   desc "Destroy package files that aren't associated with a package"
   task :destroy_unused_package_files => :environment do
-    Dir["#{Munki::Application::PACKAGE_DIR}/*.*"].each {|path|
+    Dir["#{Munki::Application::PACKAGE_DIR}/*.*"].each { |path|
       filename = File.basename(path)
 
       if Package.where(:installer_item_location => filename).empty?
@@ -119,11 +119,11 @@ namespace :chore do
 
   desc "Conform RestartActions to only known values"
   task :conform_restart_actions => :environment do
-    conformed_values = {'RequiredRestart' => 'RequireRestart',
-                       'RequiredShutdown' => 'RequireRestart',
-                       'RequiredLogout' => 'RequireLogout' }
+    conformed_values = { "RequiredRestart" => "RequireRestart",
+                         "RequiredShutdown" => "RequireRestart",
+                         "RequiredLogout" => "RequireLogout" }
 
-    conformed_values.each_pair {|old_value, new_value|
+    conformed_values.each_pair { |old_value, new_value|
       packages = Package.where(RestartAction: old_value)
       puts "Conforming #{packages.count} from #{old_value} to #{new_value} "
       packages.update_all(RestartAction: new_value)

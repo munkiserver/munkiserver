@@ -18,11 +18,11 @@ class ManagedInstallReport < ActiveRecord::Base
   serialize :managed_uninstalls_list, Array
   serialize :managed_updates_list, Array
 
-  scope :since, lambda {|timestamp| where("created_at > ?", timestamp) }
+  scope :since, ->(timestamp) { where("created_at > ?", timestamp) }
   scope :has_errors, where("munki_errors != ?", [].to_yaml)
 
-  TABLE_ATTRIBUTES = ["items_to_install","items_to_remove","managed_installs"]
-  LOG_ATTRIBUTES = ["munki_errors","munki_warnings","install_results", "removal_results"]
+  TABLE_ATTRIBUTES = ["items_to_install", "items_to_remove", "managed_installs"].freeze
+  LOG_ATTRIBUTES = ["munki_errors", "munki_warnings", "install_results", "removal_results"].freeze
   # Attributes not accounted for: installed_items, problem_installs, managed_installs_list, managed_uninstalls_list, managed_updates_list
 
   # Include helpers
@@ -30,28 +30,28 @@ class ManagedInstallReport < ActiveRecord::Base
 
   # Returns the number of computers that checked in on a specific date
   def self.checkins(opts)
-    default_opts = {:date => nil, :unit => nil, :start_date => nil, :end_date => nil}
+    default_opts = { :date => nil, :unit => nil, :start_date => nil, :end_date => nil }
     opts = default_opts.merge(opts)
 
     if opts[:date]
       checkins_on_date(opts)
-    elsif opts[:start_date] and opts[:end_date]
+    elsif opts[:start_date] && opts[:end_date]
       checkins_between(opts)
     end
   end
 
   def self.checkins_between(opts)
-    default_opts = {:unit => nil, :start_date => nil, :end_date => nil}
+    default_opts = { :unit => nil, :start_date => nil, :end_date => nil }
     opts = default_opts.merge(opts)
 
     checkins_by_day = ActiveSupport::OrderedHash.new
-    opts[:start_date].step(opts[:end_date],1) do |date|
+    opts[:start_date].step(opts[:end_date], 1) do |date|
       checkins_by_day[date.to_s] = cached_checkins_on_date(:date => date, :unit => opts[:unit])
     end
     checkins_by_day.values
   end
 
-  # Returns an array of checkin values – one for each day
+  # Returns an array of checkin values - one for each day
   #  DON'T CALL THIS -- IT IS BROKEN!
   # def self.checkins_between(opts)
   #   default_opts = {:unit => nil, :start_date => nil, :end_date => nil}
@@ -78,7 +78,7 @@ class ManagedInstallReport < ActiveRecord::Base
   # end
 
   def self.cached_checkins_between(opts = {})
-    default_opts = {:unit => nil, :start_date => nil, :end_date => nil}
+    default_opts = { :unit => nil, :start_date => nil, :end_date => nil }
     opts = default_opts.merge(opts)
 
     Rails.cache.fetch("checkins-for-unit-#{opts[:unit].id}-from-#{opts[:start_date]}-to-#{opts[:end_date]}", :expires_in => 15.minutes) do
@@ -89,7 +89,7 @@ class ManagedInstallReport < ActiveRecord::Base
   # Fetch cached result for checkins.  Never cache today's
   # checkins.
   def self.cached_checkins_on_date(opts)
-    default_opts = {:date => nil, :unit => nil}
+    default_opts = { :date => nil, :unit => nil }
     opts = default_opts.merge(opts)
 
     if opts[:date] == Date.today
@@ -102,7 +102,7 @@ class ManagedInstallReport < ActiveRecord::Base
   end
 
   def self.checkins_on_date(opts)
-    default_opts = {:date => nil, :unit => nil}
+    default_opts = { :date => nil, :unit => nil }
     opts = default_opts.merge(opts)
 
     scope = ManagedInstallReport.scoped
@@ -114,12 +114,12 @@ class ManagedInstallReport < ActiveRecord::Base
   # Creates a ManagedInstallReport object based on a plist file
   def self.import_plist(file)
     xml_string = file.read if file.present?
-    self.import(Plist.parse_xml(xml_string)) if xml_string.present?
+    import(Plist.parse_xml(xml_string)) if xml_string.present?
   end
 
   def self.format_report_plist(report_plist_file)
     xml_string = report_plist_file.read if report_plist_file.present?
-    self.format_report_hash(Plist.parse_xml(xml_string.to_utf8)) if xml_string.present?
+    format_report_hash(Plist.parse_xml(xml_string.to_utf8)) if xml_string.present?
   end
 
   def self.format_report_hash(report_hash)
@@ -129,8 +129,8 @@ class ManagedInstallReport < ActiveRecord::Base
     report_hash["munki_errors"] = report_hash.delete("errors")
     report_hash["munki_warnings"] = report_hash.delete("warnings")
     # Delete invalid keys
-    valid_attributes = self.new.attributes.keys
-    report_hash.delete_if do |k,v|
+    valid_attributes = new.attributes.keys
+    report_hash.delete_if do |k, v|
       if !valid_attributes.include?(k)
         logger.debug "Invalid key (#{k}) found while creating #{self.class.to_s} object from report hash"
         true
@@ -141,15 +141,15 @@ class ManagedInstallReport < ActiveRecord::Base
 
   # Creates a ManagedInstallReport object based on a ManagedInstallReport.plist ruby hash
   def self.import(report_hash)
-    report_hash = self.format_report_hash(report_hash)
+    report_hash = format_report_hash(report_hash)
     # Create object
-    self.create(report_hash)
+    create(report_hash)
   end
 
   # Calls underscore method on each hash key string
   def self.underscore_keys(hash)
     new_hash = {}
-    hash.each do |k,v|
+    hash.each do |k, v|
       new_hash[k.underscore] = v
     end
     new_hash
@@ -157,7 +157,7 @@ class ManagedInstallReport < ActiveRecord::Base
 
   # Time since this log was created, in words
   def time_since_created_at_in_words
-    time_ago_in_words(self.created_at) + " ago"
+    time_ago_in_words(created_at) + " ago"
   end
 
   # Retrieve information from machine_info attribute.  Always
@@ -173,7 +173,7 @@ class ManagedInstallReport < ActiveRecord::Base
   end
 
   def errors?
-    munki_errors.present? or problem_installs.present?
+    munki_errors.present? || problem_installs.present?
   end
 
   def warnings?
@@ -185,19 +185,19 @@ class ManagedInstallReport < ActiveRecord::Base
   end
 
   def issues?
-    errors? or warnings?
+    errors? || warnings?
   end
 
   # Text value of option tag text
   def option_text
     s = ""
-    if created_at > 12.hours.ago
-			s += time_ago_in_words(created_at) + " ago"
-		else
-		  s += created_at.getlocal.to_s(:readable_detail)
-    end
-		s += "*" if issues?
-		s
+    s += if created_at > 12.hours.ago
+      time_ago_in_words(created_at) + " ago"
+    else
+      created_at.getlocal.to_s(:readable_detail)
+         end
+    s += "*" if issues?
+    s
   end
 
   # Get the unit for this managed install report based on the computer

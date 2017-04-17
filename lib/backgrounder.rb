@@ -1,5 +1,5 @@
 module Backgrounder
-  LOG_PATH = "#{Rails.root}/log/backgrounder.log"
+  LOG_PATH = "#{Rails.root}/log/backgrounder.log".freeze
 
   def call_rake(task, options = {})
     options[:rails_env] ||= Rails.env

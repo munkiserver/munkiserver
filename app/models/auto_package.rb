@@ -10,10 +10,10 @@
 # => Source forge download redirect page
 # => VLZ download mirror page
 module AutoPackage
-  require 'open-uri'
+  require "open-uri"
 
-  UNZIP = "/usr/bin/unzip"
-  SUPPORTED_EXTENSIONS = ["dmg","zip"]
+  UNZIP = "/usr/bin/unzip".freeze
+  SUPPORTED_EXTENSIONS = ["dmg", "zip"].freeze
 
   # Downloads file from a URL and turns it into a Package record
   def self.from_url(url)
@@ -23,34 +23,34 @@ module AutoPackage
     begin
       original_filename = url.match(/(\/)([^\/]+)$/)[2]
     rescue NoMethodError
-      raise AutoPackageError.new("Could not derive original filename from URL (#{url})")
+      raise AutoPackageError, "Could not derive original filename from URL (#{url})"
     end
     # Derive extension
     extension = grep_extension(original_filename)
     unless SUPPORTED_EXTENSIONS.include?(extension)
-      if extension == ''
-        raise AutoPackageError.new("No extension found on download URL: #{url}")
+      if extension == ""
+        raise AutoPackageError, "No extension found on download URL: #{url}"
       else
-        raise AutoPackageError.new("#{extension} is not a supported extension for auto packaging!")
+        raise AutoPackageError, "#{extension} is not a supported extension for auto packaging!"
       end
     end
     # Download package
     begin
       f = open(url)
     rescue Errno::ENOENT
-      raise AutoPackageError.new("Could not find URL (#{url})")
+      raise AutoPackageError, "Could not find URL (#{url})"
     end
 
     # Temp stuff
     tmp_dir = Pathname.new(File.dirname(f.path))
     tmp_path = tmp_dir + original_filename
     # Rename temp file
-    FileUtils.mv(f.path,tmp_path)
+    FileUtils.mv(f.path, tmp_path)
     # Close old file handle
     f.close
     # Open new file handle
     f = File.open(tmp_path)
-    self.from_path(tmp_path)
+    from_path(tmp_path)
   end
 
   # Reforms url for special cases, such as firefox download.
@@ -101,11 +101,11 @@ module AutoPackage
   def self.from_path(path)
     extension = grep_extension(path)
     if extension == "dmg"
-      self.dmg(path)
+      dmg(path)
     elsif extension == "zip"
-      self.zip(path)
+      zip(path)
     else
-      raise IncompatiblePackageType("Please supply a supported item: #{SUPPORTED_EXTENSIONS.join(", ")}")
+      raise IncompatiblePackageType("Please supply a supported item: #{SUPPORTED_EXTENSIONS.join(', ')}")
     end
   end
 
@@ -121,24 +121,24 @@ module AutoPackage
   def self.zip(path)
     # Unzip
     # Get original filename without extension
-    original_name = File.basename(path).sub(/\.[A-Za-z]+$/,'')
+    original_name = File.basename(path).sub(/\.[A-Za-z]+$/, "")
     # Remove extension from path
     extract_dir = File.dirname(path) + "/" + original_name
     # Add date stamp
     # extract_dir = File.dirname(extract_dir) + "/" + Time.now.to_s(:ordered_numeric) + File.basename(extract_dir)
     # Create destination directory
-    extract_dir = self.unzip(path,extract_dir)
+    extract_dir = unzip(path, extract_dir)
     # Make sure we're OK
     if extract_dir.nil?
-      raise AutoPackageError.new("Unable to unzip #{path}")
+      raise AutoPackageError, "Unable to unzip #{path}"
     end
 
     # Wrap in a DMG
     dmg_path = wrap_contents_in_dmg(extract_dir)
     if dmg_path.nil?
-      raise AutoPackageError.new("Unable to wrap #{extract_dir} into a DMG")
+      raise AutoPackageError, "Unable to wrap #{extract_dir} into a DMG"
     end
-    self.dmg(dmg_path)
+    dmg(dmg_path)
   end
 
   # Takes a path to a directory and creates a DMG from everything inside that directory
@@ -152,7 +152,7 @@ module AutoPackage
   end
 
   # Unzip a file to destination.  Returns destination directory if success, otherwise, nil
-  def self.unzip(path_to_zip,extract_dest)
+  def self.unzip(path_to_zip, extract_dest)
     # logger.info("Unzipping #{path_to_zip} into #{extract_dest}")
     exit = `#{UNZIP} -o #{path_to_zip} -d #{extract_dest} >> /dev/null; echo $?`.chomp.to_i
     if exit == 0

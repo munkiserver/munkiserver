@@ -3,7 +3,7 @@ class Configuration < ActiveRecord::Base
   has_one :computer_group
   has_one :unit
 
-  #Internally use configuration, externally use config
+  # Internally use configuration, externally use config
   serialize :configuration, Hash
 
   def owner
@@ -28,9 +28,9 @@ class Configuration < ActiveRecord::Base
 
   def resultant_config
     if inherit
-      owner.parent_config.merge(self.configuration)
+      owner.parent_config.merge(configuration)
     else
-      self.configuration
+      configuration
     end
   end
 
@@ -42,9 +42,7 @@ class Configuration < ActiveRecord::Base
     configuration = config
   end
 
-  def self.configuration_options
-  end
+  def self.configuration_options; end
 
-  def self.configuration_helpers
-  end
+  def self.configuration_helpers; end
 end

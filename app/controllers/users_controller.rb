@@ -3,8 +3,7 @@ class UsersController < ApplicationController
     @users = User.all
   end
 
-  def new
-  end
+  def new; end
 
   def create
     respond_to do |format|
@@ -13,13 +12,12 @@ class UsersController < ApplicationController
         format.html { redirect_to(users_path) }
       else
         flash[:error] = "Failed to create user!"
-        format.html { render :action => "new"}
+        format.html { render :action => "new" }
       end
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -28,7 +26,7 @@ class UsersController < ApplicationController
         format.html { redirect_to edit_user_path(@user) }
         format.xml  { head :ok }
       else
-        flash[:error] = 'Could not update user!'
+        flash[:error] = "Could not update user!"
         format.html { render :action => "edit" }
       end
     end
@@ -47,7 +45,9 @@ class UsersController < ApplicationController
 
   def create_api_key
     respond_to do |format|
-      if key = @user.api_keys.create
+      key = @user.api_keys.build
+
+      if key.save
         flash[:notice] = "#{@user.username} now has an API key: #{key.key}."
       else
         flash[:error] = "Failed to create API Key!"
@@ -59,8 +59,9 @@ class UsersController < ApplicationController
 
   def destroy_api_key
     respond_to do |format|
-      if key = @user.api_keys.find_by_key(params[:key].strip)
-        key.destroy
+      key = @user.api_keys.find_by_key(params[:key].strip)
+
+      if key.destroy
         flash[:notice] = "API Key successfully removed."
       else
         flash[:error] = "Failed to delete API Key"

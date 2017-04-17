@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe ProcessPackageUpload, :type => :model do
   describe "#retrieve_package_branch" do
@@ -7,7 +7,7 @@ describe ProcessPackageUpload, :type => :model do
         unit = FactoryGirl.create(:unit)
         category = FactoryGirl.create(:package_category)
         environment = FactoryGirl.create(:environment)
-        attributes = {:name => "Foo", :display_name => "Foo App", :unit_id => unit.id, :package_category_id => category.id}
+        attributes = { :name => "Foo", :display_name => "Foo App", :unit_id => unit.id, :package_category_id => category.id }
         branch = ProcessPackageUpload::PackageAssembler.retrieve_package_branch(attributes)
 
         branch.name.should == "foo"

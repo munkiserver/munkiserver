@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Api::V1::PackagesController, :type => :controller do
   before do
@@ -6,11 +6,11 @@ describe Api::V1::PackagesController, :type => :controller do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
-  let(:user) { double(:user, :id => 1, :name => 'root', :is_root? => true) }
-  let!(:staging) { Environment.create name: "Staging"}
+  let(:user) { double(:user, :id => 1, :name => "root", :is_root? => true) }
+  let!(:staging) { Environment.create name: "Staging" }
   let(:unit) { FactoryGirl.create(:unit) }
-  let(:package_file) { double('package.dmg') }
-  let(:pkginfo_file) { double('package.plist') }
+  let(:package_file) { double("package.dmg") }
+  let(:pkginfo_file) { double("package.plist") }
 
   describe "success" do
     let(:package) { FactoryGirl.build_stubbed :package }

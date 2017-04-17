@@ -1,6 +1,5 @@
 class PackageBranchesController < ApplicationController
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -37,7 +36,7 @@ class PackageBranchesController < ApplicationController
     elsif [:download_icon].include?(action)
       @package_branch = PackageBranch.where(name: params[:id]).first
     else
-      raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+      raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end
   end
 end

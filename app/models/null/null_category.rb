@@ -1,5 +1,5 @@
 class NullCategory
   def to_s
-    'Uncategorized'
+    "Uncategorized"
   end
 end

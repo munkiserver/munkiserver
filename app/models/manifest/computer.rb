@@ -11,7 +11,7 @@ class Computer < ActiveRecord::Base
   has_one :system_profile, :dependent => :destroy, :autosave => true
   has_one :warranty, :dependent => :destroy, :autosave => true
   has_many :client_logs, dependent: :destroy
-  has_many :managed_install_reports, order: 'created_at DESC', dependent: :destroy
+  has_many :managed_install_reports, order: "created_at DESC", dependent: :destroy
 
   # Validations
   validate :computer_model
@@ -32,9 +32,9 @@ class Computer < ActiveRecord::Base
 
   default_scope where(deleted_at: nil).order(:name)
 
-  scope :search, lambda {|column, term|where(["#{column.to_s} LIKE ?", "%#{term}%"]) unless term.blank? or column.blank?}
-  scope :eager_manifests, includes(bundle_includes + [{:computer_group => item_includes + bundle_includes}])
-  scope :deleted, where('deleted_at IS NOT NULL').order(:name)
+  scope :search, ->(column, term) { where(["#{column.to_s} LIKE ?", "%#{term}%"]) unless term.blank? || column.blank? }
+  scope :eager_manifests, includes(bundle_includes + [{ :computer_group => item_includes + bundle_includes }])
+  scope :deleted, where("deleted_at IS NOT NULL").order(:name)
 
   # before_save :require_computer_group
 
@@ -56,11 +56,11 @@ class Computer < ActiveRecord::Base
     model ||= ComputerModel.default
   end
 
-  def computer_group_options_for_select(unit,environment_id = nil)
+  def computer_group_options_for_select(unit, environment_id = nil)
     environment = Environment.where(:id => environment_id).first
     environment ||= self.environment
     environment ||= Environment.start
-    ComputerGroup.unit(unit).environment(environment).map {|cg| [cg.name,cg.id] }
+    ComputerGroup.unit(unit).environment(environment).map { |cg| [cg.name, cg.id] }
   end
 
   # Alias the computer_model icon to this computer
@@ -175,9 +175,9 @@ class Computer < ActiveRecord::Base
   def installed?(pkg)
     package_installed = false
     report = last_report
-    if report.present? and report.managed_installs.present?
+    if report.present? && report.managed_installs.present?
       report.managed_installs.each do |mi|
-        if mi["name"] == pkg.name and mi["installed_version"] == pkg.version and mi["installed"]
+        if mi["name"] == pkg.name && mi["installed_version"] == pkg.version && mi["installed"]
           package_installed = true
         end
       end
@@ -187,7 +187,7 @@ class Computer < ActiveRecord::Base
 
   # True if an AdminMailer computer report is due
   def report_due?
-    last_report.present? and last_report.issues?
+    last_report.present? && last_report.issues?
   end
 
   # Get the status of the computer based on the last report
@@ -208,24 +208,24 @@ class Computer < ActiveRecord::Base
   # Do some reformatting before writing to attribute
   def mac_address=(value)
     # Remove non-alphanumeric
-    value = value.gsub(/[^a-zA-Z0-9]/,'')
+    value = value.gsub(/[^a-zA-Z0-9]/, "")
     # Lower case
     value = value.downcase
     # Replace hyphens with colons
     i = 0
     formatted = []
-    while(i < 12 and i < value.length) do
-      formatted << value[i,1]
-      formatted << ":" if i.odd? and i != 11
+    while i < 12 && i < value.length
+      formatted << value[i, 1]
+      formatted << ":" if i.odd? && i != 11
       i += 1
     end
-    write_attribute(:mac_address,formatted.join(""))
+    write_attribute(:mac_address, formatted.join(""))
   end
 
   # Bulk update
-  def self.bulk_update_attributes(computers,computer_attributes)
-    if computer_attributes.nil? or computers.empty?
-      raise ComputerError.new("Nothing to update")
+  def self.bulk_update_attributes(computers, computer_attributes)
+    if computer_attributes.nil? || computers.empty?
+      raise ComputerError, "Nothing to update"
     else
       computers.each do |c|
         c.update_attributes(computer_attributes)
@@ -234,7 +234,7 @@ class Computer < ActiveRecord::Base
   end
 
   def serial_number
-    self.system_profile.serial_number if self.system_profile.present?
+    system_profile.serial_number if system_profile.present?
   end
 
   # updates warranty, return true upon success
@@ -249,7 +249,7 @@ class Computer < ActiveRecord::Base
         return false
       end
       # append computer_id into the hash
-      warranty_hash[:computer_id] = self.id
+      warranty_hash[:computer_id] = id
       warranty_hash[:updated_at] = Time.now
       update_successful = warranty.update_attributes(warranty_hash)
       # Send notification, if due
@@ -271,11 +271,11 @@ class Computer < ActiveRecord::Base
 
   def deliver_warranty_notification
     AdminMailer.warranty_notification(self).deliver
-    self.warranty.notifications.create
+    warranty.notifications.create
   end
 
   def warranty_expiry_date
-    if warranty.present? and warranty.hw_coverage_end_date.present?
+    if warranty.present? && warranty.hw_coverage_end_date.present?
       warranty.hw_coverage_end_date.to_s(:readable_date)
     else
       "unknown"

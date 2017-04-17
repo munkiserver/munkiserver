@@ -5,7 +5,7 @@ class ComputerModel < ActiveRecord::Base
   belongs_to :icon
 
   def self.default
-    self.find_by_name("Default")
+    find_by_name("Default")
   end
   #
   # def self.find_by_machine_model(machine_model)
