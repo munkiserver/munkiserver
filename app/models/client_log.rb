@@ -1,7 +1,7 @@
 class ClientLog < ActiveRecord::Base
   belongs_to :computer
 
-  scope :successful, where(:errors_log => "")
+  scope :successful, where(errors_log: "")
 
   # Include helpers
   include ActionView::Helpers
@@ -9,7 +9,7 @@ class ClientLog < ActiveRecord::Base
   # Glean the runtype from the log details
   # If not present, returns nil
   def run_type
-      managed_software_update_log.match(/(runtype: )(.+)(\.\.\.$)/)[2]
+    managed_software_update_log.match(/(runtype: )(.+)(\.\.\.$)/)[2]
   rescue
   end
 

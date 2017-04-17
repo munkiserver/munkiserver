@@ -1,6 +1,6 @@
 class UserGroupsController < ApplicationController
   def index
-    @user_groups = UserGroup.where(:unit_id => current_unit.id)
+    @user_groups = UserGroup.where(unit_id: current_unit.id)
 
     respond_to do |format|
       format.html
@@ -14,7 +14,7 @@ class UserGroupsController < ApplicationController
         format.html { redirect_to user_groups_path(@user_group.unit) }
       else
         flash[:error] = "Computer group failed to save!"
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -40,13 +40,13 @@ class UserGroupsController < ApplicationController
         format.html { redirect_to edit_user_group_path(@user_group.unit, @user_group) }
       else
         flash[:error] = "Could not update computer group!"
-        format.html { render :action => :edit }
+        format.html { render action: :edit }
       end
     end
   end
 
   def new
-    @user_group = UserGroup.new(:unit => current_unit)
+    @user_group = UserGroup.new(unit: current_unit)
   end
 
   private
@@ -54,9 +54,9 @@ class UserGroupsController < ApplicationController
   def load_singular_resource
     action = params[:action].to_sym
     if [:show, :edit, :update, :destroy].include?(action)
-      @user_group = UserGroup.where_unit(current_unit).find_for_show(current_unit, CGI::unescape(params[:id]))
+      @user_group = UserGroup.where_unit(current_unit).find_for_show(current_unit, CGI.unescape(params[:id]))
     elsif [:index, :new, :create].include?(action)
-      @user_group = UserGroup.new({ :unit_id => current_unit.id })
+      @user_group = UserGroup.new(unit_id: current_unit.id)
     else
       raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end

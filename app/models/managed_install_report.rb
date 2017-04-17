@@ -1,7 +1,7 @@
 class ManagedInstallReport < ActiveRecord::Base
-  belongs_to :computer, :touch => :last_report_at
+  belongs_to :computer, touch: :last_report_at
 
-  scope :error_free, where(:munki_errors => [].to_yaml)
+  scope :error_free, where(munki_errors: [].to_yaml)
 
   serialize :munki_errors, Array
   serialize :install_results, Array
@@ -30,7 +30,7 @@ class ManagedInstallReport < ActiveRecord::Base
 
   # Returns the number of computers that checked in on a specific date
   def self.checkins(opts)
-    default_opts = { :date => nil, :unit => nil, :start_date => nil, :end_date => nil }
+    default_opts = { date: nil, unit: nil, start_date: nil, end_date: nil }
     opts = default_opts.merge(opts)
 
     if opts[:date]
@@ -41,12 +41,12 @@ class ManagedInstallReport < ActiveRecord::Base
   end
 
   def self.checkins_between(opts)
-    default_opts = { :unit => nil, :start_date => nil, :end_date => nil }
+    default_opts = { unit: nil, start_date: nil, end_date: nil }
     opts = default_opts.merge(opts)
 
     checkins_by_day = ActiveSupport::OrderedHash.new
     opts[:start_date].step(opts[:end_date], 1) do |date|
-      checkins_by_day[date.to_s] = cached_checkins_on_date(:date => date, :unit => opts[:unit])
+      checkins_by_day[date.to_s] = cached_checkins_on_date(date: date, unit: opts[:unit])
     end
     checkins_by_day.values
   end
@@ -78,18 +78,18 @@ class ManagedInstallReport < ActiveRecord::Base
   # end
 
   def self.cached_checkins_between(opts = {})
-    default_opts = { :unit => nil, :start_date => nil, :end_date => nil }
+    default_opts = { unit: nil, start_date: nil, end_date: nil }
     opts = default_opts.merge(opts)
 
-    Rails.cache.fetch("checkins-for-unit-#{opts[:unit].id}-from-#{opts[:start_date]}-to-#{opts[:end_date]}", :expires_in => 15.minutes) do
-      ManagedInstallReport.checkins_between(:start_date => opts[:start_date], :end_date => opts[:end_date], :unit => opts[:unit])
+    Rails.cache.fetch("checkins-for-unit-#{opts[:unit].id}-from-#{opts[:start_date]}-to-#{opts[:end_date]}", expires_in: 15.minutes) do
+      ManagedInstallReport.checkins_between(start_date: opts[:start_date], end_date: opts[:end_date], unit: opts[:unit])
     end
   end
 
   # Fetch cached result for checkins.  Never cache today's
   # checkins.
   def self.cached_checkins_on_date(opts)
-    default_opts = { :date => nil, :unit => nil }
+    default_opts = { date: nil, unit: nil }
     opts = default_opts.merge(opts)
 
     if opts[:date] == Date.today
@@ -102,13 +102,13 @@ class ManagedInstallReport < ActiveRecord::Base
   end
 
   def self.checkins_on_date(opts)
-    default_opts = { :date => nil, :unit => nil }
+    default_opts = { date: nil, unit: nil }
     opts = default_opts.merge(opts)
 
     scope = ManagedInstallReport.scoped
-    scope = scope.where(:computer_id => opts[:unit].computers.map(&:id)) if opts[:unit].present?
-    scope = scope.where(:created_at => (opts[:date].beginning_of_day..opts[:date].end_of_day))
-    scope = scope.count(:computer_id, :distinct => true)
+    scope = scope.where(computer_id: opts[:unit].computers.map(&:id)) if opts[:unit].present?
+    scope = scope.where(created_at: (opts[:date].beginning_of_day..opts[:date].end_of_day))
+    scope = scope.count(:computer_id, distinct: true)
   end
 
   # Creates a ManagedInstallReport object based on a plist file
@@ -130,9 +130,9 @@ class ManagedInstallReport < ActiveRecord::Base
     report_hash["munki_warnings"] = report_hash.delete("warnings")
     # Delete invalid keys
     valid_attributes = new.attributes.keys
-    report_hash.delete_if do |k, v|
-      if !valid_attributes.include?(k)
-        logger.debug "Invalid key (#{k}) found while creating #{self.class.to_s} object from report hash"
+    report_hash.delete_if do |k, _v|
+      unless valid_attributes.include?(k)
+        logger.debug "Invalid key (#{k}) found while creating #{self.class} object from report hash"
         true
       end
     end
@@ -192,9 +192,9 @@ class ManagedInstallReport < ActiveRecord::Base
   def option_text
     s = ""
     s += if created_at > 12.hours.ago
-      time_ago_in_words(created_at) + " ago"
-    else
-      created_at.getlocal.to_s(:readable_detail)
+           time_ago_in_words(created_at) + " ago"
+         else
+           created_at.getlocal.to_s(:readable_detail)
          end
     s += "*" if issues?
     s

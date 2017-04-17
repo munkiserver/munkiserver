@@ -1,19 +1,19 @@
 class UnitSettingsController < ApplicationController
   def edit
-    @unit_setting = UnitSetting.where(:unit_id => Unit.where(:shortname => params[:id]).first.id).first
+    @unit_setting = UnitSetting.where(unit_id: Unit.where(shortname: params[:id]).first.id).first
   end
 
   def update
-    @unit_setting = UnitSetting.where(:unit_id => Unit.where(:shortname => params[:id]).first.id).first
+    @unit_setting = UnitSetting.where(unit_id: Unit.where(shortname: params[:id]).first.id).first
     respond_to do |format|
       if @unit_setting.update_attributes(params[:unit_setting])
         flash[:notice] = "Settings successfully updated."
-        format.html { redirect_to unit_path(Unit.where(:shortname => params[:id]).first) }
+        format.html { redirect_to unit_path(Unit.where(shortname: params[:id]).first) }
         format.xml  { head :ok }
       else
         flash[:error] = "Could not update settings!"
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @unit_setting.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @unit_setting.errors, status: :unprocessable_entity }
       end
     end
   end

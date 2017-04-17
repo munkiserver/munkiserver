@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  cache_sweeper :unit_sweeper, :only => [:edit, :destroy]
+  cache_sweeper :unit_sweeper, only: [:edit, :destroy]
 
   def index
     @units = Unit.all
@@ -14,7 +14,7 @@ class UnitsController < ApplicationController
         format.html { redirect_to(units_path) }
       else
         flash[:error] = "Failed to create #{@unit.name} unit!"
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end

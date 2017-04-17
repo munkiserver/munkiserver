@@ -13,7 +13,7 @@ class MissingManifest < ActiveRecord::Base
     scope = scope.limit(options[:limit]) if options[:limit].present?
     scope.order("created_at DESC")
   }
-  scope :not_dismissed, where(:dismissed => false)
+  scope :not_dismissed, where(dismissed: false)
 
   def request_ip=(value)
     self.hostname = get_hostname(value)
@@ -30,9 +30,9 @@ class MissingManifest < ActiveRecord::Base
   def request_time
     s = nil
     s = if created_at > 5.days.ago
-      time_ago_in_words(created_at) + " ago"
-    else
-      created_at.getlocal.to_s(:readable_detail)
+          time_ago_in_words(created_at) + " ago"
+        else
+          created_at.getlocal.to_s(:readable_detail)
         end
     s
   end

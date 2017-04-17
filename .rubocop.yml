@@ -13,3 +13,6 @@ Style/WordArray:
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19

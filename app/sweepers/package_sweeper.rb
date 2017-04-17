@@ -32,13 +32,13 @@ class PackageSweeper < ActionController::Caching::Sweeper
     old_environment_id = package.changed_attributes["environment_id"]
     old_environment_id ||= package.environment_id
 
-    Rails.logger.info "CACHE: Expiring the catalogs for #{catalog_cache_key_generator(:unit_id => old_unit_id, :environment_id => old_environment_id)}"
-    Rails.cache.delete catalog_cache_key_generator(:unit_id => old_unit_id, :environment_id => old_environment_id)
+    Rails.logger.info "CACHE: Expiring the catalogs for #{catalog_cache_key_generator(unit_id: old_unit_id, environment_id: old_environment_id)}"
+    Rails.cache.delete catalog_cache_key_generator(unit_id: old_unit_id, environment_id: old_environment_id)
   end
 
   def expire_new_catalog(package)
     # Expire the new catalog
-    Rails.logger.info "CACHE: Expiring the catalogs for #{catalog_cache_key_generator(:unit_id => package.unit_id, :environment_id => package.environment_id)}"
-    Rails.cache.delete catalog_cache_key_generator(:unit_id => package.unit_id, :environment_id => package.environment_id)
+    Rails.logger.info "CACHE: Expiring the catalogs for #{catalog_cache_key_generator(unit_id: package.unit_id, environment_id: package.environment_id)}"
+    Rails.cache.delete catalog_cache_key_generator(unit_id: package.unit_id, environment_id: package.environment_id)
   end
 end

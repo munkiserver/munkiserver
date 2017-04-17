@@ -44,13 +44,13 @@ class DashboardWidget
   end
 
   def render(options = {})
-    default_locals = { :widget => self, :user => user }
+    default_locals = { widget: self, user: user }
     options[:locals] = if options[:locals].present?
                          default_locals.merge(options[:locals])
                        else
                          default_locals
                        end
-    action_view.render(:partial => partial_name, :locals => options[:locals])
+    action_view.render(partial: partial_name, locals: options[:locals])
   end
 
   def action_view
@@ -73,7 +73,7 @@ class DashboardWidget
   # Get all the computers based on the unit the user belongs to
   def scoped_computers(unit_id = nil)
     unit_id ||= @user.units
-    Computer.where(:unit_id => unit_id)
+    Computer.where(unit_id: unit_id)
   end
 
   def lazy_loading?

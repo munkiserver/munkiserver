@@ -8,8 +8,8 @@ class Computer < ActiveRecord::Base
   belongs_to :computer_model
   belongs_to :computer_group
 
-  has_one :system_profile, :dependent => :destroy, :autosave => true
-  has_one :warranty, :dependent => :destroy, :autosave => true
+  has_one :system_profile, dependent: :destroy, autosave: true
+  has_one :warranty, dependent: :destroy, autosave: true
   has_many :client_logs, dependent: :destroy
   has_many :managed_install_reports, order: "created_at DESC", dependent: :destroy
 
@@ -19,21 +19,21 @@ class Computer < ActiveRecord::Base
   validates_presence_of :name, :mac_address
 
   validates_format_of :hostname,
-                      :with => /^[a-zA-Z0-9\-\.]*$/,
-                      :message => "must only contain alphanumeric characters, hyphens, and periods",
-                      :allow_blank => true
+                      with: /^[a-zA-Z0-9\-\.]*$/,
+                      message: "must only contain alphanumeric characters, hyphens, and periods",
+                      allow_blank: true
 
-  validates_format_of :mac_address, :with => /^([0-9a-f]{2}(:|$)){6}$/ # mac_address attribute must look something like ff:12:ff:34:ff:56
+  validates_format_of :mac_address, with: /^([0-9a-f]{2}(:|$)){6}$/ # mac_address attribute must look something like ff:12:ff:34:ff:56
 
   validates_uniqueness_of :name
   validates_uniqueness_of :mac_address
 
-  validates_uniqueness_of :hostname, :allow_blank => true
+  validates_uniqueness_of :hostname, allow_blank: true
 
   default_scope where(deleted_at: nil).order(:name)
 
-  scope :search, ->(column, term) { where(["#{column.to_s} LIKE ?", "%#{term}%"]) unless term.blank? || column.blank? }
-  scope :eager_manifests, includes(bundle_includes + [{ :computer_group => item_includes + bundle_includes }])
+  scope :search, ->(column, term) { where(["#{column} LIKE ?", "%#{term}%"]) unless term.blank? || column.blank? }
+  scope :eager_manifests, includes(bundle_includes + [{ computer_group: item_includes + bundle_includes }])
   scope :deleted, where("deleted_at IS NOT NULL").order(:name)
 
   # before_save :require_computer_group
@@ -51,13 +51,13 @@ class Computer < ActiveRecord::Base
   # Overwrite computer_model association method to return
   # computer model based on system_profile
   def computer_model
-    model = ComputerModel.where(:name => system_profile.machine_model).first if system_profile.present?
+    model = ComputerModel.where(name: system_profile.machine_model).first if system_profile.present?
     model ||= ComputerModel.find(computer_model_id) if computer_model_id.present?
     model ||= ComputerModel.default
   end
 
   def computer_group_options_for_select(unit, environment_id = nil)
-    environment = Environment.where(:id => environment_id).first
+    environment = Environment.where(id: environment_id).first
     environment ||= self.environment
     environment ||= Environment.start
     ComputerGroup.unit(unit).environment(environment).map { |cg| [cg.name, cg.id] }
@@ -73,15 +73,15 @@ class Computer < ActiveRecord::Base
   def client_prefs
     url = ActionMailer::Base.default_url_options[:host]
     url ||= "localhost"
-    { :ClientIdentifier => client_identifier,
-      :DaysBetweenNotifications => 1,
-      :InstallAppleSoftwareUpdates => true,
-      :LogFile => "/Library/Managed Installs/Logs/ManagedSoftwareUpdate.log",
-      :LoggingLevel => 1,
-      :ManagedInstallsDir => "/Library/Managed Installs",
-      :ManifestURL => url,
-      :SoftwareRepoURL => url,
-      :UseClientCertificate => false }
+    { ClientIdentifier: client_identifier,
+      DaysBetweenNotifications: 1,
+      InstallAppleSoftwareUpdates: true,
+      LogFile: "/Library/Managed Installs/Logs/ManagedSoftwareUpdate.log",
+      LoggingLevel: 1,
+      ManagedInstallsDir: "/Library/Managed Installs",
+      ManifestURL: url,
+      SoftwareRepoURL: url,
+      UseClientCertificate: false }
   end
 
   # For will_paginate gem.  Sets the default number of records per page.
@@ -98,9 +98,7 @@ class Computer < ActiveRecord::Base
     computers = Computer.unit(unit) if unit.present?
     computers ||= Computer.all
     computers.each do |computer|
-      if computer.dormant?
-        dormant << computer
-      end
+      dormant << computer if computer.dormant?
     end
     dormant
   end
@@ -121,11 +119,11 @@ class Computer < ActiveRecord::Base
 
   # Add mac_address matching
   def self.find_for_show(unit, id)
-    find_for_show_super(unit, id) || where(:mac_address => id).first
+    find_for_show_super(unit, id) || where(mac_address: id).first
   end
 
   def self.find_for_show_fast(shortname, unit)
-    Computer.unit(unit).where(:shortname => shortname).eager_items.eager_manifests.first
+    Computer.unit(unit).where(shortname: shortname).eager_items.eager_manifests.first
   end
 
   def client_identifier
@@ -135,9 +133,7 @@ class Computer < ActiveRecord::Base
   # Validates the presence of a computer model
   # and puts in the default model otherwise
   def presence_of_computer_model
-    if computer_model.nil?
-      computer_model = ComputerModel.default
-    end
+    computer_model = ComputerModel.default if computer_model.nil?
   end
 
   # Return the latest instance of ClientLog
@@ -167,7 +163,7 @@ class Computer < ActiveRecord::Base
   end
 
   def recent_reports(num = 15)
-    ManagedInstallReport.where(:computer_id => id).limit(num).order("created_at desc")
+    ManagedInstallReport.where(computer_id: id).limit(num).order("created_at desc")
   end
 
   # Check the last managed install report and determine if
@@ -253,9 +249,7 @@ class Computer < ActiveRecord::Base
       warranty_hash[:updated_at] = Time.now
       update_successful = warranty.update_attributes(warranty_hash)
       # Send notification, if due
-      if warranty_notification_due?
-        deliver_warranty_notification
-      end
+      deliver_warranty_notification if warranty_notification_due?
       update_successful
     end
   end

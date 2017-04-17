@@ -16,9 +16,7 @@ class Ability
     end
 
     # Give "admin" user the keys to the house
-    if @user.is_root?
-      can :manage, :all
-    end
+    can :manage, :all if @user.is_root?
   end
 
   def grant_privilege(privilege, unit)
@@ -36,7 +34,7 @@ class Ability
     # Allow any request to retrieve catalogs
     can :read, Catalog
     # Allow everyone to edit their user record
-    can [:read, :update], User, :id => @user.id
+    can [:read, :update], User, id: @user.id
     # Allow anyone to login and logout
     can [:create, :destroy], :session
     # Allow anyone to view their dashboard

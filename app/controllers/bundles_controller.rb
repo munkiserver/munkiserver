@@ -20,9 +20,7 @@ class BundlesController < ApplicationController
   end
 
   def destroy
-    if @bundle.destroy
-      flash[:notice] = "Bundle was destroyed successfully"
-    end
+    flash[:notice] = "Bundle was destroyed successfully" if @bundle.destroy
 
     respond_to do |format|
       format.html { redirect_to bundles_path }
@@ -51,8 +49,8 @@ class BundlesController < ApplicationController
     respond_to do |format|
       if @bundle.present?
         format.html
-        format.manifest { render :text => @bundle.to_plist }
-        format.plist { render :text => @bundle.to_plist }
+        format.manifest { render text: @bundle.to_plist }
+        format.plist { render text: @bundle.to_plist }
       else
         format.html { render page_not_found }
       end
@@ -74,7 +72,7 @@ class BundlesController < ApplicationController
     if [:show, :edit, :update, :destroy].include?(action)
       @bundle = Bundle.find_for_show(params[:unit_shortname], params[:id])
     elsif [:index, :new, :create].include?(action)
-      @bundle = Bundle.new({ :unit_id => current_unit.id })
+      @bundle = Bundle.new(unit_id: current_unit.id)
     elsif [:environment_change].include?(action)
       @bundle = Bundle.find_for_environment_change(params[:bundle_id], current_unit)
     end

@@ -3,7 +3,7 @@
 module Plutil
   extend self
 
-#  require 'FileUtils'
+  #  require 'FileUtils'
   require "fileutils"
 
   PLUTIL = "/usr/bin/plutil".freeze
@@ -22,7 +22,7 @@ module Plutil
     File.open(tmp_path, "w") { |f| f.write(plist_string) }
     valid = system("#{PLUTIL} -lint #{tmp_path} > #{log_path}")
     FileUtils.rm(tmp_path)
-    { :valid => valid, :error => parse_log_file(log_path) }
+    { valid: valid, error: parse_log_file(log_path) }
   end
 
   def parse_log_file(log_path)
@@ -37,6 +37,6 @@ module Plutil
   end
 
   def generate_random_path
-    "/tmp/rbplutil-#{rand(10001)}.plist"
+    "/tmp/rbplutil-#{rand(10_001)}.plist"
   end
 end

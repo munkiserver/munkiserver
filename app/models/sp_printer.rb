@@ -11,8 +11,8 @@ class SpPrinter < ActiveRecord::Base
     # Fix special cases
     f_p_hash["name"] = f_p_hash.delete("_name")
     # Delete elements with keys not listed in allowed_keys
-    f_p_hash.delete_if do |k, v|
-      if !allowed_keys.include?(k)
+    f_p_hash.delete_if do |k, _v|
+      unless allowed_keys.include?(k)
         logger.debug "Removing #{k} key from system profiler printer hash"
         true
       end

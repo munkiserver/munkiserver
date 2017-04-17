@@ -7,10 +7,10 @@ class UniqueAsShortnameValidator < ActiveModel::EachValidator
     matching_records = nil
     if record.is_a? Unit
       # Record is an instance of Unit
-      matching_records = Unit.where(:shortname => shortname)
+      matching_records = Unit.where(shortname: shortname)
     elsif [Computer, ComputerGroup, UserGroup, Bundle].include?(record.class)
       # Record is an instance of Computer, ComputerGroup, UserGroup, or Bundle
-      matching_records = record.class.where(:shortname => shortname, :unit_id => record.unit_id)
+      matching_records = record.class.where(shortname: shortname, unit_id: record.unit_id)
     else
       raise Exception, "#{self.class} must only be used for Unit, Computer, ComputerGroup, UserGroup, or Bundle records"
     end

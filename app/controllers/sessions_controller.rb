@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_filter :require_login, :only => ["new", "create", "destroy"]
+  skip_before_filter :require_login, only: ["new", "create", "destroy"]
   skip_before_filter :load_singular_resource
   skip_before_filter :require_valid_unit
 

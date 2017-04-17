@@ -12,7 +12,7 @@ gem "open_uri_redirections"
 gem "paperclip"
 gem "plist"
 gem "rails", "3.2.22.1"
-gem "sqlite3-ruby", :require => "sqlite3"
+gem "sqlite3-ruby", require: "sqlite3"
 gem "whenever"
 gem "will_paginate", "~> 3.0" # version added for rails 3 compatibility
 

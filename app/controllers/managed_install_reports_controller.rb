@@ -14,7 +14,7 @@ class ManagedInstallReportsController < ApplicationController
   def load_singular_resource
     action = params[:action].to_sym
     if [:show].include?(action)
-      @managed_install_report = ManagedInstallReport.where(:id => params[:id]).first
+      @managed_install_report = ManagedInstallReport.where(id: params[:id]).first
     end
   end
 end

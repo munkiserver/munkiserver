@@ -5,13 +5,13 @@ class String
   end
 
   def from_plist
-      Plist.parse_xml(self)
+    Plist.parse_xml(self)
   rescue RuntimeError
-      return self # return nothign not a valide plist string
+    return self # return nothign not a valide plist string
   rescue NoMethodError
-      return self # return nothing invalide syntax or nil object
+    return self # return nothing invalide syntax or nil object
   rescue Errno::EISDIR
-      return self # only happen if you have a string "test", not sure why
+    return self # only happen if you have a string "test", not sure why
   end
 
   # Convert string from whatever encoding to UTF-8, covering corner cases
@@ -67,6 +67,6 @@ class String
       return comparison_result unless comparison_result == 0
     end
     # If we made it here, they are equal
-    return 0
+    0
   end
 end

@@ -5,7 +5,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :hashed_password
       t.string :email
       t.string :salt
-      t.boolean :super_user, :default => false
+      t.boolean :super_user, default: false
 
       t.timestamps
     end

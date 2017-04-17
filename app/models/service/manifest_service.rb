@@ -13,12 +13,12 @@ class ManifestService
     # Retrieve PackageBranch records for all installs if edit_*installs is not nil
     # If no valid PackageBranch IDs are passed, an ActiveRecord::RecordNotFound
     # exception will be thrown and will cause the @attr[:*install] to be set to nil
-    @attr[:installs] = PackageBranch.where(:id => @attr[:installs]).to_a if @attr[:installs] != nil
-    @attr[:uninstalls] = PackageBranch.where(:id => @attr[:uninstalls]).to_a if @attr[:uninstalls] != nil
-    @attr[:managed_updates] = PackageBranch.where(:id => @attr[:managed_updates]).to_a if @attr[:managed_updates] != nil
-    @attr[:optional_installs] = PackageBranch.where(:id => @attr[:optional_installs]).to_a if @attr[:optional_installs] != nil
+    @attr[:installs] = PackageBranch.where(id: @attr[:installs]).to_a unless @attr[:installs].nil?
+    @attr[:uninstalls] = PackageBranch.where(id: @attr[:uninstalls]).to_a unless @attr[:uninstalls].nil?
+    @attr[:managed_updates] = PackageBranch.where(id: @attr[:managed_updates]).to_a unless @attr[:managed_updates].nil?
+    @attr[:optional_installs] = PackageBranch.where(id: @attr[:optional_installs]).to_a unless @attr[:optional_installs].nil?
     # Retrieve bundle records in the exact way as done with the *installs
-    @attr[:bundles] = Bundle.where(:id => @attr[:bundles]).to_a if @attr[:bundles] != nil
+    @attr[:bundles] = Bundle.where(id: @attr[:bundles]).to_a unless @attr[:bundles].nil?
   end
 
   # Perform a save on the @manifest object (after assigning all the *installs)
@@ -45,9 +45,7 @@ class ManifestService
     # Check for some bad parameters
     # => plist wasn't a valid plist
     # => plist items element wasn't an array
-    if h.nil? || h["items"].class != Array
-      error_occurred = true
-    end
+    error_occurred = true if h.nil? || h["items"].class != Array
 
     # Sort out what manifest group we'll be adding the objects to
     # If a manifest group ID of zero is passed, it means, pick a group
@@ -55,16 +53,14 @@ class ManifestService
     cg = nil
     if manifest_group_id == 0
       cg = manifestGroup.unit(unit).find_by_name(h["listName"])
-      cg ||= manifestGroup.new({ :name => h["listName"], :unit_id => unit.id })
+      cg ||= manifestGroup.new(name: h["listName"], unit_id: unit.id)
       cg.save if cg.new_record?
     elsif manifest_group_id > 0
       cg = manifestGroup.find_by_id(manifest_group_id)
     end
 
     # Make sure we have a manifest group and a environment
-    if cg.nil?
-      error_occurred = true
-    end
+    error_occurred = true if cg.nil?
 
     unless error_occurred
       manifests = []
@@ -75,10 +71,10 @@ class ManifestService
         # This method should behave the exact same way as new except that if
         # something isn't set (like manifest model) that is set in the template
         # then the template setting is applied
-        c = manifest.new({ :mac_address => manifest_info["hardwareAddress"],
-                           :name => manifest_info["hostname"],
-                           :unit_id => unit.id,
-                           :environment_id => environment_id })
+        c = manifest.new(mac_address: manifest_info["hardwareAddress"],
+                         name: manifest_info["hostname"],
+                         unit_id: unit.id,
+                         environment_id: environment_id)
         c.manifest_group = cg
         c.manifest_model = manifestModel.first
         manifests << c
@@ -100,8 +96,8 @@ class ManifestService
       # Add valid columns as needed (this protects
       # against injection attacks or errors)
       col = case params[:col]
-        when "mac_address" then "mac_address"
-        else "hostname"
+            when "mac_address" then "mac_address"
+            else "hostname"
             end
       manifests = manifests.order(col + " " + params[:order])
     end
@@ -112,7 +108,7 @@ class ManifestService
     end
 
     # Add pagination using will_paginate gem
-    manifests = manifests.paginate(:page => params[:page], :per_page => 10)
+    manifests = manifests.paginate(page: params[:page], per_page: 10)
 
     # Return our results
     manifests

@@ -12,7 +12,7 @@ module ReposHelper
     when "syncing"
       short_status = "#{status[:state].humanize}..."
       a = ["Sync started on #{status[:sync_started]}"]
-      a << "Copying #{status[:items_to_copy].to_s} files" unless status[:items_to_copy].blank?
+      a << "Copying #{status[:items_to_copy]} files" unless status[:items_to_copy].blank?
       a << "Total size: #{humanize_bytes(status[:total_size_copied])}" unless status[:total_size_copied].blank?
       long_status = a.join("<br />")
     when "synced"
@@ -25,12 +25,12 @@ module ReposHelper
         long_status = "Last sync on #{status[:sync_finished]}"
       else
         short_status = "Unsynchronized"
-        long_status = render(:partial => "sync_failed_details", :locals => { :remote_status => remote_status, :status => status })
+        long_status = render(partial: "sync_failed_details", locals: { remote_status: remote_status, status: status })
       end
     else
       short_status = "Never synced"
     end
 
-    render :partial => "status_info", :locals => { :repo => repo, :short_status => short_status, :long_status => long_status }
+    render partial: "status_info", locals: { repo: repo, short_status: short_status, long_status: long_status }
   end
 end

@@ -7,7 +7,7 @@ module ActiveRecordClassMethods
     define_method attribute.to_s do
       value = read_attribute(attribute)
       if !value.nil?
-        h = YAML::safe_load(value)
+        h = YAML.safe_load(value)
         return h
       else
         {}

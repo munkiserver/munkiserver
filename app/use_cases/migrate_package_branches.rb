@@ -34,15 +34,14 @@ class MigratePackageBranches
     destroy_obsolete_items
 
     all_items.each do |item|
-      if item.package_branch.unit.nil?
-        log.info "Reassigning #{item.inspect}"
-        nil_unit_branch = item.package_branch
-        raise item.inspect if item.manifest.nil?
-        unit_scoped_branch = retrieve_unit_scoped_branch(nil_unit_branch, item.manifest.unit)
-        item.package_branch = unit_scoped_branch
-        item.save!
-        log.info "\t #{item.inspect}"
-      end
+      next unless item.package_branch.unit.nil?
+      log.info "Reassigning #{item.inspect}"
+      nil_unit_branch = item.package_branch
+      raise item.inspect if item.manifest.nil?
+      unit_scoped_branch = retrieve_unit_scoped_branch(nil_unit_branch, item.manifest.unit)
+      item.package_branch = unit_scoped_branch
+      item.save!
+      log.info "\t #{item.inspect}"
     end
   end
 
@@ -52,7 +51,7 @@ class MigratePackageBranches
 
   def retrieve_unit_scoped_branch(nil_unit_branch, unit, category = nil)
     category ||= PackageCategory.default
-    branch = PackageBranch.where(:unit_id => unit.id, :name => nil_unit_branch.name).first
+    branch = PackageBranch.where(unit_id: unit.id, name: nil_unit_branch.name).first
     branch ||= PackageBranch.new do |b|
       b.unit_id = unit.id
       b.name = nil_unit_branch.name
@@ -70,15 +69,14 @@ class MigratePackageBranches
   def reassign_packages
     Package.all.each do |package|
       original_branch = package.package_branch
-      if original_branch.unit.blank?
-        log.info "Migrating #{package.to_s(:pretty_with_version)}'s package branch..."
+      next unless original_branch.unit.blank?
+      log.info "Migrating #{package.to_s(:pretty_with_version)}'s package branch..."
 
-        new_branch = retrieve_unit_scoped_branch(original_branch, package.unit, PackageCategory.where(:id => package.package_category_id).first)
-        package.package_branch = new_branch
-        package.save!
+      new_branch = retrieve_unit_scoped_branch(original_branch, package.unit, PackageCategory.where(id: package.package_category_id).first)
+      package.package_branch = new_branch
+      package.save!
 
-        log.info "ok"
-      end
+      log.info "ok"
     end
   end
 end

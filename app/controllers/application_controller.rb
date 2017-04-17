@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :all
-  protect_from_forgery :except => [:checkin]
+  protect_from_forgery except: [:checkin]
 
   before_filter :require_login
   before_filter :validate_unit_shortname
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
       # Let them pass
     else
       flash[:warning] = "You must be logged in to view that page"
-      redirect_to login_path(:redirect => request.url)
+      redirect_to login_path(redirect: request.url)
     end
   end
 
@@ -25,23 +25,23 @@ class ApplicationController < ActionController::Base
   def validate_unit_shortname
     if params[:unit_shortname].present? && current_unit.nil?
       flash[:error] = "The unit you requested (\"#{params[:unit_shortname]}\") does not exist."
-      render :file => "#{Rails.root}/public/generic_error.html", :layout => false
+      render file: "#{Rails.root}/public/generic_error.html", layout: false
     end
   end
 
   def authorized?
-      authorize_resource
-      true
+    authorize_resource
+    true
   rescue CanCan::AccessDenied
-      false
+    false
   end
 
   def page_not_found
-    { :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404 }
+    { file: "#{Rails.root}/public/404.html", layout: false, status: 404 }
   end
 
   def error_page
-    { :file => "#{Rails.root}/public/generic_error.html", :layout => false }
+    { file: "#{Rails.root}/public/generic_error.html", layout: false }
   end
 
   # Stub for controllers to override
@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
     authorize! params[:action].to_sym, instance_variable_get("@#{params[:controller].split('/').last.singularize}") || params[:controller].classify.constantize
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from CanCan::AccessDenied do |_exception|
     if request.env["HTTP_REFERER"].present?
       redirect_to :back
     else

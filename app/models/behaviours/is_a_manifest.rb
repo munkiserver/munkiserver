@@ -8,22 +8,22 @@ module IsAManifest
     base.extend ClassMethods
 
     base.class_eval do
-      validates :name, :presence => true, :unique_as_shortname => true
-      validates :shortname, :presence => true, :format => { :with => /^[a-z0-9-]+$/ }
+      validates :name, presence: true, unique_as_shortname: true
+      validates :shortname, presence: true, format: { with: /^[a-z0-9-]+$/ }
 
       # Bundles
-      has_many :bundle_items, :as => :manifest, :dependent => :destroy
-      has_many :bundles, :through => :bundle_items, :dependent => :destroy
+      has_many :bundle_items, as: :manifest, dependent: :destroy
+      has_many :bundles, through: :bundle_items, dependent: :destroy
 
       # Install and uninstall items
-      has_many :install_items, :as => :manifest, :dependent => :destroy
-      has_many :uninstall_items, :as => :manifest, :dependent => :destroy
+      has_many :install_items, as: :manifest, dependent: :destroy
+      has_many :uninstall_items, as: :manifest, dependent: :destroy
 
       # Managed Updates items
-      has_many :managed_update_items, :as => :manifest, :dependent => :destroy
+      has_many :managed_update_items, as: :manifest, dependent: :destroy
 
       # Optional Install items
-      has_many :optional_install_items, :as => :manifest, :dependent => :destroy
+      has_many :optional_install_items, as: :manifest, dependent: :destroy
 
       scope :eager_items, includes(item_includes)
     end
@@ -42,21 +42,21 @@ module IsAManifest
     # find the appropriate record for the show action
     def find_for_show(unit, s)
       # Find by ID, if s is only digits
-      current_unit = Unit.where(:shortname => unit).first unless unit.nil?
-      record = where(:id => s).first if s =~ /^\d+$/
+      current_unit = Unit.where(shortname: unit).first unless unit.nil?
+      record = where(id: s).first if s =~ /^\d+$/
       # Find by id-name
       match = s.match(/^(\d+)([-_]{1})(.+)$/)
       if record.nil? && match.class == MatchData
         id = match[1]
         shortname = match[3]
-        record ||= where(:id => id, :shortname => shortname).first
+        record ||= where(id: id, shortname: shortname).first
       end
       # Find by name
-      record ||= where(:unit_id => current_unit.id, :shortname => s).first unless current_unit.nil?
+      record ||= where(unit_id: current_unit.id, shortname: s).first unless current_unit.nil?
       # Return results
       record
     end
-    alias :find_for_show_super :find_for_show
+    alias find_for_show_super find_for_show
 
     # Default parameters for a tabled_asm_select method
     # Takes an object of the current class and returns params
@@ -64,71 +64,71 @@ module IsAManifest
       # Get all the package branches associated with this unit and environment
       # exam_packages = Package.unit_member(model_obj)
       environment_id ||= model_obj.environment_id
-      environment = Environment.where(:id => environment_id).first
+      environment = Environment.where(id: environment_id).first
       environment ||= Environment.start
 
       pkg_branch_options = PackageBranch.unit(model_obj.unit).environment(environment).collect { |e| [e.name, e.id] }.sort { |a, b| a[0] <=> b[0] }
 
       bundle_options = if model_obj.class == Bundle
-        Bundle.where("id <> ?", model_obj.id).unit(model_obj.unit).environment(environment).collect { |e| [e.name, e.id] }
+                         Bundle.where("id <> ?", model_obj.id).unit(model_obj.unit).environment(environment).collect { |e| [e.name, e.id] }
                        else
-        Bundle.unit(model_obj.unit).environment(environment).collect { |e| [e.name, e.id] }
+                         Bundle.unit(model_obj.unit).environment(environment).collect { |e| [e.name, e.id] }
                        end
       bundle_options.sort! { |a, b| a[0] <=> b[0] }
 
       model_name = to_s.underscore
 
       # Array for table_asm_select
-      [{ :title => "Bundles",
-         :model_name => model_name,
-         :attribute_name => "bundle_ids",
-         :select_title => "Select a bundle",
-         :options => bundle_options,
-         :selected_options => model_obj.bundle_ids },
-       { :title => "Installs",
-         :model_name => model_name,
-         :attribute_name => "installs_package_branch_ids",
-         :select_title => "Select a package branch",
-         :options => pkg_branch_options,
-         :selected_options => model_obj.installs_package_branch_ids },
-       { :title => "Uninstalls",
-         :model_name => model_name,
-         :attribute_name => "uninstalls_package_branch_ids",
-         :select_title => "Select a package branch",
-         :options => pkg_branch_options,
-         :selected_options => model_obj.uninstalls_package_branch_ids },
-       { :title => "Managed Update",
-         :model_name => model_name,
-         :attribute_name => "updates_package_branch_ids",
-         :select_title => "Select a managed update",
-         :options => pkg_branch_options,
-         :selected_options => model_obj.updates_package_branch_ids },
-       { :title => "Optional Install",
-         :model_name => model_name,
-         :attribute_name => "optional_installs_package_branch_ids",
-         :select_title => "Select optional intalls",
-         :options => pkg_branch_options,
-         :selected_options => model_obj.optional_installs_package_branch_ids }]
+      [{ title: "Bundles",
+         model_name: model_name,
+         attribute_name: "bundle_ids",
+         select_title: "Select a bundle",
+         options: bundle_options,
+         selected_options: model_obj.bundle_ids },
+       { title: "Installs",
+         model_name: model_name,
+         attribute_name: "installs_package_branch_ids",
+         select_title: "Select a package branch",
+         options: pkg_branch_options,
+         selected_options: model_obj.installs_package_branch_ids },
+       { title: "Uninstalls",
+         model_name: model_name,
+         attribute_name: "uninstalls_package_branch_ids",
+         select_title: "Select a package branch",
+         options: pkg_branch_options,
+         selected_options: model_obj.uninstalls_package_branch_ids },
+       { title: "Managed Update",
+         model_name: model_name,
+         attribute_name: "updates_package_branch_ids",
+         select_title: "Select a managed update",
+         options: pkg_branch_options,
+         selected_options: model_obj.updates_package_branch_ids },
+       { title: "Optional Install",
+         model_name: model_name,
+         attribute_name: "optional_installs_package_branch_ids",
+         select_title: "Select optional intalls",
+         options: pkg_branch_options,
+         selected_options: model_obj.optional_installs_package_branch_ids }]
     end
 
     def item_associations
-      [:package, { :package_branch => [{ :packages => [:package_branch, :unit] }, :version_tracker, :package_category] }, :manifest]
+      [:package, { package_branch: [{ packages: [:package_branch, :unit] }, :version_tracker, :package_category] }, :manifest]
     end
 
     # Array of associations to load for associates items
     def item_includes
       [
-        { :install_items => item_associations },
-        { :uninstall_items => item_associations },
-        { :managed_update_items => item_associations },
-        { :optional_install_items => item_associations },
+        { install_items: item_associations },
+        { uninstall_items: item_associations },
+        { managed_update_items: item_associations },
+        { optional_install_items: item_associations },
         :bundles,
         :unit
       ]
     end
 
     def bundle_includes
-      [{ :bundles => item_includes }, { :bundle_items => :bundle }]
+      [{ bundles: item_includes }, { bundle_items: :bundle }]
     end
   end
 
@@ -177,7 +177,7 @@ module IsAManifest
     (third_item_hash = is_a?(Computer)) && computer_group.present? ? create_item_hash(computer_group.send("precedent_#{item_name}")) : {}
 
     aux_items = third_item_hash.merge(second_item_hash)
-    aux_items.delete_if { |k, v| exclusion_items_hash[k].present? }
+    aux_items.delete_if { |k, _v| exclusion_items_hash[k].present? }
     aux_items.merge(item_hash).values
   end
 
@@ -197,16 +197,16 @@ module IsAManifest
   def create_item_array(item_method, using_precedent_items = true)
     item_array = []
     method = if using_precedent_items
-      "precedent_#{item_method}"
+               "precedent_#{item_method}"
              else
-      item_method.to_s
+               item_method.to_s
              end
 
     send(method.to_s).each do |item|
       item_array << if item.package_id.blank?
-        item.package.to_s
+                      item.package.to_s
                     else
-        item.package.to_s(:version)
+                      item.package.to_s(:version)
                     end
     end
     item_array
@@ -252,7 +252,7 @@ module IsAManifest
       it unless it.package_branch.id == package.package_branch.id
     end
     its = its.compact
-    its << install_items.build({ :package_id => package.id, :package_branch_id => package.package_branch.id })
+    its << install_items.build(package_id: package.id, package_branch_id: package.package_branch.id)
     self.install_items = its
   end
 
@@ -280,7 +280,7 @@ module IsAManifest
       it unless it.package_branch.id == pb.id
     end
     its = its.compact
-    its << install_items.build({ :package_branch_id => pb.id })
+    its << install_items.build(package_branch_id: pb.id)
     self.install_items = its
   end
 
@@ -298,7 +298,7 @@ module IsAManifest
       if package.class == Package
         package_objects << package
       else
-        p = Package.where(:id => package.to_i).limit(1).first
+        p = Package.where(id: package.to_i).limit(1).first
         package_objects << p unless p.nil?
       end
     end
@@ -306,13 +306,13 @@ module IsAManifest
   end
 
   # Pass a list of Package records or package IDs and install_item associations will be built
-  def package_branch_installs=(package_branches)
+  def package_branch_installs=(_package_branches)
     pb_objects = []
     pbs.each do |package_branch|
       if package_branch.class == PackageBranch
         pb_objects << package_branch
       else
-        pb = PackageBranch.where(:id => package_branch.to_i).limit(1).first
+        pb = PackageBranch.where(id: package_branch.to_i).limit(1).first
         pbs_objects << p unless p.nil?
       end
     end
@@ -328,10 +328,10 @@ module IsAManifest
         # Create association for...
         if item.class == Package
           # ...a specific package
-          send(assoc.to_s).build({ :package_id => item.id, :package_branch_id => item.package_branch.id })
+          send(assoc.to_s).build(package_id: item.id, package_branch_id: item.package_branch.id)
         elsif item.class == PackageBranch
           # ...the latest package from a package branch
-          send(assoc.to_s).build({ :package_branch_id => item.id })
+          send(assoc.to_s).build(package_branch_id: item.id)
         end
       end
     end
@@ -406,7 +406,7 @@ module IsAManifest
     managed_update_items.collect(&:package_branch).uniq.collect(&:id)
   end
 
- # Gets the packages that belong to this manifests optional_installs virtual attribute
+  # Gets the packages that belong to this manifests optional_installs virtual attribute
   def optional_installs
     optional_install_items.collect(&:package)
   end
@@ -425,7 +425,7 @@ module IsAManifest
   end
 
   def bundle_ids=(value)
-    Bundle.where(:id => value).to_a
+    Bundle.where(id: value).to_a
   end
 
   def bundle_ids
@@ -433,7 +433,7 @@ module IsAManifest
   end
 
   def bundle_ids=(value)
-    self.bundles = Bundle.where(:id => value).to_a
+    self.bundles = Bundle.where(id: value).to_a
   end
 
   def installs_package_branch_ids
@@ -441,7 +441,7 @@ module IsAManifest
   end
 
   def installs_package_branch_ids=(value)
-    self.installs = PackageBranch.where(:id => value).to_a
+    self.installs = PackageBranch.where(id: value).to_a
   end
 
   def uninstalls_package_branch_ids
@@ -449,7 +449,7 @@ module IsAManifest
   end
 
   def uninstalls_package_branch_ids=(value)
-    self.uninstalls = PackageBranch.where(:id => value).to_a
+    self.uninstalls = PackageBranch.where(id: value).to_a
   end
 
   def updates_package_branch_ids
@@ -457,7 +457,7 @@ module IsAManifest
   end
 
   def updates_package_branch_ids=(value)
-    self.updates = PackageBranch.where(:id => value).to_a
+    self.updates = PackageBranch.where(id: value).to_a
   end
 
   def optional_installs_package_branch_ids
@@ -465,7 +465,7 @@ module IsAManifest
   end
 
   def optional_installs_package_branch_ids=(value)
-    self.optional_installs = PackageBranch.where(:id => value).to_a
+    self.optional_installs = PackageBranch.where(id: value).to_a
   end
 
   # Returns all package_branches that belongs to the unit and the environment
@@ -491,9 +491,9 @@ module IsAManifest
   # add the path to the plist, called by included_manifests
   def to_s(format = nil)
     case format
-      when :unique then "#{id}_#{name}"
-      when :path then "#{Unit.where(:id => unit_id).first.name}/#{self.class.to_s.pluralize.tableize}/#{to_s(:unique)}"
-      else name
+    when :unique then "#{id}_#{name}"
+    when :path then "#{Unit.where(id: unit_id).first.name}/#{self.class.to_s.pluralize.tableize}/#{to_s(:unique)}"
+    else name
     end
   end
 
@@ -511,7 +511,7 @@ module IsAManifest
     h
   end
 
-  alias :serialize_for_plist_super :serialize_for_plist
+  alias serialize_for_plist_super serialize_for_plist
 
   # Converts serialized object into plist string
   def to_plist

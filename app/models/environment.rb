@@ -51,5 +51,5 @@ class Environment < ActiveRecord::Base
   end
 end
 
-class EnvironmentNotFound < Exception
+class EnvironmentNotFound < RuntimeError
 end

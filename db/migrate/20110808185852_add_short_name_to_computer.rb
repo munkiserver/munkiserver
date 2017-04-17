@@ -4,6 +4,6 @@ class AddShortNameToComputer < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :computers, :shortname , :string
+    remove_column :computers, :shortname, :string
   end
 end

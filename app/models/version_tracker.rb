@@ -9,10 +9,10 @@ class VersionTracker < ActiveRecord::Base
   MAC_UPDATE_SEARCH_URL = "#{MAC_UPDATE_SITE_URL}/find/mac/".freeze
   MAC_UPDATE_PACKAGE_URL = "#{MAC_UPDATE_SITE_URL}/app/mac/".freeze
 
-  has_many :download_links, :dependent => :destroy, :autosave => true
+  has_many :download_links, dependent: :destroy, autosave: true
 
   belongs_to :package_branch
-  belongs_to :icon, :dependent => :destroy, :autosave => true
+  belongs_to :icon, dependent: :destroy, autosave: true
 
   after_save :refresh_data
   after_create :background_fetch_data
@@ -30,7 +30,7 @@ class VersionTracker < ActiveRecord::Base
   end
 
   def self.fetch_data(id)
-    tracker = VersionTracker.where(:id => id).first
+    tracker = VersionTracker.where(id: id).first
     if tracker.present?
       tracker.fetch_data
       tracker.save!
@@ -43,7 +43,7 @@ class VersionTracker < ActiveRecord::Base
   end
 
   def background_fetch_data
-    Backgrounder.call_rake("chore:fetch_version_tracker_data", :id => id)
+    Backgrounder.call_rake("chore:fetch_version_tracker_data", id: id)
   end
 
   def fetch_data
@@ -62,15 +62,15 @@ class VersionTracker < ActiveRecord::Base
 
   # Return true if macupdate is reachable
   def macupdate_is_up?
-      uri = URI.parse(URI.escape(MAC_UPDATE_SITE_URL))
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      request = Net::HTTP::Get.new(uri.request_uri)
-      response = http.request(request)
-      response.instance_of?(Net::HTTPOK)
+    uri = URI.parse(URI.escape(MAC_UPDATE_SITE_URL))
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Get.new(uri.request_uri)
+    response = http.request(request)
+    response.instance_of?(Net::HTTPOK)
   rescue SocketError, Errno::ETIMEDOUT, Errno::ECONNREFUSED
-      return false
+    return false
   end
 
   # URL to version tracker page
@@ -82,19 +82,19 @@ class VersionTracker < ActiveRecord::Base
   def scrape_download_links(page)
     download_links = []
     page.css(".download_link").reject { |e| e[:href] == "#" }
-                              .each do |link_element|
+        .each do |link_element|
       download_url = MAC_UPDATE_SITE_URL + link_element[:href]
       text = link_element.text.strip
-      caption = link_element.parent().css(".download_link_app_version").text.strip
-      download_links << self.download_links.build({ :text => text, :url => download_url, :caption => caption })
+      caption = link_element.parent.css(".download_link_app_version").text.strip
+      download_links << self.download_links.build(text: text, url: download_url, caption: caption)
     end
     download_links
   end
 
   # Scrapes latest version from macupdate.com and return results
   def scrape_data(page, options = {})
-    options = { :refresh_icon => false }.merge(options)
-    { :version => NullObject.Maybe(page.at_css("#app_info_version_2")).text, :description => NullObject.Maybe(page.at_css("#short_descr_2")).text.strip }
+    options = { refresh_icon: false }.merge(options)
+    { version: NullObject.Maybe(page.at_css("#app_info_version_2")).text, description: NullObject.Maybe(page.at_css("#short_descr_2")).text.strip }
   end
 
   # Get the package icon download url and download the icon
@@ -104,7 +104,7 @@ class VersionTracker < ActiveRecord::Base
     if image_element.present?
       url_string = image_element[:src]
       image_file = open(MAC_UPDATE_SITE_URL + url_string)
-      icon = Icon.new({ :photo => image_file })
+      icon = Icon.new(photo: image_file)
       icon if icon.save
     end
   end

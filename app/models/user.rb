@@ -1,25 +1,25 @@
 require "digest/sha1"
 
 class User < ActiveRecord::Base
-  validates_length_of :username, :within => 3..40
-  validates_length_of :password, :in => 5..24, :if => :password_changed?, :message => "must be between 5-24 characters"
+  validates_length_of :username, within: 3..40
+  validates_length_of :password, in: 5..24, if: :password_changed?, message: "must be between 5-24 characters"
   validates_presence_of :username, :email
-  validates_presence_of :salt, :message => "is missing. New users require a password."
-  validates_presence_of :password, :password_confirmation, :if => :password_changed?
+  validates_presence_of :salt, message: "is missing. New users require a password."
+  validates_presence_of :password, :password_confirmation, if: :password_changed?
   validates_uniqueness_of :username, :email
-  validates_confirmation_of :password, :if => :password_changed?
-  validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "address doesn't look valid"
+  validates_confirmation_of :password, if: :password_changed?
+  validates_format_of :email, with: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, message: "address doesn't look valid"
 
   attr_protected :id, :salt
   attr_accessor :password
 
-  has_many :user_group_memberships, :as => :principal
-  has_many :groups, :through => :user_group_memberships, :source => :user_group
-  has_many :permissions, :as => :principal
-  has_many :privileges, :through => :permissions
+  has_many :user_group_memberships, as: :principal
+  has_many :groups, through: :user_group_memberships, source: :user_group
+  has_many :permissions, as: :principal
+  has_many :privileges, through: :permissions
   has_many :api_keys
   # has_many :units, :through => :permissions, :finder_sql => 'SELECT DISTINCT \'units\'.* FROM \'units\' INNER JOIN \'permissions\' ON \'units\'.id = \'permissions\'.unit_id WHERE ((\'permissions\'.principal_id = #{id}) AND (\'permissions\'.principal_type = \'#{self.class.to_s}\'))'
-  has_one :settings, :dependent => :destroy, :class_name => "UserSetting", :autosave => true
+  has_one :settings, dependent: :destroy, class_name: "UserSetting", autosave: true
 
   before_save :check_settings
 
@@ -32,8 +32,8 @@ class User < ActiveRecord::Base
   def self.random_string(len)
     c = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
     s = ""
-    1.upto(len) { |i| s << c[rand(c.size-1)] }
-    return s
+    1.upto(len) { |_i| s << c[rand(c.size - 1)] }
+    s
   end
 
   # Combine the pass and salt and return an encrypted string
@@ -56,11 +56,11 @@ class User < ActiveRecord::Base
 
   def self.authenticate(username, pass)
     u = find_by_username(username)
-    return u if (u != nil) && (User.encrypt(pass, u.salt) == u.hashed_password)
+    return u if !u.nil? && (User.encrypt(pass, u.salt) == u.hashed_password)
   end
 
   # A to string method
-  def to_s(style = nil)
+  def to_s(_style = nil)
     username
   end
 
@@ -131,7 +131,7 @@ class User < ActiveRecord::Base
   # Used to retrieve the unit records for the PermissionsController index.
   def permission_unit_ids
     # The privilege ID for the read_permissions privilege
-    priv_id = Privilege.where(:name => :read_permissions).first.id
+    priv_id = Privilege.where(name: :read_permissions).first.id
     unit_ids = []
     if is_root?
       unit_ids = Unit.all.map(&:id)

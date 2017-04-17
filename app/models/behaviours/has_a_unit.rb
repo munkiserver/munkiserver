@@ -7,10 +7,10 @@ module HasAUnit
     base.class_eval do
       belongs_to :unit
 
-      scope :unit, ->(u) { u.present? ? where(:unit_id => u.id) : where(:unit_id => nil) }
+      scope :unit, ->(u) { u.present? ? where(unit_id: u.id) : where(unit_id: nil) }
       scope :not_unit, ->(u) { where("#{to_s.tableize}.unit_id <> ?", u.id) }
 
-      validates :unit_id, :presence => true
+      validates :unit_id, presence: true
     end
   end
 
@@ -24,7 +24,7 @@ module HasAUnit
     def new_for_can(unit)
       raise ArgumentError, "Unit passed to new_for_can is nil" if unit.nil?
       @new_for_can ||= []
-      @new_for_can[unit.id] ||= new(:unit => unit)
+      @new_for_can[unit.id] ||= new(unit: unit)
     end
   end
 

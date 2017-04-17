@@ -12,7 +12,7 @@ module StringInstanceMethods
     results = YAML.load(self)
 
     # Replace bad values
-    if results == false || results == nil
+    if results == false || results.nil?
       ""
     else
       results

@@ -12,7 +12,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(users_path) }
       else
         flash[:error] = "Failed to create user!"
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
         format.xml  { head :ok }
       else
         flash[:error] = "Could not update user!"
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
         flash[:notice] = "#{@user.username} was successfully removed."
         format.html { redirect_to(users_path) }
       else
-        format.html { render :action => "index" }
+        format.html { render action: "index" }
       end
     end
   end

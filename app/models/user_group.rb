@@ -1,25 +1,25 @@
 class UserGroup < ActiveRecord::Base
-  validates :name, :presence => true
-  validates :unit_id, :presence => true
+  validates :name, presence: true
+  validates :unit_id, presence: true
 
-  has_many :permissions, :as => :principal
-  has_many :privileges, :through => :permissions
-  has_many :units, :through => :permissions
-  has_many :principal_memberships, :class_name => "UserGroupMembership", :dependent => :destroy
-  has_many :principals, :through => :principal_memberships
-  has_many :group_memberships, :class_name => "UserGroupMembership", :as => :principal
-  has_many :groups, :through => :group_memberships, :source => :user_group
+  has_many :permissions, as: :principal
+  has_many :privileges, through: :permissions
+  has_many :units, through: :permissions
+  has_many :principal_memberships, class_name: "UserGroupMembership", dependent: :destroy
+  has_many :principals, through: :principal_memberships
+  has_many :group_memberships, class_name: "UserGroupMembership", as: :principal
+  has_many :groups, through: :group_memberships, source: :user_group
 
   belongs_to :unit
 
-  accepts_nested_attributes_for :principal_memberships, :allow_destroy => true
+  accepts_nested_attributes_for :principal_memberships, allow_destroy: true
 
-  validates :name, :presence => true, :unique_as_shortname => true
-  validates :shortname, :presence => true, :format => { :with => /^[a-z0-9-]+$/ }
+  validates :name, presence: true, unique_as_shortname: true
+  validates :shortname, presence: true, format: { with: /^[a-z0-9-]+$/ }
 
   default_scope order(:name)
 
-  scope :where_unit, ->(u) { where(:unit_id => u.id) }
+  scope :where_unit, ->(u) { where(unit_id: u.id) }
   scope :not, ->(ug) { where("id <> ?", ug.id) }
 
   include Principal
@@ -48,13 +48,13 @@ class UserGroup < ActiveRecord::Base
   end
 
   # Returns an array of tas option hashes
-  def tas_params(environment_id = nil)
-    [{ :title => "User",
-       :model_name => "user_group",
-       :attribute_name => "user_ids",
-       :select_title => "Select a new member",
-       :options =>  User.all.collect { |u| [u.username, u.id] },
-       :selected_options => user_ids }]
+  def tas_params(_environment_id = nil)
+    [{ title: "User",
+       model_name: "user_group",
+       attribute_name: "user_ids",
+       select_title: "Select a new member",
+       options: User.all.collect { |u| [u.username, u.id] },
+       selected_options: user_ids }]
   end
 
   def user_ids
@@ -64,7 +64,7 @@ class UserGroup < ActiveRecord::Base
   def user_ids=(ids)
     self.user_group_memberships = []
     ids.each do |user_id|
-      user_group_memberships.create({ :user_id => user_id })
+      user_group_memberships.create(user_id: user_id)
     end
   end
 
@@ -96,9 +96,9 @@ class UserGroup < ActiveRecord::Base
   def self.find_for_show(unit, identifier)
     record = nil
     # Find by ID
-    record = where_unit(unit).where(:id => identifier).first if identifier =~ /^\d+$/
+    record = where_unit(unit).where(id: identifier).first if identifier =~ /^\d+$/
     # Find by shortname
-    record ||= where_unit(unit).where(:shortname => identifier).first
+    record ||= where_unit(unit).where(shortname: identifier).first
     record
   end
 
@@ -134,7 +134,7 @@ class UserGroup < ActiveRecord::Base
 
     # If we didn't find a membership yet, build one
     if membership.nil?
-      membership = principal_memberships.build(:principal => principal)
+      membership = principal_memberships.build(principal: principal)
     end
 
     # Return membership
@@ -144,12 +144,12 @@ class UserGroup < ActiveRecord::Base
   # Give a principal ID and return a principal record
   def get_principal(principal_id)
     if principal_id =~ /(.+)-(\d+)/
-      if $1.classify == UserGroup.to_s
-        UserGroup.find($2)
-      elsif $1.classify == User.to_s
-        User.find($2)
+      if Regexp.last_match(1).classify == UserGroup.to_s
+        UserGroup.find(Regexp.last_match(2))
+      elsif Regexp.last_match(1).classify == User.to_s
+        User.find(Regexp.last_match(2))
       else
-        Exception.new("Invalid principal type passed: #{$1}.  Must be UserGroup or User.")
+        Exception.new("Invalid principal type passed: #{Regexp.last_match(1)}.  Must be UserGroup or User.")
       end
     end
   end
@@ -163,6 +163,6 @@ class UserGroup < ActiveRecord::Base
   # Instatiates a new object, belonging to unit.  Caches for future calls.
   def self.new_for_can(unit)
     @new_for_can ||= []
-    @new_for_can[unit.id] ||= new(:unit => unit)
+    @new_for_can[unit.id] ||= new(unit: unit)
   end
 end

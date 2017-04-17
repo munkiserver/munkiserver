@@ -14,7 +14,7 @@ class DashboardController < ApplicationController
   def dismiss_manifest
     respond_to do |format|
       @missing_manifest = MissingManifest.find(params[:id])
-      @missing_manifest.update_attributes :dismissed => true
+      @missing_manifest.update_attributes dismissed: true
       format.js
     end
   end

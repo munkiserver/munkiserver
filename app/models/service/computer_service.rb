@@ -18,9 +18,7 @@ class ComputerService
     # Check for some bad parameters
     # => plist wasn't a valid plist
     # => plist items element wasn't an array
-    if h.nil? || h["items"].class != Array
-      error_occurred = true
-    end
+    error_occurred = true if h.nil? || h["items"].class != Array
 
     # Sort out what computer group we'll be adding the objects to
     # If a computer group ID of zero is passed, it means, pick a group
@@ -28,16 +26,14 @@ class ComputerService
     cg = nil
     if computer_group_id == 0
       cg = ComputerGroup.unit(unit).find_by_name(h["listName"])
-      cg ||= ComputerGroup.new({ :name => h["listName"], :unit_id => unit.id, :environment_id => Environment.find_by_name("Production").id })
+      cg ||= ComputerGroup.new(name: h["listName"], unit_id: unit.id, environment_id: Environment.find_by_name("Production").id)
       cg.save if cg.new_record?
     elsif computer_group_id > 0
       cg = ComputerGroup.find_by_id(computer_group_id)
     end
 
     # Make sure we have a computer group and a environment
-    if cg.nil?
-      error_occurred = true
-    end
+    error_occurred = true if cg.nil?
 
     # Create and collect new computer records
     computers = nil
@@ -51,11 +47,11 @@ class ComputerService
         # This method should behave the exact same way as new except that if
         # something isn't set (like computer model) that is set in the template
         # then the template setting is applied
-        c = Computer.new({ :mac_address => computer_info["hardwareAddress"],
-                           :name => computer_info["name"],
-                           :hostname => computer_info["hostname"],
-                           :unit_id => unit.id,
-                           :environment_id => environment_id })
+        c = Computer.new(mac_address: computer_info["hardwareAddress"],
+                         name: computer_info["name"],
+                         hostname: computer_info["hostname"],
+                         unit_id: unit.id,
+                         environment_id: environment_id)
         c.computer_group = cg
         c.computer_model = ComputerModel.default
         computers << c

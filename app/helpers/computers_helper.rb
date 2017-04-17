@@ -1,24 +1,24 @@
 module ComputersHelper
   # Builds a computer page (show/edit) header from a computer object
   def computer_header(computer)
-    render :partial => "shared/record_header", :locals => { :title => computer,
-                                                            :img => computer.icon,
-                                                            :soft_info => computer.computer_group,
-                                                            :bold_info => computer.mac_address }
+    render partial: "shared/record_header", locals: { title: computer,
+                                                      img: computer.icon,
+                                                      soft_info: computer.computer_group,
+                                                      bold_info: computer.mac_address }
   end
 
   # Prints a computer table listing
   # Is paginated by default using will_paginate.  Pass false to disable.
   def computer_table(computers, paginate = true, bulk_edit = true)
-    render :partial => "computers/computer_table", :locals => { :computers => computers, :paginate => paginate, :bulk_edit => bulk_edit }
+    render partial: "computers/computer_table", locals: { computers: computers, paginate: paginate, bulk_edit: bulk_edit }
   end
 
   def computer_group_links
     computer_groups = ComputerGroup.unit(current_unit).includes(:unit)
     if computer_groups.empty?
-      render :text => "None"
+      render text: "None"
     else
-      render :partial => "computer_group_link", :collection => computer_groups
+      render partial: "computer_group_link", collection: computer_groups
     end
   end
 
@@ -30,12 +30,10 @@ module ComputersHelper
       string = "<h3>All</h3>"
     else
       cg = ComputerGroup.of_unit(current_unit_id).find(id)
-      unless cg.nil?
-        string = "<h3>#{cg.name}</h3>"
-      end
+      string = "<h3>#{cg.name}</h3>" unless cg.nil?
     end
 
-    concat(render :text => string, :layout => false)
+    concat(render(text: string, layout: false))
   end
 
   # Returns options tags for computer groups
@@ -47,6 +45,6 @@ module ComputersHelper
     title ||= column.titleize
     css_class = column == sort_column ? "current #{sort_direction}" : nil
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
-    link_to title, params.merge({ :sort => column, :direction => direction, :page => nil }), { :class => css_class }
+    link_to title, params.merge(sort: column, direction: direction, page: nil), class: css_class
   end
 end

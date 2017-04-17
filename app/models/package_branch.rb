@@ -4,28 +4,28 @@ class PackageBranch < ActiveRecord::Base
   include HasAUnit
 
   validates_presence_of :name, :display_name, :package_category_id
-  validates_uniqueness_of :name, :scope => [:unit_id]
-  validates_format_of :name, :with => /^[^ -.]+$/, :message => "must not contain spaces or hyphens or dots"
+  validates_uniqueness_of :name, scope: [:unit_id]
+  validates_format_of :name, with: /^[^ -.]+$/, message: "must not contain spaces or hyphens or dots"
 
   attr_accessible :name, :display_name, :package_category_id
   attr_accessor :environment_id
 
   # Relationships
-  has_many :install_items, :dependent => :destroy
-  has_many :uninstall_items, :dependent => :destroy
-  has_many :managed_update_items, :dependent => :destroy
-  has_many :optional_install_items, :dependent => :destroy
-  has_many :require_items, :dependent => :destroy
-  has_many :update_for_items, :dependent => :destroy
-  has_many :notifications, :as => :notified
-  has_many :packages, :order => "version DESC", :dependent => :destroy
-  has_many :shared_packages, :class_name => "Package", :conditions => { :shared => true }
-  has_one :version_tracker, :dependent => :destroy, :autosave => true
+  has_many :install_items, dependent: :destroy
+  has_many :uninstall_items, dependent: :destroy
+  has_many :managed_update_items, dependent: :destroy
+  has_many :optional_install_items, dependent: :destroy
+  has_many :require_items, dependent: :destroy
+  has_many :update_for_items, dependent: :destroy
+  has_many :notifications, as: :notified
+  has_many :packages, order: "version DESC", dependent: :destroy
+  has_many :shared_packages, class_name: "Package", conditions: { shared: true }
+  has_one :version_tracker, dependent: :destroy, autosave: true
 
-  belongs_to :package_category, :touch => true
+  belongs_to :package_category, touch: true
 
-  scope :find_for_index, ->(unit, env) { has_versions.unit(unit).environment(env).order("name ASC").includes({ :packages => [:environment, :package_branch] }, :package_category) }
-  scope :environment, ->(env) { joins(:packages).where(:packages => { :environment_id => env.id }).uniq }
+  scope :find_for_index, ->(unit, env) { has_versions.unit(unit).environment(env).order("name ASC").includes({ packages: [:environment, :package_branch] }, :package_category) }
+  scope :environment, ->(env) { joins(:packages).where(packages: { environment_id: env.id }).uniq }
   scope :has_versions, where("(SELECT COUNT(*) FROM `packages` WHERE `packages`.`package_branch_id` = `package_branches`.`id`) > 0")
   scope :has_no_versions, where("(SELECT COUNT(*) FROM `packages` WHERE `packages`.`package_branch_id` = `package_branches`.`id`) = 0")
   scope :shared, includes(:packages).where("packages.shared" => true)
@@ -40,8 +40,8 @@ class PackageBranch < ActiveRecord::Base
   # current package branch name, if found, return a new package branch
   # display name follow by appending time stamp
   def self.conform_to_display_name_constraints(display_name, id)
-    if PackageBranch.where(:display_name => display_name).where("id <> ?", id.to_i).present?
-      display_name = "#{display_name}_#{Time.zone.now.to_s}"
+    if PackageBranch.where(display_name: display_name).where("id <> ?", id.to_i).present?
+      display_name = "#{display_name}_#{Time.zone.now}"
     else
       display_name
     end
@@ -53,26 +53,26 @@ class PackageBranch < ActiveRecord::Base
 
   # Get the latest package within a unit and environment
   def latest_where_unit_and_environment(unit, env)
-    latest_where_unit(unit).where(:environment_id => env.id)
+    latest_where_unit(unit).where(environment_id: env.id)
   end
 
   def latest_where_unit(unit)
-    packages.where(:unit_id => unit.id).order("version desc").limit(1).first
+    packages.where(unit_id: unit.id).order("version desc").limit(1).first
   end
 
   # Extends the functionality of the association dynamic method to
   # return only the packages that match the passed unit member
   def packages_like_unit_member(um)
-    packages.where(:environment_id => um.environment_id, :unit_id => um.unit_id)
+    packages.where(environment_id: um.environment_id, unit_id: um.unit_id)
   end
 
   def packages_where_unit_and_environment(unit, environment)
-    packages.where(:environment_id => environment.id, :unit_id => unit.id)
+    packages.where(environment_id: environment.id, unit_id: unit.id)
   end
 
   # Return all the packages that are shared and from the given unit
   def shared_packages_from_unit(unit)
-    Package.shared.where(:package_branch_id => id, :unit_id => unit.id).order("version DESC")
+    Package.shared.where(package_branch_id: id, unit_id: unit.id).order("version DESC")
   end
 
   # Virtual attribute that retrieves the web ID from the version tracker
@@ -97,7 +97,7 @@ class PackageBranch < ActiveRecord::Base
   # True if a newer version is available in this branch
   def new_version?(unit = nil)
     if version_tracker.nil? || version_tracker.version.nil?
-      return false
+      false
     else
       version_string = vtv(unit)
       if version_string.present?
@@ -114,15 +114,15 @@ class PackageBranch < ActiveRecord::Base
     p = packages
 
     # Specify a certain ID
-    p = p.where(:id => id) unless id.nil?
+    p = p.where(id: id) unless id.nil?
 
     # Limiting scope to that of unit_member or current scope (defined by unit_id and environment_id)
-    if unit_member != nil
-      p = p.where(:environment_id => unit_member.environment_id)
-      p = p.where(:unit_id => unit_member.unit_id)
+    if !unit_member.nil?
+      p = p.where(environment_id: unit_member.environment_id)
+      p = p.where(unit_id: unit_member.unit_id)
     elsif scoped?
-      p = p.where(:environment_id => @environment_id)
-      p = p.where(:unit_id => @unit_id)
+      p = p.where(environment_id: @environment_id)
+      p = p.where(unit_id: @unit_id)
     end
     p.first
   end
@@ -170,7 +170,7 @@ class PackageBranch < ActiveRecord::Base
   end
 
   def self.cached_available_updates(unit = nil)
-    Rails.cache.fetch("available-updates-for-unit-id-#{unit.id}", :expires_in => 4.hours) do
+    Rails.cache.fetch("available-updates-for-unit-id-#{unit.id}", expires_in: 4.hours) do
       available_updates(unit)
     end
   end
@@ -192,8 +192,8 @@ class PackageBranch < ActiveRecord::Base
   # isn't the latest of the current units
   def to_s(style = nil)
     case style
-      when :pretty then display_name
-      else name
+    when :pretty then display_name
+    else name
     end
   end
 
@@ -202,8 +202,8 @@ class PackageBranch < ActiveRecord::Base
   end
 
   def to_params
-    { :unit_shortname => unit.shortname,
-      :name => name }
+    { unit_shortname: unit.shortname,
+      name: name }
   end
 
   def obsolete?

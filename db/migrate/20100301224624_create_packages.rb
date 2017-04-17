@@ -19,8 +19,8 @@ class CreatePackages < ActiveRecord::Migration
       t.text :installs
       t.string :RestartAction
       t.string :package_path
-      t.boolean :autoremove, :default => false
-      t.boolean :shared, :default => false
+      t.boolean :autoremove, default: false
+      t.boolean :shared, default: false
       t.string :version_tracker_version
 
       # Install info
@@ -29,13 +29,13 @@ class CreatePackages < ActiveRecord::Migration
       t.integer :installer_item_size
       t.string :installer_item_location
       t.text :installer_choices_xml
-      t.boolean :use_installer_choices, :default => false
+      t.boolean :use_installer_choices, default: false
 
       # Uninstall info
       t.string :uninstall_method
       t.string :uninstaller_item_location
       t.integer :uninstaller_item_size
-      t.boolean :uninstallable, :default => true
+      t.boolean :uninstallable, default: true
 
       # Dependancy
       # t.text :requires
@@ -46,7 +46,7 @@ class CreatePackages < ActiveRecord::Migration
 
       # To allow for raw text to be added
       t.text :raw_tags
-      t.integer :raw_mode_id, :default => 0
+      t.integer :raw_mode_id, default: 0
 
       t.timestamps
     end

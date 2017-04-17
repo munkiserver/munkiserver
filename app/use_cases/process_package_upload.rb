@@ -29,8 +29,8 @@ class ProcessPackageUpload
     end
 
     def defaults
-      { :makepkginfo_options => {},
-        :special_attributes  => { :environment_id => Environment.start.id } }
+      { makepkginfo_options: {},
+        special_attributes: { environment_id: Environment.start.id } }
     end
 
     # Checks to ensure what should be present is. If something is missing, raise
@@ -69,7 +69,7 @@ class ProcessPackageUpload
         out_log = Tempfile.new("out_log")
         error_log = Tempfile.new("error_log")
         makepkginfo_succeeded = system("#{Munki::Application::MAKEPKGINFO} #{cmd_line_arguments} '#{package_file.path}' 1> '#{out_log.path}' 2>'#{error_log.path}'")
-        exit_status = $?.exitstatus
+        exit_status = $CHILD_STATUS.exitstatus
 
         # If there was a problem, cleanup, then raise an error
         if exit_status != 0
@@ -126,7 +126,7 @@ class ProcessPackageUpload
         # Move tmp_file to the package store
         begin
           FileUtils.mv package_file.tempfile.path, destination_path
-          FileUtils.chmod 0644, destination_path
+          FileUtils.chmod 0o644, destination_path
         rescue Errno::EACCES => e
           raise Error, "Unable to write to package store"
         end
@@ -150,7 +150,7 @@ class ProcessPackageUpload
         open(url) do |u|
           IO.copy_stream(u, file)
           file_url_path = u.base_uri.path if u.respond_to?(:base_uri)
-          file_url_path = u.meta["content-disposition"].match(/filename=(\"?)(.+)\1/)[2] if u.respond_to?(:meta) && u.meta.has_key?("content-disposition") && u.meta["content-disposition"].include?("filename=")
+          file_url_path = u.meta["content-disposition"].match(/filename=(\"?)(.+)\1/)[2] if u.respond_to?(:meta) && u.meta.key?("content-disposition") && u.meta["content-disposition"].include?("filename=")
           file_url_path ||= URI.parse(url).path
           package_file.original_filename = File.basename(file_url_path)
         end
@@ -163,7 +163,7 @@ class ProcessPackageUpload
       # Create a unique name from a string by prepending the current timestamp
       # and adding a random number
       def uniquify_name(name)
-        Time.now.to_s(:ordered_numeric) + rand(10001).to_s + "_" + name
+        Time.now.to_s(:ordered_numeric) + rand(10_001).to_s + "_" + name
       end
     end
   end
@@ -173,18 +173,17 @@ class ProcessPackageUpload
       def assemble(package_file, pkginfo, special_attributes)
         package = Package.new
         pkginfo.delete("catalogs")
-        branch_attributes = { :name => pkginfo.delete("name"),
-                              :display_name => pkginfo.delete("display_name"),
-                              :unit_id => special_attributes[:unit_id],
-                              :package_category_id => PackageCategory.default(pkginfo["installer_type"]).id }
+        branch_attributes = { name: pkginfo.delete("name"),
+                              display_name: pkginfo.delete("display_name"),
+                              unit_id: special_attributes[:unit_id],
+                              package_category_id: PackageCategory.default(pkginfo["installer_type"]).id }
         package.package_branch = retrieve_package_branch(branch_attributes)
 
         pkginfo.each do |k, v|
-          unless Package.known_attributes.include?(k)
-            package.raw_tags = package.raw_tags.merge({ k => v })
-            pkginfo.delete(k)
-            package.raw_mode_id = 1 # Change raw_mode to append
-          end
+          next if Package.known_attributes.include?(k)
+          package.raw_tags = package.raw_tags.merge(k => v)
+          pkginfo.delete(k)
+          package.raw_mode_id = 1 # Change raw_mode to append
         end
 
         package.attributes = pkginfo
@@ -207,7 +206,7 @@ class ProcessPackageUpload
       # else pick the existing package branch and assign to the package
       def retrieve_package_branch(attributes)
         attributes[:name] = PackageBranch.conform_to_name_constraints(attributes[:name])
-        branch = PackageBranch.where(:name => attributes[:name], :unit_id => attributes[:unit_id]).first
+        branch = PackageBranch.where(name: attributes[:name], unit_id: attributes[:unit_id]).first
 
         if branch.present?
           branch
@@ -237,7 +236,7 @@ class ProcessPackageUpload
       # Apply inherited attributes (as defined by inherited_attributes)
       # from an older version from the package's package branch and unit
       def apply_previous_version_attributes(package)
-        previous_version = Package.where(:package_branch_id => package.package_branch_id, :unit_id => package.unit_id).order("version DESC").first
+        previous_version = Package.where(package_branch_id: package.package_branch_id, unit_id: package.unit_id).order("version DESC").first
         if previous_version.present?
           Package.inherited_attributes.each do |attr|
             package.send("#{attr}=", previous_version.send(attr)) unless previous_version.send(attr).blank?
@@ -248,5 +247,5 @@ class ProcessPackageUpload
     end
   end
 
-  class Error < Exception; end
+  class Error < RuntimeError; end
 end

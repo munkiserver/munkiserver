@@ -1,27 +1,27 @@
 class AdminMailer < ActionMailer::Base
-  default :from => "Munki Server <no_reply@example.com>"
+  default from: "Munki Server <no_reply@example.com>"
 
   helper :application
 
   # Send a current report for a given computer
   def computer_report(computer)
     @computer = computer
-    mail(:bcc => recipients(@computer), :subject => "[Munki Server] #{@computer}: #{@computer.status}")
+    mail(bcc: recipients(@computer), subject: "[Munki Server] #{@computer}: #{@computer.status}")
   end
 
   def package_update_available(package)
     @package = package
-    mail(:bcc => recipients(@package), :subject => "[Munki Server] #{@package.to_s(:pretty)} has an update! ")
+    mail(bcc: recipients(@package), subject: "[Munki Server] #{@package.to_s(:pretty)} has an update! ")
   end
 
   def available_updates_digest(unit)
     @packages = PackageBranch.available_updates(unit)
-    mail(:bcc => recipients_for_unit(unit, :package), :subject => "[Munki Server] #{@packages.count} packages have update in #{unit.name}! ")
+    mail(bcc: recipients_for_unit(unit, :package), subject: "[Munki Server] #{@packages.count} packages have update in #{unit.name}! ")
   end
 
   def warranty_notification(computer)
     @computer = computer
-    mail(:bcc => recipients(@computer), :subject => "[Munki Server] #{@computer}'s warranty will expire in #{@computer.warranty.days_left} days")
+    mail(bcc: recipients(@computer), subject: "[Munki Server] #{@computer}'s warranty will expire in #{@computer.warranty.days_left} days")
   end
 
   # # A list of computers that are considered "dormant", including their

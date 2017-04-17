@@ -19,13 +19,13 @@ OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 class Warranty < ActiveRecord::Base
   belongs_to :computer
-  has_many :notifications, :as => :notified
+  has_many :notifications, as: :notified
 
-  validates_format_of :serial_number, :with => /^[a-zA-Z0-9]+$/
+  validates_format_of :serial_number, with: /^[a-zA-Z0-9]+$/
 
   scope :expire_after, ->(time) { where("hw_coverage_end_date > ?", time) }
   scope :expire_before, ->(time) { where("hw_coverage_end_date < ?", time) }
-  scope :belong_to_unit, ->(unit) { where(:computer_id => Computer.where(:unit_id => unit)) }
+  scope :belong_to_unit, ->(unit) { where(computer_id: Computer.where(unit_id: unit)) }
 
   # Creates a hash used to update or create a warranty object.  Raises WarrantyException
   def self.get_warranty_hash(serial = "")
@@ -42,21 +42,19 @@ class Warranty < ActiveRecord::Base
 
       # Prepare POST data
       request.set_form_data(
-        {
-          "sn"       => serial,
-          "Continue" => "Continue",
-          "cn"       => "",
-          "locale"   => "",
-          "caller"   => "",
-          "num"      => "0"
-        }
+        "sn" => serial,
+        "Continue" => "Continue",
+        "cn"       => "",
+        "locale"   => "",
+        "caller"   => "",
+        "num"      => "0"
       )
 
       # POST data and get the response
       response      = http.request(request)
       response_data = response.body
     rescue URI::Error
-      computer = Computer.where(:serial_number => serial)
+      computer = Computer.where(serial_number: serial)
       Rails.logger.error "Invalid serial number #{serial} for computer #{computer}"
     rescue SocketError
       # No internet connection return nil
@@ -83,22 +81,21 @@ class Warranty < ActiveRecord::Base
       hw_expiration_date = response_data.split("Estimated Expiration Date: ")[1].split("<")[0] if hw_warranty_status
       ph_expiration_date = response_data.split("Estimated Expiration Date: ")[1].split("<")[0] if ph_warranty_status
 
-      { :serial_number =>           serial,
-        :product_type =>            prod_desc,
+      { serial_number: serial,
+        product_type: prod_desc,
 
-        :hw_coverage_end_date =>    hw_expiration_date,
-        :phone_coverage_end_date => ph_expiration_date,
+        hw_coverage_end_date: hw_expiration_date,
+        phone_coverage_end_date: ph_expiration_date,
 
-        :registered =>              reg_status == true,
-        :hw_coverage_expired =>     hw_warranty_status == false,
-        :app_registered =>          hw_has_app == true,
-        :app_eligible =>            app_eligibile_status == true,
-        :phone_coverage_expired =>  ph_warranty_status == false,
+        registered: reg_status == true,
+        hw_coverage_expired: hw_warranty_status == false,
+        app_registered: hw_has_app == true,
+        app_eligible: app_eligibile_status == true,
+        phone_coverage_expired: ph_warranty_status == false,
 
-        :specs_url =>               "http://support.apple.com/specs/#{serial}",
-        :hw_support_url =>          "https://expresslane.apple.com/GetSASO?sn=#{serial}",
-        :phone_support_url =>       "https://expresslane.apple.com/GetproductgroupList.do?serialno=#{serial}"
-      }
+        specs_url: "http://support.apple.com/specs/#{serial}",
+        hw_support_url: "https://expresslane.apple.com/GetSASO?sn=#{serial}",
+        phone_support_url: "https://expresslane.apple.com/GetproductgroupList.do?serialno=#{serial}" }
     rescue
       Rails.logger.error "Cannot parse web page output #{computer} with #{serial} - likely an issue with a semi-registered computer."
       {}

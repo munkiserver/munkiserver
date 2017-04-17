@@ -1,6 +1,6 @@
 namespace :warranties do
   desc "Update warranties for all available computers"
-  task :update_all => :environment do
+  task update_all: :environment do
     computers = Computer.all.select(&:serial_number)
     computers.each do |comp|
       if comp.update_warranty
@@ -12,7 +12,7 @@ namespace :warranties do
   end
 
   desc "Destroys all warraties that have been saved"
-  task :destroy_all => :environment do
+  task destroy_all: :environment do
     Warranty.destroy_all
   end
 end

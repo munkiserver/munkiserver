@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe MigratePackageBranches, :type => :model do
+describe MigratePackageBranches, type: :model do
   let(:nil_unit_branch) do
-    nil_unit_branch = FactoryGirl.build(:package_branch, :unit_id => nil)
-    nil_unit_branch.save(:validate => false)
+    nil_unit_branch = FactoryGirl.build(:package_branch, unit_id: nil)
+    nil_unit_branch.save(validate: false)
     nil_unit_branch
   end
 
@@ -26,7 +26,7 @@ describe MigratePackageBranches, :type => :model do
       it "should retrieve a branch that is unit scoped and return it" do
         unit = FactoryGirl.create(:unit)
         category = FactoryGirl.create(:package_category)
-        existing_unit_scoped_branch = FactoryGirl.create(:package_branch, :unit => unit, :name => nil_unit_branch.name)
+        existing_unit_scoped_branch = FactoryGirl.create(:package_branch, unit: unit, name: nil_unit_branch.name)
         unit_scoped_branch = MigratePackageBranches.new.retrieve_unit_scoped_branch(nil_unit_branch, unit, category)
         unit_scoped_branch.id.should == existing_unit_scoped_branch.id
       end
@@ -35,7 +35,7 @@ describe MigratePackageBranches, :type => :model do
 
   describe "#reassign_packages" do
     it "should create package branches associated with each package's unit, then be assigned to the package" do
-      package = FactoryGirl.create(:package, :package_branch => nil_unit_branch)
+      package = FactoryGirl.create(:package, package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_packages
 
@@ -49,7 +49,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns install items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       computer = FactoryGirl.create(:computer)
-      item = computer.install_items.create!(:package_branch => nil_unit_branch)
+      item = computer.install_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.install_items.should be_empty
@@ -59,7 +59,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns uninstall items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       computer = FactoryGirl.create(:computer)
-      item = computer.uninstall_items.create!(:package_branch => nil_unit_branch)
+      item = computer.uninstall_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.uninstall_items.should be_empty
@@ -69,7 +69,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns managed update items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       computer = FactoryGirl.create(:computer)
-      item = computer.managed_update_items.create!(:package_branch => nil_unit_branch)
+      item = computer.managed_update_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.managed_update_items.should be_empty
@@ -79,7 +79,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns optional install items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       computer = FactoryGirl.create(:computer)
-      item = computer.optional_install_items.create!(:package_branch => nil_unit_branch)
+      item = computer.optional_install_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.optional_install_items.should be_empty
@@ -89,7 +89,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns require items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       package = FactoryGirl.create(:package)
-      item = package.require_items.create!(:package_branch => nil_unit_branch)
+      item = package.require_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.require_items.should be_empty
@@ -99,7 +99,7 @@ describe MigratePackageBranches, :type => :model do
     it "reassigns update for items to unit-scoped branch records" do
       FactoryGirl.create(:package_category)
       package = FactoryGirl.create(:package)
-      item = package.update_for_items.create!(:package_branch => nil_unit_branch)
+      item = package.update_for_items.create!(package_branch: nil_unit_branch)
 
       MigratePackageBranches.new.reassign_manifest_items
       nil_unit_branch.update_for_items.should be_empty
@@ -111,7 +111,7 @@ describe MigratePackageBranches, :type => :model do
     let(:obsolete_branch) { nil_unit_branch }
     let(:active_branch) do
       branch = FactoryGirl.create(:package_branch)
-      package = FactoryGirl.create(:package, :unit => branch.unit, :package_branch => branch)
+      package = FactoryGirl.create(:package, unit: branch.unit, package_branch: branch)
     end
 
     it "removes obsolete branches" do

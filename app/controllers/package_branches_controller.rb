@@ -10,7 +10,7 @@ class PackageBranchesController < ApplicationController
         format.html { redirect_to edit_package_branch_path(@package_branch.to_params) }
       else
         flash[:error] = "An error occurred while updating #{@package_branch.display_name}"
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end
@@ -19,8 +19,8 @@ class PackageBranchesController < ApplicationController
     respond_to do |format|
       if @package_branch.present?
         format.png do
-          send_file @package_branch.icon.path(:medium), :filename => "#{@package_branch.name}.png"
-          fresh_when :etag => @package_branch, :last_modified => @package_branch.updated_at.utc, :public => true
+          send_file @package_branch.icon.path(:medium), filename: "#{@package_branch.name}.png"
+          fresh_when etag: @package_branch, last_modified: @package_branch.updated_at.utc, public: true
         end
       else
         render page_not_found

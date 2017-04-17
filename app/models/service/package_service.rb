@@ -11,8 +11,8 @@ class PackageService
     @attr = attributes
 
     # Retrieve PackageBranch records for all installs if edit_*installs is not nil
-    @attr[:upgrade_for] = PackageService.parse_package_strings(@attr[:update_for]) if @attr[:upgrade_for] != nil
-    @attr[:requires] = PackageService.parse_package_strings(@attr[:requires]) if @attr[:requires] != nil
+    @attr[:upgrade_for] = PackageService.parse_package_strings(@attr[:update_for]) unless @attr[:upgrade_for].nil?
+    @attr[:requires] = PackageService.parse_package_strings(@attr[:requires]) unless @attr[:requires].nil?
   end
 
   # Takes an array of strings and returns either a package or a package branch
@@ -24,12 +24,12 @@ class PackageService
     a.each do |name|
       if split = name.match(/(.+)(-)(.+)/)
         # For packages
-        pb = PackageBranch.where(:name => split[1]).limit(1).first
-        p = Package.where(:package_branch_id => pb.id, :version => split[3]).first
+        pb = PackageBranch.where(name: split[1]).limit(1).first
+        p = Package.where(package_branch_id: pb.id, version: split[3]).first
         items << p unless p.nil?
       else
         # For package branches
-        pb = PackageBranch.where(:name => name).limit(1).first
+        pb = PackageBranch.where(name: name).limit(1).first
         items << pb unless pb.nil?
       end
     end

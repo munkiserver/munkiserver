@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ApiKey, :type => :model do
+describe ApiKey, type: :model do
   describe "initializes a random API Key" do
     let(:api_key) { ApiKey.new }
 

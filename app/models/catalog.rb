@@ -6,7 +6,7 @@ class Catalog
 
     raise EnvironmentNotFound if environment.nil?
 
-    packages = Package.includes(:package_branch, :require_items, :update_for_items, :icon, :environment, :unit, :version_tracker).where(:unit_id => unit_id, :environment_id => environment_id).to_a
+    packages = Package.includes(:package_branch, :require_items, :update_for_items, :icon, :environment, :unit, :version_tracker).where(unit_id: unit_id, environment_id: environment_id).to_a
     packages.map(&:serialize_for_plist)
   end
 end

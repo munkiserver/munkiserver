@@ -4,6 +4,6 @@ class AddShortNameToBundle < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :bundles, :shortname , :string
+    remove_column :bundles, :shortname, :string
   end
 end

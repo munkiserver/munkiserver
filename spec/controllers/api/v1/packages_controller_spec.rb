@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Api::V1::PackagesController, :type => :controller do
+describe Api::V1::PackagesController, type: :controller do
   before do
     allow(user).to receive(:all_permissions).and_return([])
     allow(controller).to receive(:current_user).and_return(user)
   end
 
-  let(:user) { double(:user, :id => 1, :name => "root", :is_root? => true) }
+  let(:user) { double(:user, id: 1, name: "root", is_root?: true) }
   let!(:staging) { Environment.create name: "Staging" }
   let(:unit) { FactoryGirl.create(:unit) }
   let(:package_file) { double("package.dmg") }
@@ -21,7 +21,7 @@ describe Api::V1::PackagesController, :type => :controller do
     end
 
     it "should allow you to upload a package" do
-      post :create, :unit_shortname => unit.shortname, :package_file => package_file, :pkginfo_file => pkginfo_file, format: :json
+      post :create, unit_shortname: unit.shortname, package_file: package_file, pkginfo_file: pkginfo_file, format: :json
 
       parsed_response = JSON.parse(response.body)
 
@@ -42,7 +42,7 @@ describe Api::V1::PackagesController, :type => :controller do
     end
 
     it "should allow you to upload a package" do
-      post :create, :unit_shortname => unit.shortname, :package_file => package_file, :pkginfo_file => pkginfo_file, format: :json
+      post :create, unit_shortname: unit.shortname, package_file: package_file, pkginfo_file: pkginfo_file, format: :json
 
       parsed_response = JSON.parse(response.body)
 

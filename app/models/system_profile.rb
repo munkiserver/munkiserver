@@ -1,12 +1,12 @@
 class SystemProfile < ActiveRecord::Base
   belongs_to :computer
 
-  has_many :sp_printers, :dependent => :destroy
+  has_many :sp_printers, dependent: :destroy
 
   # Include helpers
   include ActionView::Helpers
 
-  scope :unused, where(:computer_id => nil)
+  scope :unused, where(computer_id: nil)
 
   # Formats a system profiler plist file object into a ruby
   # hash that can be used to create a new SystemProfile record.
@@ -51,8 +51,8 @@ class SystemProfile < ActiveRecord::Base
     # Format the keys
     f_item_0 = underscore_keys(item_0)
     # Delete elements with keys not listed in allowed_keys
-    f_item_0.delete_if do |k, v|
-      if !allowed_keys.include?(k)
+    f_item_0.delete_if do |k, _v|
+      unless allowed_keys.include?(k)
         logger.debug "Removing #{k} key from SPHardwareDataType data set"
         true
       end
@@ -74,8 +74,8 @@ class SystemProfile < ActiveRecord::Base
     # Fix special cases
     f_item_0["os_64bit_kernel_and_kexts"] = f_item_0.delete("64bit_kernel_and_kexts")
     # Delete elements with keys not listed in allowed_keys
-    f_item_0.delete_if do |k, v|
-      if !allowed_keys.include?(k)
+    f_item_0.delete_if do |k, _v|
+      unless allowed_keys.include?(k)
         logger.debug "Removing #{k} key from SPSoftwareDataType data set"
         true
       end

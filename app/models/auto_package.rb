@@ -68,7 +68,7 @@ module AutoPackage
   # Return symbol representation of url type
   def self.url_type(url)
     if firefox_url?(url)
-      return :firefox
+      :firefox
     else
       :normal
     end
@@ -129,9 +129,7 @@ module AutoPackage
     # Create destination directory
     extract_dir = unzip(path, extract_dir)
     # Make sure we're OK
-    if extract_dir.nil?
-      raise AutoPackageError, "Unable to unzip #{path}"
-    end
+    raise AutoPackageError, "Unable to unzip #{path}" if extract_dir.nil?
 
     # Wrap in a DMG
     dmg_path = wrap_contents_in_dmg(extract_dir)
@@ -146,17 +144,13 @@ module AutoPackage
   def self.wrap_contents_in_dmg(path)
     dmg_path = path + ".dmg"
     exit = `hdiutil create -srcfolder #{path} #{dmg_path} >> /dev/null; echo $?`.chomp.to_i
-    if exit == 0
-      dmg_path
-    end
+    dmg_path if exit == 0
   end
 
   # Unzip a file to destination.  Returns destination directory if success, otherwise, nil
   def self.unzip(path_to_zip, extract_dest)
     # logger.info("Unzipping #{path_to_zip} into #{extract_dest}")
     exit = `#{UNZIP} -o #{path_to_zip} -d #{extract_dest} >> /dev/null; echo $?`.chomp.to_i
-    if exit == 0
-      extract_dest
-    end
+    extract_dest if exit == 0
   end
 end

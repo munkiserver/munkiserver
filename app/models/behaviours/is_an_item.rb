@@ -3,7 +3,7 @@ module IsAnItem
     base.extend ClassMethods
 
     base.class_eval do
-      belongs_to :manifest, :polymorphic => true # package, computer, computer group, bundle
+      belongs_to :manifest, polymorphic: true # package, computer, computer group, bundle
       belongs_to :package_branch
       belongs_to :package
     end
@@ -11,7 +11,7 @@ module IsAnItem
 
   module ClassMethods
     def self.destroy_stale_records
-      Rails.logger.info "Destroying #{to_s} records with nil package reference..."
+      Rails.logger.info "Destroying #{self} records with nil package reference..."
       records_with_nil_packages.map do |item|
         Rails.logger.info "Destroying item.inspect"
         item.destroy
@@ -24,7 +24,7 @@ module IsAnItem
   end
 
   def package
-    p = Package.where(:id => package_id).first if package_id.present?
+    p = Package.where(id: package_id).first if package_id.present?
     p ||= package_branch.packages.group_by(&:environment_id)[manifest.environment_id].first if package_branch.present?
     p
   end
@@ -34,7 +34,7 @@ module IsAnItem
   end
 
   # Returns array of versions for use with options_for_select view method
-  def versions_for_select(unit_member)
+  def versions_for_select(_unit_member)
     static_options = [["Most Recent", ""]]
     dynamic_options = package_branch.packages.map { |p| [p.version, p.id] }
     static_options + dynamic_options

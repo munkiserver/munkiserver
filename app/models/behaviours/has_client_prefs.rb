@@ -1,6 +1,6 @@
 # Special ActiveRecord::Base mixin module
 module HasClientPrefs
-  def self.included(base)
+  def self.included(_base)
     belongs_to :configuration
   end
 

@@ -59,10 +59,10 @@ class ComputerGroupsController < ApplicationController
     respond_to do |format|
       if @computer_group.present?
         format.html
-        format.manifest { render :text => @computer_group.to_plist }
-        format.plist { render :text => @computer_group.to_plist }
+        format.manifest { render text: @computer_group.to_plist }
+        format.plist { render text: @computer_group.to_plist }
       else
-        format.html { render :file => "#{Rails.root}/public/404.html", :layout => false }
+        format.html { render file: "#{Rails.root}/public/404.html", layout: false }
       end
     end
   end
@@ -81,12 +81,12 @@ class ComputerGroupsController < ApplicationController
     action = params[:action].to_sym
     @computer_group =
       if [:show, :edit, :update, :destroy].include?(action)
-        ComputerGroup.unit(current_unit).find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
+        ComputerGroup.unit(current_unit).find_for_show(params[:unit_shortname], CGI.unescape(params[:id]))
       elsif [:index, :new, :create].include?(action)
-        ComputerGroup.new({ :unit_id => current_unit.id })
+        ComputerGroup.new(unit_id: current_unit.id)
       elsif [:environment_change].include?(action)
         if params[:computer_group_id] == "new"
-          ComputerGroup.new({ :unit_id => current_unit.id })
+          ComputerGroup.new(unit_id: current_unit.id)
         else
           ComputerGroup.find(params[:computer_group_id])
         end

@@ -1,18 +1,18 @@
 class Unit < ActiveRecord::Base
-  has_many :computers, :dependent => :destroy
-  has_many :computer_groups, :dependent => :destroy
-  has_many :bundles, :dependent => :destroy
-  has_many :packages, :dependent => :destroy
-  has_many :principals, :through => :permissions
-  has_many :package_branches, :dependent => :destroy
+  has_many :computers, dependent: :destroy
+  has_many :computer_groups, dependent: :destroy
+  has_many :bundles, dependent: :destroy
+  has_many :packages, dependent: :destroy
+  has_many :principals, through: :permissions
+  has_many :package_branches, dependent: :destroy
 
   default_scope order(:name)
 
   scope :from_other_unit, ->(u) { where("id != ?", u.id) }
 
-  validates :name, :presence => true, :unique_as_shortname => true
-  validates :description, :presence => true
-  validates :shortname, :presence => true, :format => { :with => /^[a-z0-9-]+$/ }
+  validates :name, presence: true, unique_as_shortname: true
+  validates :description, presence: true
+  validates :shortname, presence: true, format: { with: /^[a-z0-9-]+$/ }
 
   # Takes a name attribute and returns a valid shortname attribute
   def conform_name_to_shortname(name = nil)
@@ -27,17 +27,17 @@ class Unit < ActiveRecord::Base
   end
 
   # Returns an array of tas option hashes
-  def tas_params(environment_id = nil)
-    [{ :title => "Users",
-       :model_name => "unit",
-       :attribute_name => "user_ids",
-       :select_title => "Select a new member",
-       :options =>  User.all.collect { |u| [u.username, u.id] },
-       :selected_options => user_ids }]
+  def tas_params(_environment_id = nil)
+    [{ title: "Users",
+       model_name: "unit",
+       attribute_name: "user_ids",
+       select_title: "Select a new member",
+       options: User.all.collect { |u| [u.username, u.id] },
+       selected_options: user_ids }]
   end
 
   def users_who_can_read(controller_name)
-    principals = Permission.where(:privilege_id => Privilege.find_by_name("read_#{controller_name}"), :unit_id => id).map(&:principal)
+    principals = Permission.where(privilege_id: Privilege.find_by_name("read_#{controller_name}"), unit_id: id).map(&:principal)
     users = []
     principals.each do |principal|
       if principal.is_a? User
