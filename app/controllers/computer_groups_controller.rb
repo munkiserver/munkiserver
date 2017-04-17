@@ -3,7 +3,7 @@ class ComputerGroupsController < ApplicationController
 
   def index
     @computer_groups = ComputerGroup.unit(current_unit)
-    
+
     respond_to do |format|
       format.html
     end
@@ -31,7 +31,7 @@ class ComputerGroupsController < ApplicationController
     rescue ComputerGroupException
       flash[:error] = "You cannot remove the last computer group from this unit!"
     end
-    
+
     respond_to do |format|
       format.html { redirect_to computer_groups_path(@computer_group.unit) }
     end
@@ -67,37 +67,38 @@ class ComputerGroupsController < ApplicationController
       end
     end
   end
-  
-  def environment_change    
+
+  def environment_change
     @environment_id = params[:environment_id] if params[:environment_id].present?
-    
+
     respond_to do |format|
       format.js
     end
   end
-  
+
   private
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :edit, :update, :destroy].include?(action)      
-      @computer_group = ComputerGroup.unit(current_unit).find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
-    elsif [:index, :new, :create].include?(action)      
-      @computer_group = ComputerGroup.new({:unit_id => current_unit.id})
-    elsif [:environment_change].include?(action)      
-      if params[:computer_group_id] == "new"
-        @computer_group = ComputerGroup.new({:unit_id => current_unit.id})
-      else
-        @computer_group = ComputerGroup.find(params[:computer_group_id])
+    @computer_group =
+      if [:show, :edit, :update, :destroy].include?(action)
+        ComputerGroup.unit(current_unit).find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
+      elsif [:index, :new, :create].include?(action)
+        ComputerGroup.new({:unit_id => current_unit.id})
+      elsif [:environment_change].include?(action)
+        if params[:computer_group_id] == "new"
+          ComputerGroup.new({:unit_id => current_unit.id})
+        else
+          ComputerGroup.find(params[:computer_group_id])
+        end
       end
-    end
   end
-  
+
   # Helper method to minimize errors and SQL injection attacks
   def sort_column
     %w[name hostname mac_address last_report_at].include?(params[:sort]) ? params[:sort] : "name"
   end
-  
-  # Helper method to minimize errors and SQL injection attacks  
+
+  # Helper method to minimize errors and SQL injection attacks
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
   end

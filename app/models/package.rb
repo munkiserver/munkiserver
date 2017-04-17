@@ -512,7 +512,7 @@ class Package < ActiveRecord::Base
   end
 
   # Returns true if installer type is AdobeUberInstaller
-  def installer_AdobeUberInstaller?
+  def installer_adobe_uber_installer?
     installer_type == "AdobeUberInstaller"
   end
 

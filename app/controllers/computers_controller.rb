@@ -262,29 +262,30 @@ class ComputersController < ApplicationController
   # This is really dense...refactor?
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :client_prefs].include?(action)
-      @computer = Computer.find_for_show_fast(params[:id], current_unit)
-    elsif [:show_plist, :show_resource].include?(action)
-      @computer = Computer.find_for_show(nil, params[:id])
-    elsif [:edit, :update, :destroy].include?(action)
-      @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
-    elsif [:update_warranty].include?(action)
-      @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:computer_id]))
-    elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
-      @computer = Computer.new({:unit_id => current_unit.id})
-    elsif [:unit_change].include?(action)
-      @computer = Computer.find(params[:computer_id])
-    elsif [:environment_change].include?(action)
-      if params[:computer_id] == "new"
-        @computer = Computer.new({:unit_id => current_unit.id})
+    @computer =
+      if [:show, :client_prefs].include?(action)
+        Computer.find_for_show_fast(params[:id], current_unit)
+      elsif [:show_plist, :show_resource].include?(action)
+        Computer.find_for_show(nil, params[:id])
+      elsif [:edit, :update, :destroy].include?(action)
+        Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
+      elsif [:update_warranty].include?(action)
+        Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:computer_id]))
+      elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
+        Computer.new({:unit_id => current_unit.id})
+      elsif [:unit_change].include?(action)
+        Computer.find(params[:computer_id])
+      elsif [:environment_change].include?(action)
+        if params[:computer_id] == "new"
+          Computer.new({:unit_id => current_unit.id})
+        else
+          Computer.find_for_show(params[:unit_shortname], params[:computer_id])
+        end
+      elsif [:checkin].include?(action)
+        Computer.find_for_show(nil, params[:id])
       else
-        @computer = Computer.find_for_show(params[:unit_shortname], params[:computer_id])
+        raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
       end
-    elsif [:checkin].include?(action)
-      @computer = Computer.find_for_show(nil, params[:id])
-    else
-      raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
-    end
   end
 
   # Helper method to minimize errors and SQL injection attacks

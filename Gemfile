@@ -42,6 +42,7 @@ group :development do
 
   gem 'meta_request'
   gem 'bullet'
+  gem 'rubocop', '~> 0.48.1', require: false
 end
 
 group :test do
