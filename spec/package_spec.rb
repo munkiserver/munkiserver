@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Package do
+describe Package, :type => :model do
   describe ".clone_package" do
     it "returns an unsaved package record with attributes matching target packages" do
       branch = FactoryGirl.create(:package_branch, :name => "Foo")

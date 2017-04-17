@@ -41,7 +41,7 @@ class Package < ActiveRecord::Base
   before_save :handle_environment_change
   after_destroy :destroy_package_branch
 
-  validates :version, :presence => true
+  validates :version, :presence => true, :format => { :with => /^[A-Za-z0-9_\-\.%]+$/, :message => "only allows valid characters"}
   validates :installer_item_location, :presence => true
   validates :package_branch_id, :presence => true
   validates :receipts_plist, :plist => true
@@ -55,7 +55,7 @@ class Package < ActiveRecord::Base
 
   # Update For and Requires must be in the same environment as the record
   validates_each :update_for_items, :require_items do |package, attr, items|
-    items.each do |item| 
+    items.each do |item|
       unless package.environment == item.package.environment
         pretty_name = attr.to_s.gsub(/_/, ' ').titleize
         package.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{package.name})")
@@ -64,8 +64,8 @@ class Package < ActiveRecord::Base
   end
 
   FORM_OPTIONS = {:restart_actions         => [['None','None'],['Logout','RequireLogout'],['Restart','RequireRestart'],['Recommend Restart','RecommendRestart']],
-                  :os_versions             => [[['Any','']], 
-                                                os_range(10,12,0..4),
+                  :os_versions             => [[['Any','']],
+                                                os_range(10,12,0..5),
                                                 os_range(10,11,0..6),
                                                 os_range(10,10,0..5),
                                                 os_range(10,9,0..5),
@@ -756,5 +756,9 @@ class Package < ActiveRecord::Base
 
   def has_installer_item_size?
     installer_item_size != nil and installer_item_size > 0
+  end
+
+  def self.version_fixer(version)
+    version.to_s.gsub(/[^A-Za-z0-9_\-\.%]+/, "_")
   end
 end

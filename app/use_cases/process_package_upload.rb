@@ -28,7 +28,8 @@ class ProcessPackageUpload
     end
     
     def defaults
-      {:special_attributes => {:environment_id => Environment.start.id}}
+      { :makepkginfo_options => {},
+        :special_attributes  => {:environment_id => Environment.start.id}}
     end
 
     # Checks to ensure what should be present is. If something is missing, raise 
@@ -49,7 +50,7 @@ class ProcessPackageUpload
   
   class PkginfoGenerator
     class << self
-      def generate(package_file, pkginfo_file, cmd_line_options)
+      def generate(package_file, pkginfo_file, cmd_line_options = {})
         if Munki::Application::MUNKI_TOOLS_AVAILABLE and pkginfo_file.nil?
           process_package_file(package_file, cmd_line_options)
         elsif pkginfo_file.present?
@@ -95,7 +96,7 @@ class ProcessPackageUpload
 
         # Parse plist
         begin
-          pkginfo_hash = Plist.parse_xml(pkginfo_file.read.to_utf8)
+          pkginfo_hash = Plist.parse_xml(pkginfo_file.open.read.to_utf8)
         rescue Exception => e
           raise Error.new("Unable to parse pkginfo file -- Plist.parse_xml raised an exception: #{e}")
         end
@@ -103,7 +104,7 @@ class ProcessPackageUpload
         # Make sure pkginfo_hash isn't nil
         if pkginfo_hash.nil?
           raise Error.new("Unable to parse pkginfo file -- Plist.parse_xml returned nil: pkginfo file probably empty")
-        end
+          end
 
         pkginfo_hash
       end
@@ -186,6 +187,7 @@ class ProcessPackageUpload
         end
       
         package.attributes = pkginfo
+        package.version    = Package.version_fixer(package.version)
         package.installer_item_location = File.basename(package_file.path)
         package.add_raw_tag("installer_item_hash", Digest::SHA256.file(package_file.path).hexdigest)
         package = apply_special_attributes(package, special_attributes)

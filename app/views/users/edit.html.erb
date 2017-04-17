@@ -1,3 +1,16 @@
 <h2>Editing user</h2>
 
 <%= render :partial => 'form' %>
+
+<table class="api_keys">
+  <tr>
+    <th>API Keys</th>
+  </tr>
+  
+  <%= link_to "Create New API Key", create_api_key_user_path(@user), method: :post %>
+  <% @user.api_keys.each do |api_key| %>
+    <tr>
+      <td class="key"><%= api_key.key %> <%= link_to "[Delete]", destroy_api_key_user_path(@user, key: api_key.key ), method: :delete %></td>
+    <tr>
+  <% end %>
+</table>

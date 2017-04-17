@@ -51,11 +51,10 @@ class ApplicationController < ActionController::Base
   end
   
   def authorize_resource
-    authorize! params[:action].to_sym, instance_variable_get("@#{params[:controller].singularize}") || params[:controller].classify.constantize
+    authorize! params[:action].to_sym, instance_variable_get("@#{params[:controller].split('/').last.singularize}") || params[:controller].classify.constantize
   end
   
   rescue_from CanCan::AccessDenied do |exception|
-    flash[:error] = exception.message
     if request.env["HTTP_REFERER"].present?
       redirect_to :back
     else

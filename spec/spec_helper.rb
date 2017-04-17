@@ -29,5 +29,10 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.use_transactional_fixtures = true
   config.infer_base_class_for_anonymous_controllers = false
+  config.infer_spec_type_from_file_location!
   config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.raise_errors_for_deprecations!
+
+  config.filter_run :focus => true
+  config.run_all_when_everything_filtered = true
 end
