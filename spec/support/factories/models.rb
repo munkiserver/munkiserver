@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :computer do
     sequence(:name) { |n| "#{Faker::Book.title} #{n}" }
-    mac_address  { Faker::Internet.mac_address }
+    mac_address { Faker::Internet.mac_address }
     environment
     unit
   end
@@ -47,5 +47,4 @@ FactoryGirl.define do
     password_confirmation { "abcd1234" }
     salt { "salt" }
   end
-
 end

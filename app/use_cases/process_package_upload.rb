@@ -1,6 +1,6 @@
 class ProcessPackageUpload
   attr_accessor :params, :package, :error_message
-  
+
   def initialize(params)
     @params = Parameters.new(params)
   end
@@ -14,25 +14,26 @@ class ProcessPackageUpload
     self.error_message = e.message
     false
   end
-  
+
   def processed?
     package.present? and error_message.blank?
   end
-  
+
   private
+
   class Parameters
     attr_reader :hash
-    
+
     def initialize(hash)
       @hash = defaults.deep_merge(hash)
     end
-    
+
     def defaults
       { :makepkginfo_options => {},
         :special_attributes  => {:environment_id => Environment.start.id}}
     end
 
-    # Checks to ensure what should be present is. If something is missing, raise 
+    # Checks to ensure what should be present is. If something is missing, raise
     # Error exception.
     def validate
       hash[:makepkginfo_options].delete("name") if hash[:makepkginfo_options][:name].blank?
@@ -42,12 +43,12 @@ class ProcessPackageUpload
       raise Error.new("Must provide a unit ID") if hash[:special_attributes][:unit_id].nil?
       raise Error.new("Must provide an environment ID") if hash[:special_attributes][:environment_id].nil?
     end
-    
+
     def [](key)
       hash[key]
     end
   end
-  
+
   class PkginfoGenerator
     class << self
       def generate(package_file, pkginfo_file, cmd_line_options = {})
@@ -59,7 +60,7 @@ class ProcessPackageUpload
           raise Error.new("Package file and/or pkginfo file missing")
         end
       end
-    
+
       # Process package_file with makepkginfo on localhost
       def process_package_file(package_file, cmd_line_options)
         cmd_line_arguments = cmd_line_arguments(cmd_line_options)
@@ -79,17 +80,17 @@ class ProcessPackageUpload
 
         process_pkginfo_file(out_log)
       end
-    
+
       # Generate command-line options string from hash
       def cmd_line_arguments(cmd_line_options)
-        cmd_line_options_array = cmd_line_options.map do |k,v| 
+        cmd_line_options_array = cmd_line_options.map do |k,v|
           v = v.gsub(/ /,'\ ')
           "--#{k}=#{v}" unless v.blank?
         end
-      
+
         cmd_line_options_array.compact.join(" ")
       end
-    
+
       # Convert pkginfo file to hash
       def process_pkginfo_file(pkginfo_file)
         pkginfo_hash = nil
@@ -104,13 +105,13 @@ class ProcessPackageUpload
         # Make sure pkginfo_hash isn't nil
         if pkginfo_hash.nil?
           raise Error.new("Unable to parse pkginfo file -- Plist.parse_xml returned nil: pkginfo file probably empty")
-          end
+        end
 
         pkginfo_hash
       end
     end
   end
-  
+
   class PackageFileHandler
     class << self
       # Renames and moves temporary files to the appropriate package store. Returns
@@ -141,11 +142,11 @@ class ProcessPackageUpload
       def retrieve_file_from_url(url)
         file = Tempfile.new('munkiserver')
         file.binmode
-        
+
         package_file = OpenStruct.new
         package_file.tempfile = OpenStruct.new
         package_file.tempfile.path = file.path
-        
+
         open(url) do |u|
           IO.copy_stream(u,file)
           file_url_path = u.base_uri.path if u.respond_to?(:base_uri)
@@ -158,7 +159,7 @@ class ProcessPackageUpload
       rescue RuntimeError, SocketError, OpenURI::HTTPError => e
         raise Error.new("Download failed: #{e.message}")
       end
-      
+
       # Create a unique name from a string by prepending the current timestamp
       # and adding a random number
       def uniquify_name(name)
@@ -166,7 +167,7 @@ class ProcessPackageUpload
       end
     end
   end
-  
+
   class PackageAssembler
     class << self
       def assemble(package_file, pkginfo, special_attributes)
@@ -174,10 +175,10 @@ class ProcessPackageUpload
         pkginfo.delete("catalogs")
         branch_attributes = {:name => pkginfo.delete("name"),
                              :display_name => pkginfo.delete("display_name"),
-                             :unit_id => special_attributes[:unit_id], 
+                             :unit_id => special_attributes[:unit_id],
                              :package_category_id => PackageCategory.default(pkginfo["installer_type"]).id}
         package.package_branch = retrieve_package_branch(branch_attributes)
-        
+
         pkginfo.each do |k,v|
           unless Package.known_attributes.include?(k)
             package.raw_tags = package.raw_tags.merge({k => v})
@@ -185,7 +186,7 @@ class ProcessPackageUpload
             package.raw_mode_id = 1 # Change raw_mode to append
           end
         end
-      
+
         package.attributes = pkginfo
         package.version    = Package.version_fixer(package.version)
         package.installer_item_location = File.basename(package_file.path)
@@ -198,22 +199,22 @@ class ProcessPackageUpload
         else
           raise Error.new("Unable to save invalid package: #{package.errors.full_messages.join(", ")}")
         end
-        
+
         package
       end
-    
+
       # Create a new package branch if not existing
       # else pick the existing package branch and assign to the package
       def retrieve_package_branch(attributes)
         attributes[:name] = PackageBranch.conform_to_name_constraints(attributes[:name])
-        
+
         if branch = PackageBranch.where(:name => attributes[:name], :unit_id => attributes[:unit_id]).first
           branch
         else
           create_package_branch(attributes)
         end
       end
-    
+
       def create_package_branch(attributes)
         PackageBranch.create! do |branch|
           branch.name = attributes[:name]
@@ -245,6 +246,6 @@ class ProcessPackageUpload
       end
     end
   end
-  
+
   class Error < Exception;end
 end

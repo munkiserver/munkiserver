@@ -4,7 +4,7 @@ class CreateWarranties < ActiveRecord::Migration
       t.string :serial_number, :default => ""
       t.string :product_description, :default => ""
       t.string :product_type, :default => ""
-      
+
       t.datetime :purchase_date
       t.datetime :hw_coverage_end_date
       t.datetime :phone_coverage_end_date
@@ -19,7 +19,7 @@ class CreateWarranties < ActiveRecord::Migration
       t.string :hw_support_url, :default => ""
       t.string :forum_url, :default => ""
       t.string :phone_support_url, :default => ""
-      
+
       t.integer :computer_id
       t.timestamps
     end

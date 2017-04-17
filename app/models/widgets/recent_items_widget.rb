@@ -4,15 +4,14 @@ class RecentItemsWidget < DashboardWidget
     recent ||= 14
     Computer.where("created_at >= ?", recent.days.ago).limit(5)
   end
-  
+
   def recent_new_bundles(recent = nil)
     recent ||= 14
     Computer.where("created_at >= ?", recent.days.ago).limit(5)
   end
-  
+
   def recent_new_computer_groups(recent = nil)
     recent ||= 14
     Computer.where("created_at >= ?", recent.days.ago).limit(5)
   end
-  
 end

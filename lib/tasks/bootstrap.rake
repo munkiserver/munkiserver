@@ -11,7 +11,7 @@ namespace :bootstrap do
       sleep 1
     end
   end
-  
+
   desc "Intialize PackageCategory with default categories"
   task :package_categories => :environment do
     path = "#{Rails.root}/lib/default_icons/package_categories"
@@ -39,7 +39,7 @@ namespace :bootstrap do
       end
     end
   end
-  
+
   desc "Initialize ComputerModel with Apple products"
   task :computer_models => :environment do
     path = "#{Rails.root}/lib/default_icons/computer_models"
@@ -176,7 +176,7 @@ namespace :bootstrap do
       count += 1
     end
   end
-  
+
   desc "Create default unit, if none exist"
   task :unit, [:name] => :environment do |t, args|
     if Unit.count == 0
@@ -189,13 +189,13 @@ namespace :bootstrap do
       end
     end
   end
-  
+
   desc "Create root user"
   task :root_user => :environment do |t, args|
     if User.where(:username => "root").first.blank?
       puts "Generating a root user"
       u = User.new(:username => "root", :email => "root@localhost.local")
-      
+
       # Ask for password/password_confirmation and hide the characters
       password = nil
       password_confirmation = nil
@@ -206,16 +206,16 @@ namespace :bootstrap do
         puts "Passwords did not match, please try again." unless password == password_confirmation
         puts ""
       end
-      
+
       u.password = password
       u.password_confirmation = password_confirmation
-      
+
       unless u.save
         puts "Failed to save root user: " + u.errors.inspect
       end
     end
   end
-  
+
   desc "Create a settings.yaml file, if missing"
   task :settings, [:settings, :hostname] => :environment do |t, args|
     unless File.exists?("config/settings.yaml")
@@ -233,7 +233,7 @@ namespace :bootstrap do
         end
     end
   end
-  
+
   desc "Create base environments"
   task :environments do |t, args|
     # Build the staging environment
@@ -242,7 +242,7 @@ namespace :bootstrap do
     unless e.save
       puts "Staging environment failed to save: " + e.errors.inspect
     end
-    
+
     # Build the production environment
     e = Environment.find_or_create_by_name("Production")
     e.description = "Created by bootstrap"
@@ -250,12 +250,12 @@ namespace :bootstrap do
       puts "Production environment failed to save: " + e.errors.inspect
     end
   end
-  
+
   desc "Generate crontab jobs passing rails current environment"
   task :crontab => :environment do
     `whenever --update-crontab --set environment=#{Rails.env}`
   end
-  
+
   desc "Create munkiserver_asset symlink as sibling of munkiserver directory"
   task :create_assets_directory => :environment do
     assets_dir = "#{Rails.root}/../munkiserver_assets"
@@ -263,7 +263,7 @@ namespace :bootstrap do
       `mkdir #{assets_dir}`
     end
   end
-  
+
   desc "Create privilege database records"
   task :privileges => :environment do
     # Create privilege records using name
@@ -281,7 +281,7 @@ namespace :bootstrap do
     end
   end
 
-  desc "Create site_default manifest" 
+  desc "Create site_default manifest"
   task :site_default_manifest => :environment do
     if Computer.find_by_mac_address("00:00:00:00:00:00").blank?
       Rake::Task["bootstrap:unit"].invoke if Unit.all.empty?

@@ -13,9 +13,9 @@ describe Package, :type => :model do
       clone.package_branch.name.should == branch.name
     end
   end
-  
+
   describe "#cloneable_attributes" do
-    it "should return a hash containing the value of clone attributes" do      
+    it "should return a hash containing the value of clone attributes" do
       FactoryGirl.build(:package).cloneable_attributes.keys.should == Package.clone_attributes
     end
   end

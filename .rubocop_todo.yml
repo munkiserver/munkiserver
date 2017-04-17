@@ -56,14 +56,6 @@ Lint/ConditionPosition:
   Exclude:
     - 'app/controllers/permissions_controller.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, SupportedStylesAlignWith, AutoCorrect.
-# SupportedStylesAlignWith: start_of_line, def
-Lint/DefEndAlignment:
-  Exclude:
-    - 'app/helpers/shared_packages_helper.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Lint/DeprecatedClassMethods:
@@ -77,18 +69,6 @@ Lint/DuplicateMethods:
   Exclude:
     - 'app/helpers/application_helper.rb'
     - 'app/models/behaviours/is_a_manifest.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, SupportedStylesAlignWith, AutoCorrect.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Lint/EndAlignment:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/managed_install_report.rb'
-    - 'app/models/missing_manifest.rb'
-    - 'app/models/package.rb'
-    - 'app/use_cases/process_package_upload.rb'
 
 # Offense count: 5
 Lint/HandleExceptions:
@@ -417,106 +397,6 @@ Style/ElseAlignment:
     - 'app/models/managed_install_report.rb'
     - 'app/models/missing_manifest.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty, nil, both
-Style/EmptyElse:
-  Exclude:
-    - 'app/helpers/packages_helper.rb'
-    - 'app/models/api_key.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/EmptyLineAfterMagicComment:
-  Exclude:
-    - 'bin/puma'
-    - 'bin/pumactl'
-    - 'bin/rubocop'
-    - 'db/schema.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAdjacentOneLineDefs, NumberOfEmptyLines.
-Style/EmptyLineBetweenDefs:
-  Exclude:
-    - 'app/controllers/computers_controller.rb'
-    - 'app/controllers/packages_controller.rb'
-    - 'app/helpers/packages_helper.rb'
-    - 'app/helpers/shared_packages_helper.rb'
-    - 'app/models/package.rb'
-
-# Offense count: 12
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Exclude:
-    - 'Guardfile'
-    - 'app/controllers/computers_controller.rb'
-    - 'app/controllers/packages_controller.rb'
-    - 'app/models/package.rb'
-    - 'app/models/warranty.rb'
-    - 'app/sweepers/package_sweeper.rb'
-    - 'config/application.rb'
-    - 'db/migrate/20111210185512_remove_default_values_from_text_columns.rb'
-    - 'lib/tasks/cucumber.rake'
-
-# Offense count: 13
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundAccessModifier:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/controllers/bundles_controller.rb'
-    - 'app/controllers/computer_groups_controller.rb'
-    - 'app/controllers/computers_controller.rb'
-    - 'app/controllers/dashboard_controller.rb'
-    - 'app/controllers/managed_install_reports_controller.rb'
-    - 'app/controllers/permissions_controller.rb'
-    - 'app/controllers/sessions_controller.rb'
-    - 'app/controllers/units_controller.rb'
-    - 'app/controllers/user_groups_controller.rb'
-    - 'app/controllers/users_controller.rb'
-    - 'app/mailers/admin_mailer.rb'
-    - 'app/use_cases/process_package_upload.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, no_empty_lines
-Style/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'db/schema.rb'
-    - 'spec/controllers/api/v1/packages_controller_spec.rb'
-    - 'spec/models/manifest/computer_spec.rb'
-    - 'spec/support/factories/models.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
-Style/EmptyLinesAroundClassBody:
-  Exclude:
-    - 'app/controllers/api/v1/packages_controller.rb'
-    - 'app/controllers/test_controller.rb'
-    - 'app/sweepers/environment_sweeper.rb'
-    - 'app/sweepers/unit_sweeper.rb'
-    - 'config/application.rb'
-    - 'lib/null_object.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'app/models/package.rb'
-    - 'db/migrate/20111210185512_remove_default_values_from_text_columns.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
-Style/EmptyLinesAroundModuleBody:
-  Exclude:
-    - 'app/helpers/computers_helper.rb'
-
 # Offense count: 17
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -536,25 +416,6 @@ Style/EmptyMethod:
     - 'app/models/configuration.rb'
     - 'lib/null_object.rb'
     - 'spec/package_branch_spec.rb'
-
-# Offense count: 23
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Style/ExtraSpacing:
-  Exclude:
-    - 'Guardfile'
-    - 'app/controllers/packages_controller.rb'
-    - 'app/helpers/packages_helper.rb'
-    - 'app/models/managed_install_report.rb'
-    - 'app/models/os_range_helper.rb'
-    - 'app/sweepers/package_sweeper.rb'
-    - 'config.ru'
-    - 'config/environments/test.rb'
-    - 'config/initializers/date_time_validator.rb'
-    - 'config/initializers/timeout.rb'
-    - 'db/schema.rb'
-    - 'script/rails'
-    - 'spec/support/factories/models.rb'
 
 # Offense count: 1
 # Configuration parameters: ExpectMatchingDefinition, Regex, IgnoreExecutableScripts, AllowedAcronyms.
@@ -1110,13 +971,6 @@ Style/TernaryParentheses:
     - 'app/models/behaviours/is_a_manifest.rb'
     - 'config/initializers/init_version.rb'
 
-# Offense count: 89
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: final_newline, final_blank_line
-Style/TrailingBlankLines:
-  Enabled: false
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStylesForMultiline.
@@ -1124,11 +978,6 @@ Style/TrailingBlankLines:
 Style/TrailingCommaInLiteral:
   Exclude:
     - 'app/models/package.rb'
-
-# Offense count: 624
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Enabled: false
 
 # Offense count: 4
 # Cop supports --auto-correct.

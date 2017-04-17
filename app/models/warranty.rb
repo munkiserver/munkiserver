@@ -55,7 +55,6 @@ class Warranty < ActiveRecord::Base
       # POST data and get the response
       response      = http.request(request)
       response_data = response.body
-      
     rescue URI::Error
       computer = Computer.where(:serial_number => serial)
       Rails.logger.error "Invalid serial number #{serial} for computer #{computer}"
@@ -83,7 +82,6 @@ class Warranty < ActiveRecord::Base
 
       hw_expiration_date = response_data.split('Estimated Expiration Date: ')[1].split('<')[0] if hw_warranty_status
       ph_expiration_date = response_data.split('Estimated Expiration Date: ')[1].split('<')[0] if ph_warranty_status
-
 
       { :serial_number =>           serial,
         :product_type =>            prod_desc,

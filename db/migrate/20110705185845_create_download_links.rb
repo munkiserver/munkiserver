@@ -5,7 +5,7 @@ class CreateDownloadLinks < ActiveRecord::Migration
       t.string :url
       t.string :caption
       t.integer :version_tracker_id
-      
+
       t.timestamps
     end
   end

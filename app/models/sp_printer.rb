@@ -1,6 +1,6 @@
 class SpPrinter < ActiveRecord::Base
   belongs_to :system_profile
-  
+
   # Formats a hash from a system_profiler printer and returns
   # an unsaved SpPrinter object
   def self.create_from_system_profiler_printer_hash(p_hash)

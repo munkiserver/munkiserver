@@ -50,7 +50,6 @@ module Api
           raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
         end
       end
-
     end
   end
 end

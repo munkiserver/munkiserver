@@ -10,15 +10,15 @@ class InstallItemsController < ApplicationController
       format.js
     end
   end
-  
+
   # To-do, anyone could change the values of an install item, there is no scoping of results
   def update_multiple
-    @install_items = InstallItem.update(params[:install_items].keys, params[:install_items].values).reject { |it| it.errors.empty? }  
-    if @install_items.empty?   
-      flash[:notice] = "Install items updated"  
-      # redirect_to show_computer_path(params[:computer_id])  
+    @install_items = InstallItem.update(params[:install_items].keys, params[:install_items].values).reject { |it| it.errors.empty? }
+    if @install_items.empty?
+      flash[:notice] = "Install items updated"
+      # redirect_to show_computer_path(params[:computer_id])
       redirect_to :back
-    else  
+    else
       flash[:errors] = "Some install items were not updated"
       # redirect_to show_computer_path(params[:computer_id])
       redirect_to :back

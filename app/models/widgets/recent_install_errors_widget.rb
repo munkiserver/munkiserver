@@ -10,7 +10,7 @@ class RecentInstallErrorsWidget < DashboardWidget
     end
     reports
   end
-  
+
   def time_period
     3.days.ago
   end

@@ -12,7 +12,7 @@ class EnvironmentSweeper < ActionController::Caching::Sweeper
   end
 
   private
-    
+
     def expire_catalog(environment)
       # Expire the catalogs for all environments in this unit
       Unit.all.each do |unit|
@@ -21,5 +21,4 @@ class EnvironmentSweeper < ActionController::Caching::Sweeper
         Rails.cache.delete catalog_cache_key_generator(:unit_id => unit.id, :environment_id => environment.id)
       end
     end
-
 end

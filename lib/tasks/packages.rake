@@ -1,18 +1,17 @@
-namespace :packages do  
+namespace :packages do
   desc "Check macupdate.com for available updates"
   task :check_for_updates => :environment do
     VersionTracker.update_all
   end
-  
-  
+
   desc "Check macupdate.com for available updates and notify Admins (one email per package)"
   task :send_update_notifications => :environment do
-    VersionTracker.update_all    
+    VersionTracker.update_all
     PackageBranch.available_updates.each do |package|
       AdminMailer.package_update_available(package).deliver
     end
   end
-  
+
   desc "Send available package updates digest email"
   task :send_available_update_digest => :environment do
     VersionTracker.update_all
@@ -23,7 +22,7 @@ namespace :packages do
       end
     end
   end
-  
+
   desc "Autotmaically scan each package and assgin a Macupdate Web ID"
   task :scan => :environment do
     version_trackers = VersionTracker.where(:web_id => nil)
@@ -34,8 +33,8 @@ namespace :packages do
       version_tracker.save
     end
   end
-  
-  desc "Conform package branch name to contraints" 
+
+  desc "Conform package branch name to contraints"
   task :conform_names => :environment do
     PackageBranch.all.each do |pb|
       original_name = pb.name

@@ -54,7 +54,6 @@ module Munki
     # Command line utilities
     MAKEPKGINFO = Pathname.new("/usr/local/munki/makepkginfo")
 
-
     # A secret is required to generate an integrity hash for cookie session data
     config.secret_token = "407738ccc1518e5a71714d7dc16365c424732e543d791c22bffca1d6d8ac6949e08688836cc69635dc29a8d48b607bd73cb26bcad384c1fbecee44f552f8070c"
 
@@ -78,6 +77,5 @@ module Munki
     # end
 
     config.action_mailer.raise_delivery_errors = false
-
   end
 end

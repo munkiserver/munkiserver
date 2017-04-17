@@ -4,7 +4,7 @@ class CreateIcons < ActiveRecord::Migration
       t.string :photo_file_name # Original filename
       t.string :photo_content_type # Mime type
       t.integer :photo_file_size # File size in bytes
-      t.datetime :photo_updated_at 
+      t.datetime :photo_updated_at
       t.timestamps
     end
   end

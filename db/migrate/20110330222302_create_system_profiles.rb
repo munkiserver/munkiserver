@@ -2,7 +2,7 @@ class CreateSystemProfiles < ActiveRecord::Migration
   def self.up
     create_table :system_profiles do |t|
       t.integer :computer_id
-      
+
       # SPHardwareDataType (Hardware Overview)
       t.string :cpu_type
       t.string :current_processor_speed
@@ -23,7 +23,7 @@ class CreateSystemProfiles < ActiveRecord::Migration
       t.string :os_version
       t.string :uptime
       t.string :user_name
-      
+
       t.timestamps
     end
   end

@@ -150,7 +150,6 @@ class Package < ActiveRecord::Base
     packages = Package.shared.where("unit_id != ?", unit.id).where("installer_item_location NOT IN (?)", installer_item_locations)
     # Delete packages that refer to an installer item used by another package in unit
     # packages.delete_if {|p| installer_item_locations.include?(p.installer_item_location)}
-
   end
 
   # Recent items from other units that are shared
@@ -348,8 +347,9 @@ class Package < ActiveRecord::Base
         package_scope = package_scope.where(:installer_item_location => self.installer_item_location)
         package_scope = package_scope.where(:unit_id => unit.id) if unit.present?
         @shared_installer_item_location_packages[unit_id] = package_scope.to_a
-      end
-      @shared_installer_item_location_packages[unit_id]
+    end
+
+    @shared_installer_item_location_packages[unit_id]
   end
 
   # Checks if the current package is the latest (newest version)
@@ -362,6 +362,7 @@ class Package < ActiveRecord::Base
   def latest_in_unit
     package_branch.latest
   end
+
   # Return true if the pacakge is the greatest within current unit and environment
   def latest_in_unit_and_environment?
     scoped = Package.where(:package_branch_id => self.package_branch_id, :unit_id => self.unit_id, :environment_id => self.environment_id)
@@ -748,7 +749,6 @@ class Package < ActiveRecord::Base
       {total: packages.count, successes: successes.count, failures: failures.count, messages: messages}
     end
   end
-
 
   def self.has_required_package?(package)
     RequireItem.where(:package_id => package.id).first.present?

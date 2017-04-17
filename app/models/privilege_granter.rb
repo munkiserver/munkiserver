@@ -2,7 +2,7 @@ module PrivilegeGranter
   def self.unit_specific_privilege_groups
     [:computers, :computer_groups, :bundles, :user_groups, :packages, :permissions]
   end
-  
+
   # ===================
   # = Computer Groups =
   # ===================
@@ -60,7 +60,7 @@ module PrivilegeGranter
   def destroy_computers(unit_ids)
     can :destroy, Computer, :unit_id => unit_ids
   end
-  
+
   # ============
   # = Packages =
   # ============
@@ -81,7 +81,7 @@ module PrivilegeGranter
   def destroy_packages(unit_ids)
     can :destroy, Package, :unit_id => unit_ids
   end
-  
+
   # ===============
   # = Permissions =
   # ===============
@@ -92,11 +92,11 @@ module PrivilegeGranter
   def modify_permissions(unit_ids)
     can [:update, :destroy], Permission, :unit_id => unit_ids
   end
-  
+
   def read_system_permissions(unit_ids)
     can [:read, :edit], Permission, :unit_id => nil
   end
-  
+
   def modify_system_permissions(unit_ids)
     can [:update, :destroy], Permission, :unit_id => nil
   end

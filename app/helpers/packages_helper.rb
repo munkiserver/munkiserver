@@ -21,7 +21,7 @@ module PackagesHelper
     unless builtin
       htmlcode += radio_button_tag input_name, "custom", :selected => true
     else
-        htmlcode += radio_button_tag input_name, "custom"    
+        htmlcode += radio_button_tag input_name, "custom"
     end
     htmlcode += label_tag "#{input_name}_custom", "Custom "
     htmlcode += file_field_tag 'icon'
@@ -37,46 +37,45 @@ module PackagesHelper
                                                     :packages => package.package_branch.packages,
                                                     :editable => editable }
   end
-  
+
   def recent_packages
    pkgs = Package.recent(current_unit)
    shared_pkgs = Package.shared_recent(current_unit)
-   render :partial => 'recent', :locals  => { :pkgs => pkgs, :shared_pkgs => shared_pkgs }
+   render :partial => 'recent', :locals => { :pkgs => pkgs, :shared_pkgs => shared_pkgs }
   end
-  
+
   def package_table(package_branches)
     categorized = package_branches.group_by {|pb| pb.package_category }
-    
+
     output = ""
     categorized.each_pair do |category, package_branches|
-      output += render :partial => 'packages/packages_of_category_table', :locals => {:category => category, :package_branches => package_branches}  
+      output += render :partial => 'packages/packages_of_category_table', :locals => {:category => category, :package_branches => package_branches}
     end
     output.html_safe
   end
-  
+
   # Check version tracker for package updates, display available updates
   def available_updates
     branches = PackageBranch.has_versions.unit(current_unit).includes(:version_tracker)
     branches.delete_if {|pb| !pb.new_version?(current_unit) }.compact
     render :partial => 'available_updates', :locals => {:package_branches => branches}
   end
-  
-  
+
   def render_pkgsinfo_category_icon(object, height = "30px")
     pkgsinfo_category = object.pkgsinfo_category
     pkgsinfo_category ||= object
     concat(image_tag("#{PKGSINFO_ICON_REL_PATH}/#{pkgsinfo_category.icon}", :height => height, :style => "vertical-align:middle;"))
   end
-  
+
   def render_pkgsinfo_icon(object, height = "30px")
     concat(image_tag("#{PKGSINFO_ICON_REL_PATH}/#{object.icon}", :height => height, :style => "vertical-align:middle;"))
   end
-  
+
   def render_gui_installer_choices(choices_hash)
     sorted_choices = Pkgsinfo.sort_choices(choices_hash)
     concat(render :partial => 'gui_installer_choices', :locals => {:sorted_choices => sorted_choices})
   end
-  
+
   def render_pkgsinfo_plist_errors
     all_pkgsinfos = Pkgsinfo.all
     invalid_plists = []
@@ -88,7 +87,7 @@ module PackagesHelper
     end
     concat(render :partial => 'pkgsinfo_plist_errors', :locals => {:invalid_plists => invalid_plists })
   end
-  
+
   # Return true if there exists packages in other unit that are shared and has higher version
   # add logic to compare if version tracker has high version or the import package has higher version
   # return true if the shared package is higher or equal to the version tracker version else return the version tracker version
@@ -99,7 +98,7 @@ module PackagesHelper
       return false
     end
   end
-  
+
   # Determine to show import or update links based on the package of the available import package and version tracker version
   def update_or_import(package)
     # if the package has other greather version shared packages and has newer version tracker version
@@ -116,11 +115,9 @@ module PackagesHelper
       render :partial => 'import_available_link', :locals => {:package => package }
     elsif package.package_branch.new_version?
       render :partial => 'update_available_link', :locals => {:package => package }
-    else
-      # show nothing
     end
   end
-  
+
   # Return latest package if available to import from other unit
   def import_package(package)
     result = Package.from_other_unit(package).has_greater_version(package).where(:package_branch_id => package.package_branch_id, :shared => true).order("version desc").first
@@ -128,12 +125,12 @@ module PackagesHelper
       result.version > package.latest_in_unit.version ? result : nil
     end
   end
-  
+
   # Return the unit name of where the package is importing from
   def import_package_unit_name(package)
     Unit.where(:id => import_package(package).unit_id).first.name
   end
-  
+
   # Need a package and classname to restrieve a list of affected items by Computers, Computer Groups and Bundles
   def get_affected_items(package, classname)
     # Make sure the selected pacakge is bounded to current unit and environment
@@ -162,37 +159,36 @@ module PackagesHelper
     computer_groups.present? ? @computer_groups = computer_groups : @computer_groups = nil
     bundles.present? ? @bundles = bundles : @bundles = nil
   end
-  
+
   # Get a list of Computers, Computer Groups and Bundles that have this package set to install
   def get_affected_install(package)
     get_affected_items(package, "InstallItem")
-    render :partial => 'affected_items', :locals => {:computers => @computers, 
-                                                     :computer_groups => @computer_groups, 
+    render :partial => 'affected_items', :locals => {:computers => @computers,
+                                                     :computer_groups => @computer_groups,
                                                      :bundles => @bundles}
   end
-  
+
   # Get a list of Computers, Computer Groups and Bundles that have this package set to unisntall
   def get_affected_uninstall(package)
     get_affected_items(package, "UninstallItem")
-    render :partial => 'affected_items', :locals => {:computers => @computers, 
-                                                     :computer_groups => @computer_groups, 
+    render :partial => 'affected_items', :locals => {:computers => @computers,
+                                                     :computer_groups => @computer_groups,
                                                      :bundles => @bundles}
   end
-  
+
   # Get a list of Computers, Computer Groups and Bundles that have this package set as managed update
   def get_affected_managed_update(package)
     get_affected_items(package, "ManagedUpdateItem")
-    render :partial => 'affected_items', :locals => {:computers => @computers, 
-                                                     :computer_groups => @computer_groups, 
+    render :partial => 'affected_items', :locals => {:computers => @computers,
+                                                     :computer_groups => @computer_groups,
                                                      :bundles => @bundles}
   end
-  
+
   # Get a list of Computers, Computer Groups and Bundles that have this package set as optional install
   def get_affected_optional_install(package)
     get_affected_items(package, "OptionalInstallItem")
-    render :partial => 'affected_items', :locals => {:computers => @computers, 
-                                                     :computer_groups => @computer_groups, 
+    render :partial => 'affected_items', :locals => {:computers => @computers,
+                                                     :computer_groups => @computer_groups,
                                                      :bundles => @bundles}
   end
-  
 end

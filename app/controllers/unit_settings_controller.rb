@@ -2,7 +2,7 @@ class UnitSettingsController < ApplicationController
   def edit
     @unit_setting = UnitSetting.where(:unit_id => Unit.where(:shortname => params[:id]).first.id).first
   end
-  
+
   def update
     @unit_setting = UnitSetting.where(:unit_id => Unit.where(:shortname => params[:id]).first.id).first
     respond_to do |format|
@@ -17,7 +17,7 @@ class UnitSettingsController < ApplicationController
       end
     end
   end
-  
+
   def show
     @unit_setting = UnitSetting.find_by_unit_id(Unit.find_by_name(params[:id]).id)
     respond_to do |format|

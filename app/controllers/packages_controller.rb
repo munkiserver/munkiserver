@@ -1,5 +1,5 @@
 class PackagesController < ApplicationController
-  cache_sweeper :package_sweeper, :only => [:create, :update,  :update_multiple, :destroy]
+  cache_sweeper :package_sweeper, :only => [:create, :update, :update_multiple, :destroy]
 
   def index
     @package_branches = PackageBranch
@@ -108,7 +108,6 @@ class PackagesController < ApplicationController
     end
   end
 
-
   # Used to download the actual package (typically a .dmg)
   def download
     respond_to do |format|
@@ -137,11 +136,8 @@ class PackagesController < ApplicationController
         render page_not_found
       end
     end
-  end
+  end # Used to check for available updates across all units
 
-
-
-  # Used to check for available updates across all units
   def check_for_updates
     Backgrounder.call_rake("packages:check_for_updates")
     flash[:notice] = "Checking for updates now"

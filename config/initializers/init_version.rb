@@ -1,6 +1,6 @@
-# 
+#
 # Initialize version number using config/VERSION and git commit sha (if available)
-# 
+#
 
 # Current version
 version = nil

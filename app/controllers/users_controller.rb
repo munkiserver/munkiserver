@@ -1,4 +1,4 @@
-class UsersController < ApplicationController  
+class UsersController < ApplicationController
   def index
     @users = User.all
   end
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
       else
         flash[:error] = "Failed to create API Key!"
       end
-      
+
       format.html { redirect_to(edit_user_path(@user)) }
     end
   end
@@ -70,9 +70,10 @@ class UsersController < ApplicationController
   end
 
   private
+
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :edit, :update, :destroy, :create_api_key, :destroy_api_key].include?(action)      
+    if [:show, :edit, :update, :destroy, :create_api_key, :destroy_api_key].include?(action)
       @user = User.find_by_username(params[:id])
     elsif [:index, :new, :create].include?(action)
       @user = User.new

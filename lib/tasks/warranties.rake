@@ -1,4 +1,4 @@
-namespace :warranties do  
+namespace :warranties do
   desc "Update warranties for all available computers"
   task :update_all => :environment do
     computers = Computer.all.select { |c| c.serial_number }
@@ -10,10 +10,9 @@ namespace :warranties do
       end
     end
   end
-  
+
   desc "Destroys all warraties that have been saved"
   task :destroy_all => :environment do
     Warranty.destroy_all
   end
-  
 end

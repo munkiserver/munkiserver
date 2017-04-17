@@ -8,7 +8,7 @@ module HasClientPrefs
     #Unless you already have a configuration attached to you,
     #temporarily create a blank config
     (self.configuration = Configuration.new) unless self.configuration
-    
+
     #Pass resultant_config
     self.configuration.resultant_config
   end

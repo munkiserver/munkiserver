@@ -77,6 +77,7 @@ class ComputerGroupsController < ApplicationController
   end
 
   private
+
   def load_singular_resource
     action = params[:action].to_sym
     @computer_group =

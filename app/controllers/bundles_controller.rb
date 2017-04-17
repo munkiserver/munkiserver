@@ -1,7 +1,7 @@
-class BundlesController < ApplicationController  
+class BundlesController < ApplicationController
   def index
     @bundles = Bundle.unit(current_unit)
-    
+
     respond_to do |format|
       format.html
     end
@@ -23,7 +23,7 @@ class BundlesController < ApplicationController
     if @bundle.destroy
       flash[:notice] = "Bundle was destroyed successfully"
     end
-    
+
     respond_to do |format|
       format.html { redirect_to bundles_path }
     end
@@ -59,19 +59,20 @@ class BundlesController < ApplicationController
       end
     end
   end
-  
+
   def environment_change
     @environment_id = params[:environment_id] if params[:environment_id].present?
-    
+
     respond_to do |format|
       format.js
     end
   end
-  
+
   private
+
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :edit, :update, :destroy].include?(action)      
+    if [:show, :edit, :update, :destroy].include?(action)
       @bundle = Bundle.find_for_show(params[:unit_shortname], params[:id])
     elsif [:index, :new, :create].include?(action)
       @bundle = Bundle.new({:unit_id => current_unit.id})

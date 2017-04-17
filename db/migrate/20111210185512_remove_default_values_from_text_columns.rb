@@ -34,7 +34,6 @@ class RemoveDefaultValuesFromTextColumns < ActiveRecord::Migration
       rename_column :environments, :temp_environment_ids, :environment_ids
     end
 
-
     ### Computers, Bundles and Computer Groups ###
     table_classes = ["computers", "bundles", "computer_groups"]
 
@@ -54,7 +53,6 @@ class RemoveDefaultValuesFromTextColumns < ActiveRecord::Migration
         rename_column :"#{table}", :temp_raw_mode, :raw_mode
       end
     end
-
   end
 
   def self.down
@@ -69,7 +67,7 @@ class RemoveDefaultValuesFromTextColumns < ActiveRecord::Migration
       end
 
       change_column :packages, :raw_tags, :text, :default => "--- {}"
-  
+
       ### Environments ###
       change_column :environments, :environment_ids, :text, :default => "--- []"
 

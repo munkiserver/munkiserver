@@ -8,11 +8,11 @@ class UnitSetting < ActiveRecord::Base
               :warning_events => {:something_might_break => true}.to_yaml,
               :error_events => {:invalid_plist => true}.to_yaml,
               :version_tracking => true }
-  
+
   attr_is_hash :regular_events
   attr_is_hash :warning_events
   attr_is_hash :error_events
-  
+
   # Sets up defaults
   def initialize
     super
@@ -20,9 +20,8 @@ class UnitSetting < ActiveRecord::Base
       self.update_attributes(DEFAULTS)
     end
   end
-  
+
   def to_params
     name
   end
 end
-

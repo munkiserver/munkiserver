@@ -8,6 +8,6 @@ class AddConfigurationToItems < ActiveRecord::Migration
   def self.down
     remove_column :computers, :configuration_id
     remove_column :computer_groups, :configuration_id
-    remove_column :units, :configuration_id    
+    remove_column :units, :configuration_id
   end
 end

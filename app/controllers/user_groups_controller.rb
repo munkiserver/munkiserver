@@ -1,7 +1,7 @@
 class UserGroupsController < ApplicationController
   def index
     @user_groups = UserGroup.where(:unit_id => current_unit.id)
-    
+
     respond_to do |format|
       format.html
     end
@@ -25,7 +25,7 @@ class UserGroupsController < ApplicationController
     else
       flash[:error] = "Failed to remove computer group!"
     end
-    
+
     respond_to do |format|
       format.html { redirect_to user_groups_path(@user_group.unit) }
     end
@@ -49,17 +49,17 @@ class UserGroupsController < ApplicationController
   def new
     @user_group = UserGroup.new(:unit => current_unit)
   end
-  
+
   private
+
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :edit, :update, :destroy].include?(action)      
+    if [:show, :edit, :update, :destroy].include?(action)
       @user_group = UserGroup.where_unit(current_unit).find_for_show(current_unit, CGI::unescape(params[:id]))
-    elsif [:index, :new, :create].include?(action)      
+    elsif [:index, :new, :create].include?(action)
       @user_group = UserGroup.new({:unit_id => current_unit.id})
     else
       raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
     end
   end
-  
 end

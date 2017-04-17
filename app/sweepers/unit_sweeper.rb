@@ -20,5 +20,4 @@ class UnitSweeper < ActionController::Caching::Sweeper
       Rails.cache.delete catalog_cache_key_generator(:unit_id => unit.id, :environment_id => environment.id)
     }
   end
-
 end

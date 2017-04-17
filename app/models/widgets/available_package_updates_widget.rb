@@ -10,7 +10,7 @@ class AvailablePackageUpdatesWidget < DashboardWidget
     end
     package_hash
   end
-  
+
   def lazy_loading?
     true
   end

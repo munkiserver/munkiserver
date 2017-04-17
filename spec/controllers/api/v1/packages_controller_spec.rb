@@ -55,5 +55,4 @@ describe Api::V1::PackagesController, :type => :controller do
       expect(parsed_response).to_not include "url"
     end
   end
-
 end

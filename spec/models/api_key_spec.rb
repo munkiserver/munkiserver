@@ -16,20 +16,19 @@ describe ApiKey, :type => :model do
       expect(api_key.key.length).to be > 16
     end
   end
-  
+
   describe "validations" do
     subject { FactoryGirl.build(:api_key) }
-    
+
     it 'factory should be valid' do
       expect(subject).to be_valid
     end
-    
-    
+
     it 'should be invalid without an api_key' do
       subject.key = nil
       expect(subject).to_not be_valid
     end
-    
+
     it 'should be invalid without an user' do
       subject.user = nil
       expect(subject).to_not be_valid

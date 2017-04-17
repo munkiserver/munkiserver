@@ -1,14 +1,14 @@
 module IsAnItem
   def self.included(base)
     base.extend ClassMethods
-    
+
     base.class_eval do
       belongs_to :manifest, :polymorphic => true # package, computer, computer group, bundle
       belongs_to :package_branch
       belongs_to :package
     end
   end
-  
+
   module ClassMethods
     def self.destroy_stale_records
       Rails.logger.info "Destroying #{self.to_s} records with nil package reference..."
@@ -28,11 +28,11 @@ module IsAnItem
     p ||= package_branch.packages.group_by {|p| p.environment_id }[manifest.environment_id].first if package_branch.present?
     p
   end
-  
+
   def obsolete?
     manifest.nil?
   end
-   
+
   # Returns array of versions for use with options_for_select view method
   def versions_for_select(unit_member)
     static_options = [['Most Recent','']]

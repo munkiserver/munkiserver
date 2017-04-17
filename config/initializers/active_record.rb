@@ -14,7 +14,7 @@ module ActiveRecordClassMethods
       end
   	end
   end
-  
+
   # Converts YAML stored in DB as array, if nil or blank, returns empty array
   def attr_is_array(attribute)
     # Getter for objects

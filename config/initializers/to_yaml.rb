@@ -5,12 +5,12 @@ module StringInstanceMethods
   def to_bool
     self != "0"
   end
-  
-  # Converts a string safely from YAML 
+
+  # Converts a string safely from YAML
   # (handles nil and blank values)
   def from_yaml
     results = YAML.load(self)
-    
+
     # Replace bad values
     if results == false or results == nil
       ""

@@ -120,7 +120,6 @@ class ComputersController < ApplicationController
     end
   end
 
-
   # Import an ARD plist form
   def import
   end
@@ -182,7 +181,6 @@ class ComputersController < ApplicationController
     AdminMailer.computer_report(@computer).deliver if @computer.report_due?
     render text: ''
   end
-
 
   # Allows multiple edits
   def edit_multiple
@@ -258,6 +256,7 @@ class ComputersController < ApplicationController
   end
 
   private
+
   # Load a singular resource into @computer for all actions
   # This is really dense...refactor?
   def load_singular_resource

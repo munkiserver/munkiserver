@@ -1,18 +1,18 @@
 namespace :chore do
-  desc "Removes MissingManifests created after X days ago (defaults to 30 days)"  
+  desc "Removes MissingManifests created after X days ago (defaults to 30 days)"
   task :cleanup_missing_manifests, [:days_kept] => [:environment] do |t, args|
     args.with_defaults(:days_kept => 30)
     results = MissingManifest.where("created_at < :date", :date => (Date.today - args[:days_kept].to_i.days)).delete_all
     puts "Destroyed #{results} missing manifests"
   end
-  
+
   desc "Removes ManagedInstallReports created after X days ago (defaults to 30 days)"
   task :cleanup_old_managed_install_reports, [:days_kept] => [:environment] do |t, args|
     args.with_defaults(:days_kept => 30)
     results = ManagedInstallReport.where("created_at < :date", :date => (Date.today - args[:days_kept].to_i.days)).delete_all
     puts "Destroyed #{results} managed install reports"
   end
-  
+
   desc "Removes all unused (unreferenced) SystemProfile records."
   task :cleanup_system_profiles => :environment do
     results = SystemProfile.unused.delete_all
@@ -25,7 +25,7 @@ namespace :chore do
     Dir[Rails.root + 'app/models/**/*.rb'].each do |path|
       require path
     end
-    
+
     # Find all subclasses of ActiveRecord::Base and validate
     subclasses = ActiveRecord::Base.send(:subclasses)
     invalid = []
@@ -35,7 +35,7 @@ namespace :chore do
       invalid << instance unless instance.valid?
       end
     end
-    
+
     #Print results
     puts "\n-------------------------------------------------------------------\n\n"
     if invalid.empty?
@@ -49,8 +49,7 @@ namespace :chore do
       end
     end
   end
-  
-  
+
   desc "If missing, create shortname attribute from name attribute for appropriate models"
   task :generate_shortnames, [:generate_shortnames] => :environment do
     records = Unit.all + Computer.all + Bundle.all + ComputerGroup.all
@@ -66,7 +65,7 @@ namespace :chore do
       end
     end
   end
-  
+
   desc "Destroy item model records that reference nil packages"
   task :destroy_stale_item_records => :environment do
     # InstallItem.destroy_stale_records
@@ -77,12 +76,12 @@ namespace :chore do
     # UninstallItem.destroy_stale_records
     # UpdateForItem.destroy_stale_records
   end
-  
+
   desc "Migrate to unit-scoped package branches"
   task :migrate_package_branches => :environment do
     MigratePackageBranches.new(Logger.new(STDOUT)).migrate
   end
-  
+
   desc "Fetch data for a version tracker record"
   task :fetch_version_tracker_data => :environment do
     puts VersionTracker.fetch_data(ENV['ID']).inspect
@@ -93,7 +92,7 @@ namespace :chore do
     unused_branches = PackageBranch.has_no_versions
     if unused_branches.present?
       puts "Attempting to destroy #{unused_branches.count} package branches: "
-      unused_branches.each do |branch| 
+      unused_branches.each do |branch|
         print "\t#{branch.name}..."
         if branch.destroy
           puts "destroyed"
@@ -117,10 +116,10 @@ namespace :chore do
       end
     }
   end
-  
+
   desc "Conform RestartActions to only known values"
   task :conform_restart_actions => :environment do
-    conformed_values = {'RequiredRestart' => 'RequireRestart', 
+    conformed_values = {'RequiredRestart' => 'RequireRestart',
                        'RequiredShutdown' => 'RequireRestart',
                        'RequiredLogout' => 'RequireLogout' }
 

@@ -7,7 +7,7 @@ module DashboardHelper
       render :partial => @widget.partial_name, :layout => "widgets/wrapper"
     end
   end
-  
+
   def new_package_unit_options(units)
     options_array = []
     units.each do |unit|

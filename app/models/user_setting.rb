@@ -1,8 +1,8 @@
 class UserSetting < ActiveRecord::Base
   belongs_to :user
-  
+
   DEFAULTS = {:receive_email_notifications => true}
-  
+
   # Sets up defaults
   def initialize
     super
@@ -11,4 +11,3 @@ class UserSetting < ActiveRecord::Base
     end
   end
 end
-

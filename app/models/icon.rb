@@ -7,12 +7,12 @@ class Icon < ActiveRecord::Base
   # has_many :computers
   # has_many :bundles
   # has_many :computer_groups
-  
+
   has_attached_file :photo,
                     :styles => { :tiny => ["32x32#", :png], :small => ["64x64#", :png], :medium => ["128x128#", :png], :large => ["256x256#", :png] },
                     :path => ":rails_root/public/system/:attachment/:id/:style/:filename",
                     :url => "/system/:attachment/:id/:style/:filename"
-  
+
   # A shortcut to get the url for self.photo
   def url(type = nil)
     begin
@@ -26,7 +26,7 @@ class Icon < ActiveRecord::Base
       ""
     end
   end
-  
+
   def path(type = nil)
     begin
       self.photo.path(type)
@@ -39,9 +39,8 @@ class Icon < ActiveRecord::Base
       ""
     end
   end
-  
+
   def to_s(type = nil)
     self.url(type)
   end
 end
-

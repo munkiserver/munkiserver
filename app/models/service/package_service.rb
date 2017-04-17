@@ -9,12 +9,12 @@ class PackageService
   def initialize(package, attributes)
     @package = package
     @attr = attributes
-    
+
     # Retrieve PackageBranch records for all installs if edit_*installs is not nil
     @attr[:upgrade_for] = PackageService.parse_package_strings(@attr[:update_for]) if @attr[:upgrade_for] != nil
     @attr[:requires] = PackageService.parse_package_strings(@attr[:requires]) if @attr[:requires] != nil
   end
-  
+
   # Takes an array of strings and returns either a package or a package branch
   # depending on the format of the string.
   # => Package record returned if matching: "#{package_branch_name}-#{version}"
@@ -35,7 +35,7 @@ class PackageService
     end
     items
   end
-  
+
   # Perform a save on the @package object (after assigning all the *installs)
   def save
     @package.update_attributes(@attr)

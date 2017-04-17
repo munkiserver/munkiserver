@@ -1,2 +1,2 @@
-class AddPackageWidget < DashboardWidget  
+class AddPackageWidget < DashboardWidget
 end

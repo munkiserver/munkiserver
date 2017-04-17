@@ -1,4 +1,5 @@
 # encoding: UTF-8
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +13,6 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20170214182019) do
-
   create_table "api_keys", :force => true do |t|
     t.integer  "user_id"
     t.string   "key"
@@ -83,17 +83,17 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.text     "raw_mode"
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
-    t.string   "hostname",             :default => ""
+    t.string   "hostname", :default => ""
     t.integer  "configuration_id"
     t.string   "shortname"
     t.datetime "last_report_at"
-    t.string   "last_ip",              :default => ""
+    t.string   "last_ip", :default => ""
     t.datetime "deleted_at"
   end
 
   create_table "configurations", :force => true do |t|
     t.string   "configuration"
-    t.boolean  "inherit",       :default => true
+    t.boolean  "inherit", :default => true
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
   end
@@ -179,7 +179,7 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.string   "hostname"
-    t.boolean  "dismissed",     :default => false
+    t.boolean  "dismissed", :default => false
   end
 
   create_table "notifications", :force => true do |t|
@@ -239,14 +239,14 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.integer  "installer_item_size"
     t.string   "installer_item_location"
     t.text     "installer_choices_xml"
-    t.boolean  "use_installer_choices",     :default => false
+    t.boolean  "use_installer_choices", :default => false
     t.string   "uninstall_method"
     t.string   "uninstaller_item_location"
     t.integer  "uninstaller_item_size"
-    t.boolean  "uninstallable",             :default => true
+    t.boolean  "uninstallable", :default => true
     t.string   "installer_item_checksum"
     t.text     "raw_tags"
-    t.integer  "raw_mode_id",               :default => 0
+    t.integer  "raw_mode_id", :default => 0
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.text     "preinstall_script"
@@ -427,7 +427,7 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.string   "hashed_password"
     t.string   "email"
     t.string   "salt"
-    t.boolean  "super_user",      :default => false
+    t.boolean  "super_user", :default => false
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
   end
@@ -463,5 +463,4 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
   end
-
 end

@@ -1,26 +1,26 @@
 class SystemProfile < ActiveRecord::Base
   belongs_to :computer
-  
+
   has_many :sp_printers, :dependent => :destroy
 
   # Include helpers
   include ActionView::Helpers
 
   scope :unused, where(:computer_id => nil)
-  
-  # Formats a system profiler plist file object into a ruby 
+
+  # Formats a system profiler plist file object into a ruby
   # hash that can be used to create a new SystemProfile record.
   def self.format_system_profiler_plist(system_profiler_plist_file)
     xml_string = system_profiler_plist_file.read if system_profiler_plist_file.present?
     self.format_system_profiler_hash(Plist.parse_xml(xml_string.to_utf8)) if xml_string.present?
   end
-  
-  # Creates a SystemProfile object based on a system profiler 
+
+  # Creates a SystemProfile object based on a system profiler
   # plist ruby hash.
   def self.import(profiler_plist_file)
     self.create(self.format_system_profiler_plist(profiler_plist_file))
   end
-  
+
   # Formats the output of system_profiler into a hash of
   # attributes that can be used to create a SystemProfile
   # record.
@@ -60,7 +60,7 @@ class SystemProfile < ActiveRecord::Base
     # Return hash
     f_item_0
   end
-  
+
   # Format SPSoftwareDataType from system_profiler into
   # attributes for creating a SystemProfile record.
   def self.format_sp_software_data_type(data_set)
@@ -83,7 +83,7 @@ class SystemProfile < ActiveRecord::Base
     # Return hash
     f_item_0
   end
-  
+
   # Calls underscore method on each hash key string
   def self.underscore_keys(hash)
     new_hash = {}
@@ -92,7 +92,7 @@ class SystemProfile < ActiveRecord::Base
     end
     new_hash
   end
-  
+
   def self.format_sp_printers_data_type(data_set)
     # Retrieve the proper array
     printers = data_set["_items"] if data_set.present?

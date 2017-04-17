@@ -24,5 +24,3 @@ describe DestroyComputerWorker, :type => :worker do
     end
   end
 end
-
-

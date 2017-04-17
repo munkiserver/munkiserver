@@ -14,7 +14,7 @@ class UniqueAsShortnameValidator < ActiveModel::EachValidator
     else
       raise Exception.new("#{self.class} must only be used for Unit, Computer, ComputerGroup, UserGroup, or Bundle records")
     end
-    
+
     single_result_is_not_this_record = (matching_records.count == 1 and matching_records.first.id != record.id)
     if single_result_is_not_this_record or matching_records.count > 1
       record.errors[:base] << "Shortname generated from #{attribute} of this record is already taken, please give another name"

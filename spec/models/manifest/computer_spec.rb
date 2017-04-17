@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Computer, :type => :model do
-
   it 'Factory should be valid' do
     expect(FactoryGirl.build(:computer)).to be_valid
   end
@@ -12,4 +11,3 @@ describe Computer, :type => :model do
     }.to_not raise_error
   end
 end
-

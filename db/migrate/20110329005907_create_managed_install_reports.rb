@@ -6,7 +6,7 @@ class CreateManagedInstallReports < ActiveRecord::Migration
       t.string :run_type
       t.string :console_user
       t.string :managed_install_version
-      
+
       t.timestamp :start_time
       t.timestamp :end_time
 
