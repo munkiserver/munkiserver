@@ -55,7 +55,7 @@ class Package < ActiveRecord::Base
 
   # Update For and Requires must be in the same environment as the record
   validates_each :update_for_items, :require_items do |package, attr, items|
-    items.each do |item| 
+    items.each do |item|
       unless package.environment == item.package.environment
         pretty_name = attr.to_s.gsub(/_/, ' ').titleize
         package.errors.add(attr, "#{pretty_name} must be in the same environment as the package they are for. (#{package.name})")
