@@ -41,7 +41,7 @@ class Package < ActiveRecord::Base
   before_save :handle_environment_change
   after_destroy :destroy_package_branch
 
-  validates :version, :presence => true
+  validates :version, :presence => true, :format => { :with => /^[A-Za-z0-9_\-\.%]+$/, :message => "only allows valid characters"}
   validates :installer_item_location, :presence => true
   validates :package_branch_id, :presence => true
   validates :receipts_plist, :plist => true
@@ -756,5 +756,9 @@ class Package < ActiveRecord::Base
 
   def has_installer_item_size?
     installer_item_size != nil and installer_item_size > 0
+  end
+
+  def self.version_fixer(version)
+    version.to_s.gsub(/[^A-Za-z0-9_\-\.%]+/, "_")
   end
 end

@@ -187,6 +187,7 @@ class ProcessPackageUpload
         end
       
         package.attributes = pkginfo
+        package.version    = Package.version_fixer(package.version)
         package.installer_item_location = File.basename(package_file.path)
         package.add_raw_tag("installer_item_hash", Digest::SHA256.file(package_file.path).hexdigest)
         package = apply_special_attributes(package, special_attributes)
