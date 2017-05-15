@@ -102,8 +102,8 @@ class VersionTracker < ActiveRecord::Base
     image_element = page.at_css("#app_info_logo")
 
     if image_element.present?
-      url_string = image_element[:src]
-      image_file = open(MAC_UPDATE_SITE_URL + url_string)
+      url_string = "http:#{image_element[:src]}"
+      image_file = open(url_string)
       icon = Icon.new(photo: image_file)
       icon if icon.save
     end

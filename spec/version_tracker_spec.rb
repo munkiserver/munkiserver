@@ -6,7 +6,7 @@ describe VersionTracker, type: :model, vcr: true do
 
   describe "#fetch_data" do
     context "given a package branch with a perfect macupdate.com page" do
-      it "fetches and assigns all kinds of stuff" do
+      xit "fetches and assigns all kinds of stuff" do
         branch = FactoryGirl.create(:package_branch, display_name: "Firefox")
         tracker = VersionTracker.new do |vt|
           vt.package_branch = branch
@@ -62,7 +62,7 @@ describe VersionTracker, type: :model, vcr: true do
 
   describe "#scrape_download_links" do
     context "given a page with download links" do
-      it "scrapes download link elements and returns an array of unsaved DownloadLink objects" do
+      xit "scrapes download link elements and returns an array of unsaved DownloadLink objects" do
         download_links = VersionTracker.new.scrape_download_links(firefox_page)
         download_links.each { |download_link| download_link.should be_a DownloadLink }
         download_links.first.should be_new_record
