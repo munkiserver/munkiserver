@@ -104,7 +104,7 @@ Munki::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       scope "/:unit_shortname" do
-        resource :packages, only: :create
+        resource :packages, only: [:index, :create]
       end
     end
   end
