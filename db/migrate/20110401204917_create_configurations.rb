@@ -3,7 +3,7 @@ class CreateConfigurations < ActiveRecord::Migration
     create_table :configurations do |t|
       t.integer :id
       t.string :configuration
-      t.boolean :inherit, :default => true
+      t.boolean :inherit, default: true
 
       t.timestamps
     end

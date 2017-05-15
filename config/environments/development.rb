@@ -15,7 +15,7 @@ Munki::Application.configure do
   config.action_controller.perform_caching = true
   config.active_support.deprecation        = :log
 
-  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
+  config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.minutes }
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -23,7 +23,7 @@ Munki::Application.configure do
   # Do not compress assets
   config.assets.compress = false
 
-  #Expands the lines which load the assets
+  # Expands the lines which load the assets
   config.assets.debug = true
   config.action_controller.perform_caching = true
   config.after_initialize do

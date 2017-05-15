@@ -6,5 +6,5 @@ version = File.read(path)
 a = version.split(".")
 a[a.length - 1] = a[a.length - 1].to_i + 1
 version = a.join(".")
-File.open(path, 'w') {|f| f.write(version) }
-puts "#{version}"
+File.open(path, "w") { |f| f.write(version) }
+puts version.to_s

@@ -1,9 +1,9 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe NokogiriHelper, :type => :feature, :vcr => true do
+describe NokogiriHelper, type: :feature, vcr: true do
   describe ".page" do
     context "given a URL to a page" do
-      it "returns a nokogiri document given a URL string"do
+      it "returns a nokogiri document given a URL string" do
         NokogiriHelper.page("http://www.google.com").should be_a(Nokogiri::HTML::Document)
       end
     end
@@ -16,7 +16,7 @@ describe NokogiriHelper, :type => :feature, :vcr => true do
 
     context "given an unescaped URL" do
       it "returns a nokogiri document" do
-        NokogiriHelper.page("https://www.macupdate.com/find/mac/A term that has no results").title.should match("MacUpdate: Find")
+        NokogiriHelper.page("https://www.macupdate.com/find/mac/A term that has no results").title.should match("MacUpdate - Apps")
       end
     end
 
@@ -30,7 +30,7 @@ describe NokogiriHelper, :type => :feature, :vcr => true do
   describe "redirect_url" do
     context "given a URL with a redirect" do
       it "returns a URL" do
-        NokogiriHelper.redirect_url("https://www.macupdate.com/app/mac/10700").should == "http://www.macupdate.com/app/mac/10700/firefox"
+        NokogiriHelper.redirect_url("https://www.macupdate.com/app/mac/10700").should == "https://www.macupdate.com/app/mac/10700/firefox"
       end
     end
 

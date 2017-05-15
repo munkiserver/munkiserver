@@ -5,10 +5,10 @@ class CreateUnits < ActiveRecord::Migration
       t.text :description
       t.string :key
       t.integer :unit_member_id
-      t.integer :unit_member_type          
-                                       
-      t.timestamps                     
-    end                                
+      t.integer :unit_member_type
+
+      t.timestamps
+    end
   end
 
   def self.down

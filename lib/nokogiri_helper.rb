@@ -1,5 +1,5 @@
-require 'net/http'
-require 'net/https'
+require "net/http"
+require "net/https"
 
 module NokogiriHelper
   def page(page_url)
@@ -13,7 +13,7 @@ module NokogiriHelper
     url = URI.parse(URI.escape(url_string))
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true if url.scheme == "https"
-    req = Net::HTTP::Get.new(url.path, {'User-Agent' => 'Ruby'})
+    req = Net::HTTP::Get.new(url.path, "User-Agent" => "Ruby")
     response = https.request(req)
     response.header["location"]
   end
@@ -21,4 +21,4 @@ module NokogiriHelper
   extend self
 end
 
-class NokogiriHelperError < Exception; end
+class NokogiriHelperError < RuntimeError; end

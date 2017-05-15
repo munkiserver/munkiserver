@@ -5,7 +5,7 @@ class CreateBundles < ActiveRecord::Migration
       t.text :description
       t.integer :unit_id
       t.integer :environment_id
-      
+
       # To allow for raw text to be added
       t.text :raw_tags
       t.text :raw_mode

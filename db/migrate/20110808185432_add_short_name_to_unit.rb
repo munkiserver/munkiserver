@@ -4,6 +4,6 @@ class AddShortNameToUnit < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :units, :shortname , :string
+    remove_column :units, :shortname, :string
   end
 end

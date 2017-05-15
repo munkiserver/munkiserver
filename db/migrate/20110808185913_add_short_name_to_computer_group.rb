@@ -4,6 +4,6 @@ class AddShortNameToComputerGroup < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :computer_groups, :shortname , :string
+    remove_column :computer_groups, :shortname, :string
   end
 end

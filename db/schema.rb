@@ -1,4 +1,5 @@
 # encoding: UTF-8
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,66 +12,65 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170214182019) do
-
-  create_table "api_keys", :force => true do |t|
+ActiveRecord::Schema.define(version: 20_170_214_182_019) do
+  create_table "api_keys", force: true do |t|
     t.integer  "user_id"
     t.string   "key"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "bundle_items", :force => true do |t|
+  create_table "bundle_items", force: true do |t|
     t.integer  "manifest_id"
     t.string   "manifest_type"
     t.integer  "bundle_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  create_table "bundles", :force => true do |t|
+  create_table "bundles", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.integer  "unit_id"
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.string   "shortname"
   end
 
-  create_table "client_logs", :force => true do |t|
+  create_table "client_logs", force: true do |t|
     t.integer  "computer_id"
     t.text     "managed_software_update_log"
     t.text     "errors_log"
     t.text     "installs_log"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
-  create_table "computer_groups", :force => true do |t|
+  create_table "computer_groups", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.integer  "unit_id"
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.integer  "configuration_id"
     t.string   "shortname"
   end
 
-  create_table "computer_models", :force => true do |t|
+  create_table "computer_models", force: true do |t|
     t.string   "name"
     t.string   "identifier"
     t.integer  "icon_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "computers", :force => true do |t|
+  create_table "computers", force: true do |t|
     t.string   "mac_address"
     t.string   "name"
     t.text     "system_profiler_info"
@@ -81,59 +81,59 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.integer  "environment_id"
     t.text     "raw_tags"
     t.text     "raw_mode"
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
-    t.string   "hostname",             :default => ""
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.string   "hostname", default: ""
     t.integer  "configuration_id"
     t.string   "shortname"
     t.datetime "last_report_at"
-    t.string   "last_ip",              :default => ""
+    t.string   "last_ip", default: ""
     t.datetime "deleted_at"
   end
 
-  create_table "configurations", :force => true do |t|
+  create_table "configurations", force: true do |t|
     t.string   "configuration"
-    t.boolean  "inherit",       :default => true
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.boolean  "inherit", default: true
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
-  create_table "download_links", :force => true do |t|
+  create_table "download_links", force: true do |t|
     t.string   "text"
     t.string   "url"
     t.string   "caption"
     t.integer  "version_tracker_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
-  create_table "environments", :force => true do |t|
+  create_table "environments", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.text     "environment_ids"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
-  create_table "icons", :force => true do |t|
+  create_table "icons", force: true do |t|
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
-  create_table "install_items", :force => true do |t|
+  create_table "install_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "managed_install_reports", :force => true do |t|
+  create_table "managed_install_reports", force: true do |t|
     t.string   "ip"
     t.string   "manifest_name"
     t.string   "run_type"
@@ -157,65 +157,65 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.text     "managed_installs_list"
     t.text     "managed_uninstalls_list"
     t.text     "managed_updates_list"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
-  add_index "managed_install_reports", ["computer_id"], :name => "index_managed_install_reports_on_computer_id"
+  add_index "managed_install_reports", ["computer_id"], name: "index_managed_install_reports_on_computer_id"
 
-  create_table "managed_update_items", :force => true do |t|
+  create_table "managed_update_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "missing_manifests", :force => true do |t|
+  create_table "missing_manifests", force: true do |t|
     t.string   "manifest_type"
     t.string   "identifier"
     t.string   "request_ip"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "hostname"
-    t.boolean  "dismissed",     :default => false
+    t.boolean  "dismissed", default: false
   end
 
-  create_table "notifications", :force => true do |t|
+  create_table "notifications", force: true do |t|
     t.integer  "notified_id"
     t.string   "notified_type"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  create_table "optional_install_items", :force => true do |t|
+  create_table "optional_install_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "package_branches", :force => true do |t|
+  create_table "package_branches", force: true do |t|
     t.string   "name"
     t.string   "display_name"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.integer  "unit_id"
     t.integer  "package_category_id"
   end
 
-  create_table "package_categories", :force => true do |t|
+  create_table "package_categories", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.integer  "icon_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  create_table "packages", :force => true do |t|
+  create_table "packages", force: true do |t|
     t.string   "version"
     t.integer  "package_branch_id"
     t.integer  "unit_id"
@@ -231,61 +231,61 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.text     "installs"
     t.string   "RestartAction"
     t.string   "package_path"
-    t.boolean  "autoremove",                :default => false
-    t.boolean  "shared",                    :default => false
+    t.boolean  "autoremove",                default: false
+    t.boolean  "shared",                    default: false
     t.string   "version_tracker_version"
     t.string   "installer_type"
     t.integer  "installed_size"
     t.integer  "installer_item_size"
     t.string   "installer_item_location"
     t.text     "installer_choices_xml"
-    t.boolean  "use_installer_choices",     :default => false
+    t.boolean  "use_installer_choices", default: false
     t.string   "uninstall_method"
     t.string   "uninstaller_item_location"
     t.integer  "uninstaller_item_size"
-    t.boolean  "uninstallable",             :default => true
+    t.boolean  "uninstallable", default: true
     t.string   "installer_item_checksum"
     t.text     "raw_tags"
-    t.integer  "raw_mode_id",               :default => 0
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
+    t.integer  "raw_mode_id", default: 0
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.text     "preinstall_script"
     t.text     "postinstall_script"
     t.text     "uninstall_script"
     t.text     "preuninstall_script"
     t.text     "postuninstall_script"
-    t.boolean  "unattended_install",        :default => false
-    t.boolean  "unattended_uninstall",      :default => false
+    t.boolean  "unattended_install",        default: false
+    t.boolean  "unattended_uninstall",      default: false
     t.datetime "force_install_after_date"
   end
 
-  create_table "permissions", :force => true do |t|
+  create_table "permissions", force: true do |t|
     t.integer  "principal_id"
     t.string   "principal_type"
     t.integer  "unit_id"
     t.integer  "privilege_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
-  create_table "privileges", :force => true do |t|
+  create_table "privileges", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.boolean  "unit_specific", :default => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.boolean  "unit_specific", default: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
-  create_table "require_items", :force => true do |t|
+  create_table "require_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "sp_printers", :force => true do |t|
+  create_table "sp_printers", force: true do |t|
     t.string   "name"
     t.string   "cupsversion"
     t.string   "default"
@@ -302,11 +302,11 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.string   "status"
     t.string   "uri"
     t.integer  "system_profile_id"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
-  create_table "system_profiles", :force => true do |t|
+  create_table "system_profiles", force: true do |t|
     t.integer  "computer_id"
     t.string   "cpu_type"
     t.string   "current_processor_speed"
@@ -325,20 +325,20 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.string   "os_version"
     t.string   "uptime"
     t.string   "user_name"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  create_table "uninstall_items", :force => true do |t|
+  create_table "uninstall_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "unit_settings", :force => true do |t|
+  create_table "unit_settings", force: true do |t|
     t.boolean  "notify_users"
     t.string   "unit_email"
     t.text     "regular_events"
@@ -346,107 +346,107 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.text     "error_events"
     t.integer  "unit_id"
     t.boolean  "version_tracking"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
-  create_table "units", :force => true do |t|
+  create_table "units", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.string   "key"
     t.integer  "unit_member_id"
     t.integer  "unit_member_type"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.integer  "configuration_id"
     t.string   "shortname"
   end
 
-  create_table "update_for_items", :force => true do |t|
+  create_table "update_for_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "user_allowed_items", :force => true do |t|
+  create_table "user_allowed_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "user_group_memberships", :force => true do |t|
-    t.integer  "principal_id",   :null => false
-    t.string   "principal_type", :null => false
-    t.integer  "user_group_id",  :null => false
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+  create_table "user_group_memberships", force: true do |t|
+    t.integer  "principal_id",   null: false
+    t.string   "principal_type", null: false
+    t.integer  "user_group_id",  null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
-  create_table "user_groups", :force => true do |t|
+  create_table "user_groups", force: true do |t|
     t.string   "name"
     t.string   "shortname"
     t.text     "description"
     t.integer  "unit_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  create_table "user_install_items", :force => true do |t|
+  create_table "user_install_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "user_settings", :force => true do |t|
+  create_table "user_settings", force: true do |t|
     t.boolean  "receive_email_notifications"
     t.integer  "user_id"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
-  create_table "user_uninstall_items", :force => true do |t|
+  create_table "user_uninstall_items", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "package_id"
     t.integer  "manifest_id"
     t.string   "manifest_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
-  create_table "users", :force => true do |t|
+  create_table "users", force: true do |t|
     t.string   "username"
     t.string   "hashed_password"
     t.string   "email"
     t.string   "salt"
-    t.boolean  "super_user",      :default => false
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.boolean  "super_user", default: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
-  create_table "version_trackers", :force => true do |t|
+  create_table "version_trackers", force: true do |t|
     t.integer  "package_branch_id"
     t.integer  "web_id"
     t.string   "version"
     t.string   "download_url"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.integer  "icon_id"
     t.text     "description"
   end
 
-  create_table "warranties", :force => true do |t|
-    t.string   "serial_number",           :default => ""
-    t.string   "product_description",     :default => ""
-    t.string   "product_type",            :default => ""
+  create_table "warranties", force: true do |t|
+    t.string   "serial_number",           default: ""
+    t.string   "product_description",     default: ""
+    t.string   "product_type",            default: ""
     t.datetime "purchase_date"
     t.datetime "hw_coverage_end_date"
     t.datetime "phone_coverage_end_date"
@@ -455,13 +455,12 @@ ActiveRecord::Schema.define(:version => 20170214182019) do
     t.boolean  "phone_coverage_expired"
     t.boolean  "app_registered"
     t.boolean  "app_eligible"
-    t.string   "specs_url",               :default => ""
-    t.string   "hw_support_url",          :default => ""
-    t.string   "forum_url",               :default => ""
-    t.string   "phone_support_url",       :default => ""
+    t.string   "specs_url",               default: ""
+    t.string   "hw_support_url",          default: ""
+    t.string   "forum_url",               default: ""
+    t.string   "phone_support_url",       default: ""
     t.integer  "computer_id"
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
-
 end

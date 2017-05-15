@@ -7,20 +7,20 @@ module ActiveRecordClassMethods
     define_method attribute.to_s do
       value = read_attribute(attribute)
       if !value.nil?
-        h = YAML::load(value)
+        h = YAML.safe_load(value)
         return h
       else
         {}
       end
-  	end
+    end
   end
-  
+
   # Converts YAML stored in DB as array, if nil or blank, returns empty array
   def attr_is_array(attribute)
     # Getter for objects
     define_method attribute.to_s do
       value = read_attribute(attribute).from_yaml
-      if value.nil? or value.blank?
+      if value.nil? || value.blank?
         []
       else
         value

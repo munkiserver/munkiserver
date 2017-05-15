@@ -11,18 +11,16 @@ class Ability
     permit_unprotected_actions
 
     # Assign user group permissions
-    @user.all_permissions.group_by(&:privilege_id).each do |privilege_id,permissions|
-      grant_privilege(Privilege.find(privilege_id),permissions.map(&:unit_id))
+    @user.all_permissions.group_by(&:privilege_id).each do |privilege_id, permissions|
+      grant_privilege(Privilege.find(privilege_id), permissions.map(&:unit_id))
     end
 
     # Give "admin" user the keys to the house
-    if @user.is_root?
-      can :manage, :all
-    end
+    can :manage, :all if @user.is_root?
   end
 
-  def grant_privilege(privilege,unit)
-    self.send(privilege.name,unit)
+  def grant_privilege(privilege, unit)
+    send(privilege.name, unit)
   end
 
   # Permit certain things to all requests
@@ -36,7 +34,7 @@ class Ability
     # Allow any request to retrieve catalogs
     can :read, Catalog
     # Allow everyone to edit their user record
-    can [:read, :update], User, :id => @user.id
+    can [:read, :update], User, id: @user.id
     # Allow anyone to login and logout
     can [:create, :destroy], :session
     # Allow anyone to view their dashboard

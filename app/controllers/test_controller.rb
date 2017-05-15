@@ -1,5 +1,3 @@
 class TestController < ApplicationController
-  def info
-  end
-
+  def info; end
 end

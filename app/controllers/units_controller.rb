@@ -1,12 +1,11 @@
 class UnitsController < ApplicationController
-  cache_sweeper :unit_sweeper, :only => [:edit, :destroy]
-  
+  cache_sweeper :unit_sweeper, only: [:edit, :destroy]
+
   def index
     @units = Unit.all
   end
 
-  def new
-  end
+  def new; end
 
   def create
     respond_to do |format|
@@ -15,13 +14,12 @@ class UnitsController < ApplicationController
         format.html { redirect_to(units_path) }
       else
         flash[:error] = "Failed to create #{@unit.name} unit!"
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -29,7 +27,7 @@ class UnitsController < ApplicationController
         flash[:notice] = "#{@unit} was successfully updated."
         format.html { redirect_to units_path }
       else
-        flash[:error] = 'Could not update unit!'
+        flash[:error] = "Could not update unit!"
         format.html { render edit_unit_path(@unit) }
       end
     end
@@ -46,8 +44,9 @@ class UnitsController < ApplicationController
       end
     end
   end
-  
+
   private
+
   def load_singular_resource
     action = params[:action].to_sym
     if [:show, :edit, :update, :destroy].include?(action)
@@ -56,8 +55,8 @@ class UnitsController < ApplicationController
       # Don't load resource
     elsif [:new, :create].include?(action)
       @unit = Unit.new
-    else      
-      raise Exception.new("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+    else
+      raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
     end
   end
 end

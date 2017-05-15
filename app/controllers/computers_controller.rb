@@ -1,4 +1,4 @@
-require 'cgi'
+require "cgi"
 
 class ComputersController < ApplicationController
   helper_method :sort_column, :sort_direction
@@ -21,8 +21,8 @@ class ComputersController < ApplicationController
     per_page = params[:per_page] if params[:per_page].present?
     per_page ||= Computer.per_page
     @computers = @computers.paginate(
-      :page => params[:page],
-      :per_page => per_page
+      page: params[:page],
+      per_page: per_page
     ).includes(
       :system_profile,
       :unit
@@ -37,13 +37,13 @@ class ComputersController < ApplicationController
   def new
     respond_to do |format|
       format.html
-      format.js { render :action => "edit" }
+      format.js { render action: "edit" }
     end
   end
 
   def create
     # Recreating a new computer object instead of using the one we already created in load_singular_resource
-    @computer = Computer.new(params[:computer].merge({:unit_id => current_unit.id}))
+    @computer = Computer.new(params[:computer].merge(unit_id: current_unit.id))
 
     respond_to do |format|
       if @computer.save
@@ -51,7 +51,7 @@ class ComputersController < ApplicationController
         format.html { redirect_to computer_path(@computer.unit, @computer) }
       else
         flash[:error] = "Failed to create #{@computer} computer object!"
-        format.html { render :action => "new"}
+        format.html { render action: "new" }
       end
     end
   end
@@ -60,7 +60,7 @@ class ComputersController < ApplicationController
     respond_to do |format|
       if @computer.present?
         format.html
-        format.plist { render :text => @computer.to_plist}
+        format.plist { render text: @computer.to_plist }
       else
         format.html { render page_not_found }
         format.plist { render page_not_found }
@@ -72,7 +72,7 @@ class ComputersController < ApplicationController
   def client_prefs
     respond_to do |format|
       if @computer.present?
-        format.plist { render :text => @computer.client_prefs.to_plist}
+        format.plist { render text: @computer.client_prefs.to_plist }
       else
         format.plist { render page_not_found }
       end
@@ -82,22 +82,21 @@ class ComputersController < ApplicationController
   def show_plist
     respond_to do |format|
       if @computer.present?
-        format.manifest { render :text => @computer.to_plist}
+        format.manifest { render text: @computer.to_plist }
       else
-        MissingManifest.find_or_create_by_manifest_type_and_identifier_and_request_ip({:manifest_type => Computer.to_s, :identifier => params[:id], :request_ip => request.remote_ip})
-        format.manifest { render :file => "public/404.html", :status => 404, :layout => false}
+        MissingManifest.find_or_create_by_manifest_type_and_identifier_and_request_ip(manifest_type: Computer.to_s, identifier: params[:id], request_ip: request.remote_ip)
+        format.manifest { render file: "public/404.html", status: 404, layout: false }
       end
     end
   end
 
   def show_resource
     respond_to do |format|
-      format.zip { render :text => "", :status => 404 }
+      format.zip { render text: "", status: 404 }
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -105,8 +104,8 @@ class ComputersController < ApplicationController
         flash[:notice] = "#{@computer.name} was successfully updated."
         format.html { redirect_to computer_path(@computer.unit, @computer) }
       else
-        flash[:error] = 'Could not update computer!'
-        format.html { render :action => "edit" }
+        flash[:error] = "Could not update computer!"
+        format.html { render action: "edit" }
       end
     end
   end
@@ -120,17 +119,15 @@ class ComputersController < ApplicationController
     end
   end
 
-
   # Import an ARD plist form
-  def import
-  end
+  def import; end
 
   # Take ARD plist and create new computer objects
   # TO-DO when a computer object import fails, tell
   # the user what went wrong (by print the computer.errors hash)
   def create_import
     begin
-      @computers = ComputerService.import(params[:computer],current_unit)
+      @computers = ComputerService.import(params[:computer], current_unit)
     rescue NoMethodError
       e = "Please select a plist file"
     rescue => e
@@ -139,7 +136,7 @@ class ComputersController < ApplicationController
     unless @computers.nil?
       @total = @computers.count
       # Save each computer.  If it doesn't save, leave it out of the array
-      @computers = @computers.collect {|e| e if e.save}.compact
+      @computers = @computers.collect { |e| e if e.save }.compact
     end
 
     respond_to do |format|
@@ -161,12 +158,12 @@ class ComputersController < ApplicationController
   def checkin
     # Return nothing if computer doesn't exist
     unless @computer
-      render text: ''
+      render text: ""
       return
     end
 
     if params[:managed_install_report_plist].present?
-      report_hash = ManagedInstallReport.format_report_plist(params[:managed_install_report_plist]).merge({:ip => request.remote_ip})
+      report_hash = ManagedInstallReport.format_report_plist(params[:managed_install_report_plist]).merge(ip: request.remote_ip)
       @computer.managed_install_reports.build(report_hash)
     end
 
@@ -180,9 +177,8 @@ class ComputersController < ApplicationController
     conform_warranty(@computer)
 
     AdminMailer.computer_report(@computer).deliver if @computer.report_due?
-    render text: ''
+    render text: ""
   end
-
 
   # Allows multiple edits
   def edit_multiple
@@ -200,9 +196,9 @@ class ComputersController < ApplicationController
     results = []
     exceptionMessage = nil
 
-    if params[:commit] == 'Delete'
+    if params[:commit] == "Delete"
       @computers.each(&:async_destroy)
-      redirect_to computers_path, :flash => { :notice => "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
+      redirect_to computers_path, flash: { notice: "#{params[:selected_records].length} computers have been queued for deletion. This could take a few minutes." }
       return
     end
 
@@ -213,19 +209,19 @@ class ComputersController < ApplicationController
     end
 
     respond_to do |format|
-        if results.empty?
-          flash[:error] = exceptionMessage
-          format.html { redirect_to(:action => "index") }
-        elsif !results.include?(false)
-          flash[:notice] = "All #{results.length} computer objects were successfully updated."
-          format.html { redirect_to(:action => "index") }
-        elsif results.include?(false) && results.include?(true)
-          flash[:warning] = "#{results.delete_if {|e| e}.length} of #{results.length} computer objects updated."
-          format.html { redirect_to(:action => "index") }
-        elsif !results.include?(true)
-          flash[:error] = "None of the #{results.length} computer objects were updated !"
-          format.html { redirect_to(:action => "index") }
-        end
+      if results.empty?
+        flash[:error] = exceptionMessage
+        format.html { redirect_to(action: "index") }
+      elsif !results.include?(false)
+        flash[:notice] = "All #{results.length} computer objects were successfully updated."
+        format.html { redirect_to(action: "index") }
+      elsif results.include?(false) && results.include?(true)
+        flash[:warning] = "#{results.delete_if { |e| e }.length} of #{results.length} computer objects updated."
+        format.html { redirect_to(action: "index") }
+      elsif !results.include?(true)
+        flash[:error] = "None of the #{results.length} computer objects were updated !"
+        format.html { redirect_to(action: "index") }
+      end
     end
   end
 
@@ -254,47 +250,49 @@ class ComputersController < ApplicationController
     else
       flash[:error] = "#{@computer.name}'s warranty could not be updated."
     end
-    redirect_to computer_path(@computer.unit, @computer, :anchor => 'warranty_tab')
+    redirect_to computer_path(@computer.unit, @computer, anchor: "warranty_tab")
   end
 
   private
+
   # Load a singular resource into @computer for all actions
   # This is really dense...refactor?
   def load_singular_resource
     action = params[:action].to_sym
-    if [:show, :client_prefs].include?(action)
-      @computer = Computer.find_for_show_fast(params[:id], current_unit)
-    elsif [:show_plist, :show_resource].include?(action)
-      @computer = Computer.find_for_show(nil, params[:id])
-    elsif [:edit, :update, :destroy].include?(action)
-      @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:id]))
-    elsif [:update_warranty].include?(action)
-      @computer = Computer.find_for_show(params[:unit_shortname], CGI::unescape(params[:computer_id]))
-    elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
-      @computer = Computer.new({:unit_id => current_unit.id})
-    elsif [:unit_change].include?(action)
-      @computer = Computer.find(params[:computer_id])
-    elsif [:environment_change].include?(action)
-      if params[:computer_id] == "new"
-        @computer = Computer.new({:unit_id => current_unit.id})
+    @computer =
+      if [:show, :client_prefs].include?(action)
+        Computer.find_for_show_fast(params[:id], current_unit)
+      elsif [:show_plist, :show_resource].include?(action)
+        Computer.find_for_show(nil, params[:id])
+      elsif [:edit, :update, :destroy].include?(action)
+        Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:id]))
+      elsif [:update_warranty].include?(action)
+        Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:computer_id]))
+      elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
+        Computer.new(unit_id: current_unit.id)
+      elsif [:unit_change].include?(action)
+        Computer.find(params[:computer_id])
+      elsif [:environment_change].include?(action)
+        if params[:computer_id] == "new"
+          Computer.new(unit_id: current_unit.id)
+        else
+          Computer.find_for_show(params[:unit_shortname], params[:computer_id])
+        end
+      elsif [:checkin].include?(action)
+        Computer.find_for_show(nil, params[:id])
       else
-        @computer = Computer.find_for_show(params[:unit_shortname], params[:computer_id])
+        raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
       end
-    elsif [:checkin].include?(action)
-      @computer = Computer.find_for_show(nil, params[:id])
-    else
-      raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
-    end
   end
 
   # Helper method to minimize errors and SQL injection attacks
   def sort_column
-    %w[name hostname mac_address last_report_at].include?(params[:sort]) ? params[:sort] : "name"
+    ["name", "hostname", "mac_address", "last_report_at"].include?(params[:sort]) ? params[:sort] : "name"
   end
 
   # Helper method to minimize errors and SQL injection attacks
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    ["asc", "desc"].include?(params[:direction]) ? params[:direction] : "asc"
   end
 
   def update_ip(computer, request)
@@ -302,7 +300,7 @@ class ComputersController < ApplicationController
   end
 
   def conform_warranty(computer)
-    if computer.warranty.present? and computer.serial_number != computer.warranty.serial_number
+    if computer.warranty.present? && computer.serial_number != computer.warranty.serial_number
       computer.warranty.destroy
     end
   end

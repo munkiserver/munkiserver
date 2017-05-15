@@ -1,17 +1,17 @@
-class PackageError < Exception
+class PackageError < RuntimeError
 end
 
-class AutoPackageError < Exception
+class AutoPackageError < RuntimeError
 end
 
-class VersionTrackerError < Exception
+class VersionTrackerError < RuntimeError
 end
 
-class ComputerError < Exception
+class ComputerError < RuntimeError
 end
 
-class WarrantyException < Exception
+class WarrantyException < RuntimeError
 end
 
-class UserGroupException < Exception
+class UserGroupException < RuntimeError
 end
