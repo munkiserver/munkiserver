@@ -2,9 +2,9 @@ module Api
   module V1
     class PackagesController < ApiController
       def index
-        packages_branches = PackageBranch.where(unit_id: current_unit.id)
-                                         .includes(:package_category, :unit, packages: [:unit])
-                                         .uniq_by(&:id)
+        package_branches = PackageBranch.where(unit_id: current_unit.id)
+                                        .includes(:package_category, :unit, packages: [:unit])
+                                        .uniq_by(&:id)
         respond_to do |format|
           format.json do
             render(json: index_message_for(package_branches), status: :ok)
@@ -45,7 +45,7 @@ module Api
           "package_branch": {
             "name": package_branch.name,
             "display": package_branch.display_name,
-            "category": package_branch.package_category,
+            "category": package_branch.package_category.name,
             "versions": {
               "summary": versions_for(package_branch.packages),
               "details": version_details_for(package_branch.packages)
@@ -61,20 +61,20 @@ module Api
         # "production": ["10.1.1", "10.1.2"]
         version_hash = {}
 
-        environments.each do |e|
-          p = packages.where(environment_id: e.id)
-          version_hash[environment.name.lcase] = versions_for(p)
+        environments.each do |environment|
+          p = packages.where(environment_id: environment.id)
+          version_hash[environment.name.downcase] = versions_for(p)
         end
 
         version_hash
       end
 
       def versions_for(packages)
-        packages.map(&:version)
+        VersionSorter.sort(packages.map(&:version))
       end
 
       def environments
-        @environments ||= Environments.all
+        @environments ||= Environment.all
       end
 
       def creation_success_message(process_package_upload)
@@ -98,7 +98,8 @@ module Api
       def load_singular_resource
         action = params[:action].to_sym
 
-        if action == :create
+        case action
+        when :index, :create
           @package = Package.new(unit_id: current_unit.id)
         else
           raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
