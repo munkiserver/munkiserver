@@ -104,7 +104,11 @@ Munki::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       scope "/:unit_shortname" do
-        resource :packages, only: [:index, :create]
+        resource :packages, only: [:index, :create] do
+          constraints(version: /.+/) do
+            match ":package_branch/:version(.:format)", action: "show", via: :get
+          end
+        end
       end
     end
   end

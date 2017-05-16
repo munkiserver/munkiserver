@@ -23,6 +23,7 @@ describe Api::V1::PackagesController, type: :controller do
     let!(:production_package) { FactoryGirl.create(:package, package_branch: package_branch, unit: unit, environment: production, version: "1.0") }
 
     # Response objects
+    it "should return valid result" do
       get :index, unit_shortname: unit.shortname, format: :json
 
       last_package_branch = response_as_hash.last["package_branch"]
@@ -41,6 +42,40 @@ describe Api::V1::PackagesController, type: :controller do
       expect(last_package_branch_packages.size).to eq 2
       expect(last_package_branch_packages).to include("version" => production_package.version, "environment" => "production")
       expect(last_package_branch_packages).to include("version" => staging_package.version, "environment" => "staging")
+    end
+  end
+
+  describe "when getting details on individual package" do
+    let(:package_branch) { FactoryGirl.create(:package_branch, unit: unit) }
+    let!(:package) { FactoryGirl.create(:package, package_branch: package_branch, unit: unit, environment: staging, version: "2.0") }
+
+    it "should show version exists" do
+      get :show, unit_shortname: unit.shortname, package_branch: package_branch.name, version: "2.0", format: :json
+
+      expect(response_as_hash).to be_a Hash
+      expect(response_as_hash["exists"]).to eq true
+    end
+
+    it "should show version details" do
+      get :show, unit_shortname: unit.shortname, package_branch: package_branch.name, version: "2.0", format: :json
+
+      expect(response_as_hash["version"]).to eq "2.0"
+      expect(response_as_hash["environment"]).to eq "staging"
+    end
+
+    it "should conform version query to match expected version number format" do
+      expect(Package).to receive(:find_where_params).with(hash_including("version" => "3_0"))
+
+      get :show, unit_shortname: unit.shortname, package_branch: package_branch.name, version: "3 0", format: :json
+    end
+
+    it "should show version doesn't exist" do
+      get :show, unit_shortname: unit.shortname, package_branch: package_branch.name, version: "1.0", format: :json
+
+      expect(response_as_hash).to be_a Hash
+      expect(response_as_hash["exists"]).to eq false
+      expect(response_as_hash["environment"]).to eq nil
+      expect(response_as_hash["version"]).to eq nil
     end
   end
 

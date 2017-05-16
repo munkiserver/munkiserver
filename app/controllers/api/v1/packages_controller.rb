@@ -12,6 +12,14 @@ module Api
         end
       end
 
+      def show
+        respond_to do |format|
+          format.json do
+            render(json: show_message_for(@package))
+          end
+        end
+      end
+
       def create
         process_package_upload = ProcessPackageUpload.new(package_file: params[:package_file],
                                                           pkginfo_file: params[:pkginfo_file],
@@ -60,6 +68,14 @@ module Api
         end
       end
 
+      def show_message_for(package)
+        {
+          "exists" => package.persisted?,
+          "version" => package.version,
+          "environment" => package.environment.try(:name).try(:downcase)
+        }
+      end
+
       def environments
         @environments ||= Environment.all
       end
@@ -88,6 +104,9 @@ module Api
         case action
         when :index, :create
           @package = Package.new(unit_id: current_unit.id)
+        when :show
+          params["version"] = Package.version_fixer(params["version"])
+          @package = Package.find_where_params(params) || Package.new(unit_id: current_unit.id)
         else
           raise Exception, "Unable to load singular resource for #{action} action in #{params[:controller]} controller."
         end
