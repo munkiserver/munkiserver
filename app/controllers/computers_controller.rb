@@ -7,15 +7,14 @@ class ComputersController < ApplicationController
     # Default to scoped (i.e. sorted)
     @computers = Computer.scoped
 
-    # Search for value on name OR hostname OR mac_address OR last_ip attributes
+    # Search for value on name OR hostname OR mac_address attributes
     @computers = @computers.search(:name, params[:search])
     @computers = @computers.or.search(:hostname, params[:search])
     @computers = @computers.or.search(:mac_address, params[:search])
-    @computers = @computers.or.search(:last_ip, params[:search])
 
     # Scope computers to unit/environment and then order by relevent column and direction
     @computers = @computers.unit(current_unit).environment(current_environment)
-    @computers = @computers.reorder("#{sort_column} #{sort_direction}")
+    @computers = @computers.order("#{sort_column} #{sort_direction}")
 
     # Add pagination using will_paginate gem
     per_page = params[:per_page] if params[:per_page].present?
@@ -156,12 +155,6 @@ class ComputersController < ApplicationController
   # Allows a computer to checkin with the server, notifying it
   # of the last successful munki run.  May be extended in the future.
   def checkin
-    # Return nothing if computer doesn't exist
-    unless @computer
-      render text: ""
-      return
-    end
-
     if params[:managed_install_report_plist].present?
       report_hash = ManagedInstallReport.format_report_plist(params[:managed_install_report_plist]).merge(ip: request.remote_ip)
       @computer.managed_install_reports.build(report_hash)
@@ -173,8 +166,12 @@ class ComputersController < ApplicationController
       @computer.system_profile.attributes = system_profile_hash
     end
 
-    update_ip(@computer, request)
-    conform_warranty(@computer)
+    @computer.last_ip = request.remote_ip
+    @computer.save
+
+    if @computer.warranty.present? && @computer.serial_number != @computer.warranty.serial_number
+      @computer.warranty.destroy
+    end
 
     AdminMailer.computer_report(@computer).deliver if @computer.report_due?
     render text: ""
@@ -259,30 +256,29 @@ class ComputersController < ApplicationController
   # This is really dense...refactor?
   def load_singular_resource
     action = params[:action].to_sym
-    @computer =
-      if [:show, :client_prefs].include?(action)
-        Computer.find_for_show_fast(params[:id], current_unit)
-      elsif [:show_plist, :show_resource].include?(action)
-        Computer.find_for_show(nil, params[:id])
-      elsif [:edit, :update, :destroy].include?(action)
-        Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:id]))
-      elsif [:update_warranty].include?(action)
-        Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:computer_id]))
-      elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
-        Computer.new(unit_id: current_unit.id)
-      elsif [:unit_change].include?(action)
-        Computer.find(params[:computer_id])
-      elsif [:environment_change].include?(action)
-        if params[:computer_id] == "new"
-          Computer.new(unit_id: current_unit.id)
-        else
-          Computer.find_for_show(params[:unit_shortname], params[:computer_id])
-        end
-      elsif [:checkin].include?(action)
-        Computer.find_for_show(nil, params[:id])
-      else
-        raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
-      end
+    if [:show, :client_prefs].include?(action)
+      @computer = Computer.find_for_show_fast(params[:id], current_unit)
+    elsif [:show_plist, :show_resource].include?(action)
+      @computer = Computer.find_for_show(nil, params[:id])
+    elsif [:edit, :update, :destroy].include?(action)
+      @computer = Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:id]))
+    elsif [:update_warranty].include?(action)
+      @computer = Computer.find_for_show(params[:unit_shortname], CGI.unescape(params[:computer_id]))
+    elsif [:index, :new, :create, :edit_multiple, :update_multiple, :import, :create_import].include?(action)
+      @computer = Computer.new(unit_id: current_unit.id)
+    elsif [:unit_change].include?(action)
+      @computer = Computer.find(params[:computer_id])
+    elsif [:environment_change].include?(action)
+      @computer = if params[:computer_id] == "new"
+                    Computer.new(unit_id: current_unit.id)
+                  else
+                    Computer.find_for_show(params[:unit_shortname], params[:computer_id])
+                  end
+    elsif [:checkin].include?(action)
+      @computer = Computer.find_for_show(nil, params[:id])
+    else
+      raise Exception("Unable to load singular resource for #{action} action in #{params[:controller]} controller.")
+    end
   end
 
   # Helper method to minimize errors and SQL injection attacks
@@ -293,15 +289,5 @@ class ComputersController < ApplicationController
   # Helper method to minimize errors and SQL injection attacks
   def sort_direction
     ["asc", "desc"].include?(params[:direction]) ? params[:direction] : "asc"
-  end
-
-  def update_ip(computer, request)
-    computer.update_attributes last_ip: request.remote_ip
-  end
-
-  def conform_warranty(computer)
-    if computer.warranty.present? && computer.serial_number != computer.warranty.serial_number
-      computer.warranty.destroy
-    end
   end
 end
