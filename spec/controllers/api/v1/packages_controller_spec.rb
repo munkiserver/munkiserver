@@ -23,11 +23,10 @@ describe Api::V1::PackagesController, type: :controller do
     let!(:production_package) { FactoryGirl.create(:package, package_branch: package_branch, unit: unit, environment: production, version: "1.0") }
 
     # Response objects
-    it "should return valid result" do
       get :index, unit_shortname: unit.shortname, format: :json
 
       last_package_branch = response_as_hash.last["package_branch"]
-      last_package_branch_verisons = last_package_branch["versions"]
+      last_package_branch_packages = last_package_branch["packages"]
 
       expect(response_as_hash).to be_a Array
       expect(response_as_hash.size).to eq 2
@@ -38,10 +37,10 @@ describe Api::V1::PackagesController, type: :controller do
       expect(last_package_branch["display"]).to eq package_branch.display_name
       expect(last_package_branch["category"]).to eq package_branch.package_category.name
 
-      expect(last_package_branch["versions"]).to be_a Hash
-      expect(last_package_branch_verisons["summary"]).to eq [production_package.version, staging_package.version] # Production is lower, so it should be first, staging is higher
-      expect(last_package_branch_verisons["details"]["staging"]).to eq [staging_package.version]
-      expect(last_package_branch_verisons["details"]["production"]).to eq [production_package.version]
+      expect(last_package_branch_packages).to be_a Array
+      expect(last_package_branch_packages.size).to eq 2
+      expect(last_package_branch_packages).to include("version" => production_package.version, "environment" => "production")
+      expect(last_package_branch_packages).to include("version" => staging_package.version, "environment" => "staging")
     end
   end
 

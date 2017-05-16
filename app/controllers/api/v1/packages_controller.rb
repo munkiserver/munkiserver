@@ -46,31 +46,18 @@ module Api
             "name": package_branch.name,
             "display": package_branch.display_name,
             "category": package_branch.package_category.name,
-            "versions": {
-              "summary": versions_for(package_branch.packages),
-              "details": version_details_for(package_branch.packages)
-            }
+            "packages": version_details_for(package_branch.packages)
           }
         }
       end
 
       def version_details_for(packages)
-        # Return an array of hashes where key is environment name
-        # and value is an array of version strings. I.e.
-        # "staging": ["10.1.3"],
-        # "production": ["10.1.1", "10.1.2"]
-        version_hash = {}
-
-        environments.each do |environment|
-          p = packages.where(environment_id: environment.id)
-          version_hash[environment.name.downcase] = versions_for(p)
+        packages.map do |p|
+          {
+            "version": p.version,
+            "environment": p.environment.name.downcase
+          }
         end
-
-        version_hash
-      end
-
-      def versions_for(packages)
-        VersionSorter.sort(packages.map(&:version))
       end
 
       def environments
