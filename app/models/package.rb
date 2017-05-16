@@ -96,14 +96,18 @@ class Package < ActiveRecord::Base
                                       ["AdobeCCPUninstaller"]] }.freeze
 
   def self.find_where_params(params)
+    return unless params["unit_shortname"] || params["package_branch"] || params["version"]
+
     unit = Unit.where(shortname: params["unit_shortname"]).select("id").first
     package_branch = PackageBranch.where(name: params["package_branch"], unit_id: unit.id).select("id").first if unit.present?
 
-    if package_branch.present?
-      relation = where(package_branch_id: package_branch.id).order("version DESC").limit(1)
-      relation = relation.where(version: params["version"]) if params["version"].present?
-      relation.first
-    end
+    return unless package_branch.present?
+
+    where(package_branch_id: package_branch.id)
+      .order("version DESC")
+      .limit(1)
+      .where(version: params["version"])
+      .first
   end
 
   # Initialize serialized data
