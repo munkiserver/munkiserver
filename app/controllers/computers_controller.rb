@@ -155,6 +155,12 @@ class ComputersController < ApplicationController
   # Allows a computer to checkin with the server, notifying it
   # of the last successful munki run.  May be extended in the future.
   def checkin
+    # If a checkin happens on a computer that doesn't exist, then bail out early
+    unless @computer.present?
+      render text: ""
+      return
+    end
+
     if params[:managed_install_report_plist].present?
       report_hash = ManagedInstallReport.format_report_plist(params[:managed_install_report_plist]).merge(ip: request.remote_ip)
       @computer.managed_install_reports.build(report_hash)
