@@ -107,7 +107,7 @@ Munki::Application.routes.draw do
         resources :packages, only: [:index, :create]
         scope "/packages" do
           constraints(version: /.+/) do
-            match ":package_branch/:version(.:format)", action: "show", via: :get
+            match ":package_branch/:version(.:format)" => "packages#show", via: :get
           end
         end
       end
