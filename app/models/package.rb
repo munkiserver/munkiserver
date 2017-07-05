@@ -76,7 +76,7 @@ class Package < ActiveRecord::Base
                    installer_types: [["Package", ""],
                                      ["Copy From DMG", "copy_from_dmg"],
                                      ["App DMG", "appdmg"],
-                                     ["Start OS Install" "startosinstall"],
+                                     ["Start OS Install", "startosinstall"],
                                      ["Profile", "profile"],
                                      ["nokpkg", "nopkg"],
                                      ["AdobeUberInstaller"],
