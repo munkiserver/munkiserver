@@ -195,8 +195,8 @@ namespace :bootstrap do
       u = User.new(username: "root", email: "root@localhost.local")
 
       # Ask for password/password_confirmation and hide the characters
-      password = nil
-      password_confirmation = nil
+      password = ENV['ROOTPASS']
+      password_confirmation = ENV['ROOTPASS']
       console = HighLine.new
       until password.present? && password == password_confirmation
         password = console.ask("Enter your password: ") { |q| q.echo = false }
@@ -217,8 +217,9 @@ namespace :bootstrap do
     unless File.exist?("config/settings.yaml")
       hostname = args.hostame
       puts "Grenerating settings.yaml file, if blank default to \"localhost:3000\""
-      print "Hostname: "
-      hostname = STDIN.gets.chomp
+      hostname = ENV['HOSTNAME']
+      print "Hostname: " if hostname.empty?
+      hostname = STDIN.gets.chomp if hostname.empty?
       hostname = "localhost:3000" if hostname.empty?
       h = {}
       File.open("config/settings.yaml", "w") do |file|
