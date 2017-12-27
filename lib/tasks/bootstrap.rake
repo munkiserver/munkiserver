@@ -195,8 +195,8 @@ namespace :bootstrap do
       u = User.new(username: "root", email: "root@localhost.local")
 
       # Ask for password/password_confirmation and hide the characters
-      password = nil
-      password_confirmation = nil
+      password = ENV['ROOTPASS']
+      password_confirmation = ENV['ROOTPASS']
       console = HighLine.new
       until password.present? && password == password_confirmation
         password = console.ask("Enter your password: ") { |q| q.echo = false }
