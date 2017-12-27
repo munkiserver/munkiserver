@@ -217,8 +217,9 @@ namespace :bootstrap do
     unless File.exist?("config/settings.yaml")
       hostname = args.hostame
       puts "Grenerating settings.yaml file, if blank default to \"localhost:3000\""
-      print "Hostname: "
-      hostname = STDIN.gets.chomp
+      hostname = ENV['HOSTNAME']
+      print "Hostname: " if hostname.empty?
+      hostname = STDIN.gets.chomp if hostname.empty?
       hostname = "localhost:3000" if hostname.empty?
       h = {}
       File.open("config/settings.yaml", "w") do |file|
