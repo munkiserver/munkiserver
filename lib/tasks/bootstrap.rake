@@ -215,12 +215,14 @@ namespace :bootstrap do
   desc "Create a settings.yaml file, if missing"
   task :settings, [:settings, :hostname] => :environment do |_t, args|
     unless File.exist?("config/settings.yaml")
-      hostname = args.hostame
       puts "Grenerating settings.yaml file, if blank default to \"localhost:3000\""
-      hostname = ENV['HOSTNAME']
-      print "Hostname: " if hostname.empty?
+
+      hostname = args.hostname if hostname.empty?
+      hostname = ENV['HOSTNAME'] if hostname.empty?
       hostname = STDIN.gets.chomp if hostname.empty?
       hostname = "localhost:3000" if hostname.empty?
+      print "Hostname: #{hostname}"
+
       h = {}
       File.open("config/settings.yaml", "w") do |file|
         h[:action_mailer] = { host: hostname.to_s }
